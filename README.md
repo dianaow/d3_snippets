@@ -7,5 +7,7 @@
 
 ```http-server -a localhost -p 3000```
 
-#### 3) To view COE prices line chart, visit [localhost:3000/multiple-line-chart/](http://localhost:3000/multiple-line-chart/)
+#### 3) To view Chinese Super League visual story, visit [localhost:3000/forcelayout/](http://localhost:3000/forcelayout/)
+(The visual story has been designed to be responsive on mobile devices of various widths.)
 
+You may read more about my thought process when designing the visual story [here](https://github.com/dianaow/d3_snippets/blob/master/forcelayout/Chinese_Super_League_Visual.pdf)
