@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang='en'>
+  <head>
+    <meta charset='UTF-8'/>
+    <meta name="viewport" content="width=device-width">
+    <link href="https://fonts.googleapis.com/css?family=Poppins" rel="stylesheet">
+    <title>Know your Kuehs</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Poppins', sans-serif;
+        color: black;
+      }
+
+      .menu-container {
+        display: flex; /* telling the browser that everyhing in the box should be rendered with flexbox instead of the default box model */
+        justify-content: center;  /* used to center the menu. This has the same effect as adding a margin: 0 auto declaration to the .menu element. But, notice how we did this by adding a property to the parent element (the flex container) instead of directly to the element we wanted to center (the flex item).  */
+        align-items: center;
+        color: #fff;
+        background-color: white; 
+        padding: 10px 0;
+      }
+
+      .menu {
+        width: 900px;
+        display: flex;
+        justify-content: space-between; /* This turns our .menu into a nested flex container, and the space-between value only adds extra space between items. */
+      }
+
+      .links {
+        display: flex;
+        justify-content: flex-end; /* Push links to flush to the right end */
+      }
+
+      .signup {
+        margin-left: auto;
+      }
+
+      .login {
+        margin-left: 20px;
+      }
+
+      .header-container {
+        color: white;
+        background-color: white;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+
+      .header {
+        width: 100%;
+        height: 200px;
+        display: flex;
+        justify-content: space-around;
+        align-items: center; /* vertically align items within container */
+        flex-direction: row;
+      }
+
+      .header-desc {
+        text-align:center;
+        height: 60px;
+        align-items: center;
+      }
+
+      .sidebar {
+        flex: initial;
+        width: 200px;
+      }
+
+      .photo-grid-container {
+        display: flex;
+        justify-content: center;
+      }
+
+      .photo-grid {
+        width: 900px;
+        display: flex;
+        justify-content: center;
+        align-items: center; /* To horizontally center our column */
+        flex-wrap: wrap; /* Adding the following flex-wrap property forces items that don’t fit to get bumped down to the next row: */
+      }
+
+      .photo-grid-item {
+        border: 6px solid #fff;
+        width: 300px;
+        height: 300px;
+      }
+
+      .footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .footer-item {
+        background-color: white;
+        height: 100px;
+        flex: 1;
+        text-align:center;
+        margin: 20px;
+      }
+
+      .footer-one,
+      .footer-three {
+        background-color: white;
+        flex: initial;
+        width: 300px;
+      }
+
+      .wrapper {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        height: 100%;
+      }
+
+      .wrapper-1 {
+        flex-direction: column-reverse;
+      }
+
+      .layer-lapis {
+        flex-basis: 100px;
+      }
+      .layer-lapis-1 {background-color: cornsilk;}
+      .layer-lapis-2 {background-color: chartreuse;}
+      .layer-lapis-3 {background-color: plum;}
+      .layer-lapis-4 {background-color: cyan;}
+      .layer-lapis-5 {background-color: cornsilk;}
+      .layer-lapis-6 {background-color: chartreuse;}
+      .layer-lapis-7 {background-color: plum;}
+      .layer-lapis-8 {background-color: cyan;}
+      .layer-lapis-9 {background-color: red;}
+
+
+      .layer-salat-1 {background-color: limegreen; flex: 1;}
+      .layer-salat-2 {background-color: cornsilk; flex: 1;}
+
+      .layer-talam-1 {background-color: cornsilk; flex: 1;}
+      .layer-talam-2 {background-color: limegreen; flex: 1;}
+
+      .layer-bingka-1 {background-color: sienna; flex: 1;}
+      .layer-bingka-2 {background-color: gold; flex: 8.5;}
+      .layer-bingka-3 {background-color: sienna; flex: 0.5;}
+
+      .layer-sagu-1 {background-color: hotpink; flex: 1;}
+      .layer-sagu-2 {background-color: saddlebrown; flex: 1;}
+      .layer-sagu-3 {background-color: cornsilk; flex: 1;}
+
+      @media screen and (max-width: 1200px){ 
+        .header {
+          flex-direction: column;
+          margin: 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class='menu-container'>
+      <div class='menu'>
+        <div class='date'></div>
+          <div class='signup'></div>      
+          <div class='login'></div>     
+      </div>
+    </div>
+    <div class='header-container'>
+      <div class='header'>
+        <div class='sidebar'></div>
+        <div class='logo1'>
+          <svg width="305.1" height="72.002" viewBox="0 0 305.1 72.002" ><g id="svgGroup" stroke-linecap="round" fill-rule="evenodd" font-size="9pt" stroke="#000" stroke-width="0.25mm" fill="none" style="stroke:#000;stroke-width:0.25mm;fill:none"><path d="M 70.1 23.501 L 55.3 23.501 Q 54.1 18.701 50.05 15.851 A 15.08 15.08 0 0 0 44.649 13.508 Q 42.416 13.001 39.8 13.001 Q 33.7 13.001 28.5 15.801 Q 23.3 18.601 19.75 23.801 A 28.914 28.914 0 0 0 15.861 32.206 A 35.607 35.607 0 0 0 15 36.001 A 26.967 26.967 0 0 0 14.61 38.933 A 35.869 35.869 0 0 0 14.5 41.801 A 23.846 23.846 0 0 0 15.047 47.072 Q 16.129 51.846 19.35 54.901 A 15.873 15.873 0 0 0 26.056 58.62 Q 28.522 59.322 31.467 59.465 A 31.723 31.723 0 0 0 33 59.501 Q 40.6 59.501 46.85 55.001 A 25.482 25.482 0 0 0 54.917 45.263 A 32.04 32.04 0 0 0 56.1 42.501 L 32.2 42.501 L 34 32.401 L 69.7 32.401 L 67.4 46.001 Q 63.1 57.601 53.3 64.751 Q 43.5 71.901 29.4 71.901 A 39.207 39.207 0 0 1 21.656 71.172 A 29.086 29.086 0 0 1 13.65 68.351 Q 7 64.801 3.5 58.301 Q 0 51.801 0 43.301 Q 0 39.301 0.7 35.401 A 44.669 44.669 0 0 1 6.711 19.36 A 42.934 42.934 0 0 1 8.25 17.051 Q 14 9.001 22.75 4.501 A 41.108 41.108 0 0 1 41.252 0.005 A 47.72 47.72 0 0 1 41.9 0.001 Q 54.6 0.001 61.85 6.451 Q 69.1 12.901 70.1 23.501 Z M 122.9 15.901 L 137 15.901 L 127.3 71.301 L 113.1 71.301 L 115.1 60.301 Q 111.8 65.801 106.25 68.901 Q 100.7 72.001 94.1 72.001 A 22.981 22.981 0 0 1 88.777 71.42 A 15.381 15.381 0 0 1 81.35 67.401 A 14.926 14.926 0 0 1 77.482 60.618 Q 76.7 57.787 76.7 54.301 A 31.958 31.958 0 0 1 76.929 50.569 A 39.815 39.815 0 0 1 77.3 48.101 L 83 15.901 L 97 15.901 L 91.6 46.501 A 24.795 24.795 0 0 0 91.342 48.798 A 20.605 20.605 0 0 0 91.3 50.101 Q 91.3 55.101 94.1 57.751 Q 96.679 60.191 101.123 60.384 A 17.913 17.913 0 0 0 101.9 60.401 Q 107.8 60.401 112.05 56.651 A 15.705 15.705 0 0 0 115.973 51.206 Q 116.916 49.104 117.454 46.542 A 28.843 28.843 0 0 0 117.6 45.801 L 122.9 15.901 Z M 251.8 33.901 L 238 33.901 A 9.889 9.889 0 0 0 237.512 30.972 A 7.75 7.75 0 0 0 235.1 27.451 Q 232.774 25.499 228.86 25.168 A 19.748 19.748 0 0 0 227.2 25.101 A 13.896 13.896 0 0 0 224.656 25.321 Q 223.163 25.599 221.97 26.23 A 7.751 7.751 0 0 0 221.05 26.801 Q 218.7 28.501 218.7 31.401 A 4.507 4.507 0 0 0 220.405 35.049 A 6.695 6.695 0 0 0 221.55 35.801 Q 223.92 37.048 228.468 38.365 A 94.912 94.912 0 0 0 230.4 38.901 A 131.659 131.659 0 0 1 234.134 40.052 Q 235.794 40.593 237.223 41.118 A 57.07 57.07 0 0 1 239.85 42.151 Q 243.5 43.701 246.15 46.701 A 10.294 10.294 0 0 1 248.48 51.424 A 14.951 14.951 0 0 1 248.8 54.601 Q 248.8 56.501 248.4 58.401 Q 247.2 64.501 241.5 68.251 Q 235.8 72.001 226.3 72.001 A 39.059 39.059 0 0 1 219.174 71.389 Q 215.091 70.631 211.834 68.933 A 21.164 21.164 0 0 1 208.85 67.051 A 16.439 16.439 0 0 1 202.22 55.18 A 22.517 22.517 0 0 1 202.1 53.301 L 215.9 53.301 Q 215.6 57.301 218.75 59.701 A 10.718 10.718 0 0 0 222.208 61.414 Q 223.714 61.865 225.523 62.02 A 23.163 23.163 0 0 0 227.5 62.101 A 14.232 14.232 0 0 0 229.815 61.925 Q 231.04 61.723 232.02 61.287 A 6.411 6.411 0 0 0 233.6 60.301 A 5.745 5.745 0 0 0 235.687 56.132 A 7.169 7.169 0 0 0 235.7 55.701 A 5.109 5.109 0 0 0 235.325 53.717 A 4.795 4.795 0 0 0 234.15 52.051 A 10.458 10.458 0 0 0 231.793 50.406 A 13.224 13.224 0 0 0 230.3 49.751 Q 228.539 49.1 225.606 48.244 A 168.713 168.713 0 0 0 223.7 47.701 Q 218 46.101 214.5 44.651 Q 211 43.201 208.5 40.301 A 10.014 10.014 0 0 1 206.323 35.847 A 14.524 14.524 0 0 1 206 32.701 A 21.693 21.693 0 0 1 206.129 30.384 A 26.146 26.146 0 0 1 206.3 29.101 A 14.595 14.595 0 0 1 211.866 19.986 A 19.807 19.807 0 0 1 213.15 19.051 A 20.999 20.999 0 0 1 219.365 16.288 Q 222.107 15.541 225.349 15.307 A 42.503 42.503 0 0 1 228.4 15.201 A 39.719 39.719 0 0 1 234.878 15.694 Q 238.306 16.262 241.042 17.484 A 17.803 17.803 0 0 1 245.45 20.251 A 18.028 18.028 0 0 1 251.534 31.426 A 24.683 24.683 0 0 1 251.8 33.901 Z M 305.1 33.901 L 291.3 33.901 A 9.889 9.889 0 0 0 290.812 30.972 A 7.75 7.75 0 0 0 288.4 27.451 Q 286.074 25.499 282.16 25.168 A 19.748 19.748 0 0 0 280.5 25.101 A 13.896 13.896 0 0 0 277.956 25.321 Q 276.463 25.599 275.27 26.23 A 7.751 7.751 0 0 0 274.35 26.801 Q 272 28.501 272 31.401 A 4.507 4.507 0 0 0 273.705 35.049 A 6.695 6.695 0 0 0 274.85 35.801 Q 277.22 37.048 281.768 38.365 A 94.912 94.912 0 0 0 283.7 38.901 A 131.659 131.659 0 0 1 287.434 40.052 Q 289.094 40.593 290.523 41.118 A 57.07 57.07 0 0 1 293.15 42.151 Q 296.8 43.701 299.45 46.701 A 10.294 10.294 0 0 1 301.78 51.424 A 14.951 14.951 0 0 1 302.1 54.601 Q 302.1 56.501 301.7 58.401 Q 300.5 64.501 294.8 68.251 Q 289.1 72.001 279.6 72.001 A 39.059 39.059 0 0 1 272.474 71.389 Q 268.391 70.631 265.134 68.933 A 21.164 21.164 0 0 1 262.15 67.051 A 16.439 16.439 0 0 1 255.52 55.18 A 22.517 22.517 0 0 1 255.4 53.301 L 269.2 53.301 Q 268.9 57.301 272.05 59.701 A 10.718 10.718 0 0 0 275.508 61.414 Q 277.014 61.865 278.823 62.02 A 23.163 23.163 0 0 0 280.8 62.101 A 14.232 14.232 0 0 0 283.115 61.925 Q 284.34 61.723 285.32 61.287 A 6.411 6.411 0 0 0 286.9 60.301 A 5.745 5.745 0 0 0 288.987 56.132 A 7.169 7.169 0 0 0 289 55.701 A 5.109 5.109 0 0 0 288.625 53.717 A 4.795 4.795 0 0 0 287.45 52.051 A 10.458 10.458 0 0 0 285.093 50.406 A 13.224 13.224 0 0 0 283.6 49.751 Q 281.839 49.1 278.906 48.244 A 168.713 168.713 0 0 0 277 47.701 Q 271.3 46.101 267.8 44.651 Q 264.3 43.201 261.8 40.301 A 10.014 10.014 0 0 1 259.623 35.847 A 14.524 14.524 0 0 1 259.3 32.701 A 21.693 21.693 0 0 1 259.429 30.384 A 26.146 26.146 0 0 1 259.6 29.101 A 14.595 14.595 0 0 1 265.166 19.986 A 19.807 19.807 0 0 1 266.45 19.051 A 20.999 20.999 0 0 1 272.665 16.288 Q 275.407 15.541 278.649 15.307 A 42.503 42.503 0 0 1 281.7 15.201 A 39.719 39.719 0 0 1 288.178 15.694 Q 291.606 16.262 294.342 17.484 A 17.803 17.803 0 0 1 298.75 20.251 A 18.028 18.028 0 0 1 304.834 31.426 A 24.683 24.683 0 0 1 305.1 33.901 Z M 196 46.301 L 155.3 46.301 Q 155.1 47.401 155.1 49.501 Q 155.1 55.301 158.1 58.001 A 10.258 10.258 0 0 0 162.956 60.403 A 14.803 14.803 0 0 0 166 60.701 A 16.588 16.588 0 0 0 170.868 60.01 A 14.276 14.276 0 0 0 174.6 58.251 Q 178.3 55.801 179.9 51.801 L 194.8 51.801 Q 191.5 60.801 183.45 66.401 A 31.354 31.354 0 0 1 167.354 71.912 A 39.08 39.08 0 0 1 164.7 72.001 A 30.867 30.867 0 0 1 157.643 71.239 A 20.928 20.928 0 0 1 147.85 66.101 A 19.365 19.365 0 0 1 142.218 55.85 A 28.967 28.967 0 0 1 141.6 49.701 A 38.487 38.487 0 0 1 141.834 45.545 A 46.943 46.943 0 0 1 142.2 42.901 A 36.745 36.745 0 0 1 145.092 33.6 A 31.734 31.734 0 0 1 148.35 28.151 Q 153 21.901 159.85 18.551 Q 166.7 15.201 174.7 15.201 Q 185.5 15.201 191.65 20.901 A 18.906 18.906 0 0 1 197.61 32.879 A 26.517 26.517 0 0 1 197.8 36.101 A 24.77 24.77 0 0 1 197.73 37.892 Q 197.66 38.847 197.522 39.94 A 54.347 54.347 0 0 1 197.3 41.501 A 46.753 46.753 0 0 1 196.915 43.259 Q 196.481 45.063 196 46.301 Z M 156.4 40.101 L 183.3 40.101 Q 183.7 38.201 183.7 36.301 A 12.802 12.802 0 0 0 183.382 33.354 Q 182.707 30.5 180.6 28.801 A 11.113 11.113 0 0 0 175.452 26.522 A 15.302 15.302 0 0 0 172.8 26.301 Q 167 26.301 162.5 29.801 A 15.724 15.724 0 0 0 157.945 35.596 A 22.577 22.577 0 0 0 156.4 40.101 Z" vector-effect="non-scaling-stroke"/></g></svg>
+        </div>
+        <div class='logo2'>
+          <svg width="162" height="74.701" viewBox="0 0 162 74.701"><g id="svgGroup" stroke-linecap="round" fill-rule="evenodd" font-size="9pt" stroke="#000" stroke-width="0.25mm" fill="none" style="stroke:#000;stroke-width:0.25mm;fill:none"><path d="M 97.6 41.8 L 92 74 L 78 74 L 83.4 43.4 A 29.479 29.479 0 0 0 83.615 41.613 Q 83.689 40.77 83.699 40.014 A 17.498 17.498 0 0 0 83.7 39.8 Q 83.7 34.8 80.9 32.15 Q 78.1 29.5 73.2 29.5 Q 67.5 29.5 63.35 32.95 A 15.884 15.884 0 0 0 59.28 38.205 Q 58.254 40.277 57.62 42.819 A 27.867 27.867 0 0 0 57.6 42.9 L 52.1 74 L 38 74 L 51 0 L 65.1 0 L 59.9 29.6 Q 63.2 24 68.75 20.9 Q 74.3 17.8 80.9 17.8 A 23.299 23.299 0 0 1 86.055 18.338 Q 90.581 19.364 93.6 22.35 A 14.709 14.709 0 0 1 97.381 28.931 Q 98.2 31.814 98.2 35.4 Q 98.2 38.3 97.6 41.8 Z M 160.2 49 L 119.5 49 Q 119.3 50.1 119.3 52.2 Q 119.3 58 122.3 60.7 A 10.258 10.258 0 0 0 127.156 63.102 A 14.803 14.803 0 0 0 130.2 63.4 A 16.588 16.588 0 0 0 135.068 62.709 A 14.276 14.276 0 0 0 138.8 60.95 Q 142.5 58.5 144.1 54.5 L 159 54.5 Q 155.7 63.5 147.65 69.1 A 31.354 31.354 0 0 1 131.554 74.611 A 39.08 39.08 0 0 1 128.9 74.7 A 30.867 30.867 0 0 1 121.843 73.938 A 20.928 20.928 0 0 1 112.05 68.8 A 19.365 19.365 0 0 1 106.418 58.549 A 28.967 28.967 0 0 1 105.8 52.4 A 38.487 38.487 0 0 1 106.034 48.244 A 46.943 46.943 0 0 1 106.4 45.6 A 36.745 36.745 0 0 1 109.292 36.299 A 31.734 31.734 0 0 1 112.55 30.85 Q 117.2 24.6 124.05 21.25 Q 130.9 17.9 138.9 17.9 Q 149.7 17.9 155.85 23.6 A 18.906 18.906 0 0 1 161.81 35.578 A 26.517 26.517 0 0 1 162 38.8 A 24.77 24.77 0 0 1 161.93 40.591 Q 161.86 41.546 161.722 42.639 A 54.347 54.347 0 0 1 161.5 44.2 A 46.753 46.753 0 0 1 161.115 45.958 Q 160.681 47.763 160.2 49 Z M 21.8 30.5 L 17.5 54.7 Q 17.309 55.559 17.3 56.964 A 21.893 21.893 0 0 0 17.3 57.1 A 8.147 8.147 0 0 0 17.399 58.418 Q 17.512 59.106 17.754 59.641 A 3.049 3.049 0 0 0 18.7 60.85 A 4.185 4.185 0 0 0 19.844 61.437 Q 21.175 61.9 23.3 61.9 L 28.8 61.9 L 26.6 74 L 19.2 74 Q 11.3 74 7.1 70.8 A 9.92 9.92 0 0 1 3.704 65.903 Q 3.132 64.19 2.967 62.081 A 22.818 22.818 0 0 1 2.9 60.3 Q 2.9 57.6 3.5 54.5 L 7.7 30.5 L 0 30.5 L 2.1 18.6 L 9.8 18.6 L 12.2 4.9 L 26.4 4.9 L 24 18.6 L 36.2 18.6 L 34.1 30.5 L 21.8 30.5 Z M 120.6 42.8 L 147.5 42.8 Q 147.9 40.9 147.9 39 A 12.802 12.802 0 0 0 147.582 36.053 Q 146.907 33.199 144.8 31.5 A 11.113 11.113 0 0 0 139.652 29.221 A 15.302 15.302 0 0 0 137 29 Q 131.2 29 126.7 32.5 A 15.724 15.724 0 0 0 122.145 38.295 A 22.577 22.577 0 0 0 120.6 42.8 Z" vector-effect="non-scaling-stroke"/></g></svg>
+        </div>
+        <div class='logo3'>
+          <svg width="254" height="74.701" viewBox="0 0 254 74.701"><g id="svgGroup" stroke-linecap="round" fill-rule="evenodd" font-size="9pt" stroke="#000" stroke-width="0.25mm" fill="none" style="stroke:#000;stroke-width:0.25mm;fill:none"><path d="M 69.7 3.4 L 33.7 38.1 L 57.3 74 L 40.2 74 L 19.8 41.7 L 14.1 74 L 0 74 L 12.4 3.4 L 26.5 3.4 L 20.9 35.2 L 52.7 3.4 L 69.7 3.4 Z M 253.4 41.8 L 247.8 74 L 233.8 74 L 239.2 43.4 A 29.479 29.479 0 0 0 239.415 41.613 Q 239.489 40.77 239.499 40.014 A 17.498 17.498 0 0 0 239.5 39.8 Q 239.5 34.8 236.7 32.15 Q 233.9 29.5 229 29.5 Q 223.3 29.5 219.15 32.95 A 15.884 15.884 0 0 0 215.08 38.205 Q 214.054 40.277 213.42 42.819 A 27.867 27.867 0 0 0 213.4 42.9 L 207.9 74 L 193.8 74 L 206.8 0 L 220.9 0 L 215.7 29.6 Q 219 24 224.55 20.9 Q 230.1 17.8 236.7 17.8 A 23.299 23.299 0 0 1 241.855 18.338 Q 246.381 19.364 249.4 22.35 A 14.709 14.709 0 0 1 253.181 28.931 Q 254 31.814 254 35.4 Q 254 38.3 253.4 41.8 Z M 114.5 18.6 L 128.6 18.6 L 118.9 74 L 104.7 74 L 106.7 63 Q 103.4 68.5 97.85 71.6 Q 92.3 74.7 85.7 74.7 A 22.981 22.981 0 0 1 80.377 74.119 A 15.381 15.381 0 0 1 72.95 70.1 A 14.926 14.926 0 0 1 69.082 63.317 Q 68.3 60.486 68.3 57 A 31.958 31.958 0 0 1 68.529 53.268 A 39.815 39.815 0 0 1 68.9 50.8 L 74.6 18.6 L 88.6 18.6 L 83.2 49.2 A 24.795 24.795 0 0 0 82.942 51.497 A 20.605 20.605 0 0 0 82.9 52.8 Q 82.9 57.8 85.7 60.45 Q 88.279 62.89 92.723 63.083 A 17.913 17.913 0 0 0 93.5 63.1 Q 99.4 63.1 103.65 59.35 A 15.705 15.705 0 0 0 107.573 53.906 Q 108.516 51.803 109.054 49.241 A 28.843 28.843 0 0 0 109.2 48.5 L 114.5 18.6 Z M 187.6 49 L 146.9 49 Q 146.7 50.1 146.7 52.2 Q 146.7 58 149.7 60.7 A 10.258 10.258 0 0 0 154.556 63.102 A 14.803 14.803 0 0 0 157.6 63.4 A 16.588 16.588 0 0 0 162.468 62.709 A 14.276 14.276 0 0 0 166.2 60.95 Q 169.9 58.5 171.5 54.5 L 186.4 54.5 Q 183.1 63.5 175.05 69.1 A 31.354 31.354 0 0 1 158.954 74.611 A 39.08 39.08 0 0 1 156.3 74.7 A 30.867 30.867 0 0 1 149.243 73.938 A 20.928 20.928 0 0 1 139.45 68.8 A 19.365 19.365 0 0 1 133.818 58.549 A 28.967 28.967 0 0 1 133.2 52.4 A 38.487 38.487 0 0 1 133.434 48.244 A 46.943 46.943 0 0 1 133.8 45.6 A 36.745 36.745 0 0 1 136.692 36.299 A 31.734 31.734 0 0 1 139.95 30.85 Q 144.6 24.6 151.45 21.25 Q 158.3 17.9 166.3 17.9 Q 177.1 17.9 183.25 23.6 A 18.906 18.906 0 0 1 189.21 35.578 A 26.517 26.517 0 0 1 189.4 38.8 A 24.77 24.77 0 0 1 189.33 40.591 Q 189.26 41.546 189.122 42.639 A 54.347 54.347 0 0 1 188.9 44.2 A 46.753 46.753 0 0 1 188.515 45.958 Q 188.081 47.763 187.6 49 Z M 148 42.8 L 174.9 42.8 Q 175.3 40.9 175.3 39 A 12.802 12.802 0 0 0 174.982 36.053 Q 174.307 33.199 172.2 31.5 A 11.113 11.113 0 0 0 167.052 29.221 A 15.302 15.302 0 0 0 164.4 29 Q 158.6 29 154.1 32.5 A 15.724 15.724 0 0 0 149.545 38.295 A 22.577 22.577 0 0 0 148 42.8 Z" vector-effect="non-scaling-stroke"/></g></svg>
+        </div>
+        <div class='sidebar'></div>
+      </div>
+      <div class='header-desc'>
+        <h3>An introduction to the types of Malay and Nyonya kuehs.</h3>
+      </div>
+    </div>
+
+    <div class='photo-grid-container'>
+      <div class='photo-grid'>
+        <div class='photo-grid-item first-item'>
+          <!--Kueh Lapis-->
+          <div class='wrapper wrapper-1'>
+            <div class = 'layer-lapis layer-lapis-1'></div>
+            <div class = 'layer-lapis layer-lapis-2'></div>
+            <div class = 'layer-lapis layer-lapis-3'></div>
+            <div class = 'layer-lapis layer-lapis-4'></div>
+            <div class = 'layer-lapis layer-lapis-5'></div>
+            <div class = 'layer-lapis layer-lapis-6'></div>
+            <div class = 'layer-lapis layer-lapis-7'></div>
+            <div class = 'layer-lapis layer-lapis-8'></div>
+            <div class = 'layer-lapis layer-lapis-9'></div>
+          </div>
+        </div>
+        <div class='photo-grid-item'>
+          <!--Putri Salat-->
+          <div class='wrapper'>
+            <div class = 'layer-salat layer-salat-1'></div>
+            <div class = 'layer-salat layer-salat-2'></div>
+          </div>
+        </div>
+        <div class='photo-grid-item'>
+          <!--Kueh Talam-->
+          <div class='wrapper'>
+            <div class = 'layer-talam layer-talam-1'></div>
+            <div class = 'layer-talam layer-talam-2'></div>
+          </div>
+        </div>
+        <div class='photo-grid-item'>
+          <!--Kueh Bingka-->
+          <div class='wrapper'>
+            <div class = 'layer-bingka layer-bingka-1'></div>
+            <div class = 'layer-bingka layer-bingka-2'></div>
+            <div class = 'layer-bingka layer-bingka-3'></div>
+          </div>
+        </div>
+        <div class='photo-grid-item'>
+          <!--Kueh Sagu Melaka-->
+          <div class='wrapper'>
+            <div class = 'layer-sagu layer-sagu-1'></div>
+            <div class = 'layer-sagu layer-sagu-2'></div>
+            <div class = 'layer-sagu layer-sagu-3'></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class='footer'>
+      <div class='footer-item footer-one'></div>
+      <div class='footer-item footer-two'>
+        <p>Spot any mistakes or have any suggestions? Contact the creator</p>
+      </div>
+      <div class='footer-item footer-three'></div>
+    </div>
+
+  </body>
+</html>

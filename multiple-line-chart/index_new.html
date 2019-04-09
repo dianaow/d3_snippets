@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+  <script src="../responsive_template/js/marginConvention.js"></script>
+  <script src="../responsive_template/js/labeledAxes.js"></script>
+  <script src="../responsive_template/js/colorLegend.js"></script>
+  <style>
+    body {
+      position: fixed;
+      left: 0px;
+      right: 0px;
+      top: 0px;
+      bottom: 0px;
+      margin: 0px;
+    }
+    html {
+      font-family: 'Arial', sans-serif;
+    }
+    h1 {
+      font-size: 1.4em;
+      padding:1.4em 80px 0em 80px;
+      margin: 0em;
+    }
+    p {
+      font-size: 1em;
+      padding:1.4em 80px 1em 80px;
+      margin: 0em;
+    }
+    #chart {
+      min-width: 600px;
+      width: 100%;
+      height: 100%;
+      overflow-x: scroll;
+    }
+    @media screen and (max-device-width: 420px){ 
+      h1 {
+        font-size: 1.1em;
+        padding:1.2em 20px 0em 20px;
+        margin: 0em;
+      }
+      p {
+        font-size: 0.8em;
+        padding:1.2em 20px 0.8em 20px;
+        margin: 0em;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="chart">
+    <div class='header'>
+      <h1>COE Prices from 2010-2018</h1>
+      <p>There are 2 COE Open Bidding exercises each month (Bidding Exercise 1 starts on the first Monday while Bidding Exercise 2 starts on the third Monday of the month)</p>
+    </div>
+  </div>
+  <script>
+
+    // Define variables that change with screen width
+    var margin_top = screen.width <= 1024 ? 40 : 40
+    var margin_bottom = screen.width <= 1024 ? 100 : 200
+    var margin_left = screen.width <= 1024 ? 80 : 100
+    var margin_right = screen.width <= 1024 ? 40 : 100
+    var legend_margin_left = screen.width <= 420 ? 20 : 100
+    var legend_margin_top = screen.width <= 420 ? 20 : 20
+
+    var parseDate = d3.timeParse("%Y-%m")
+    var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"]
+    var category = ["Category A", "Category B", "Category C", "Category D", "Category E"]
+
+    var colorScale = d3.scaleOrdinal()
+      .domain(category)
+      .range(["#2D4057", "#7C8DA4", "#B7433D", "#2E7576", "#EE811D"])
+
+    const dvtTheme = {
+      xAxisLabelFill: '#635F5D',
+      yAxisLabelFill: '#635F5D',
+      xAxisLabelOffset: 50,
+      yAxisLabelOffset: 50,
+      xAxisLabelFontSize: '18px',
+      yAxisLabelFontSize: '18px',
+      xAxisTickFontSize: '12px',
+      yAxisTickFontSize: '12px',
+      xAxisTickFontFill: '#8E8883',
+      yAxisTickFontFill: '#8E8883',
+      xAxisTickLineStroke: '#C0C0BB',
+      yAxisTickLineStroke: '#C0C0BB',
+      xAxisTickDensity: screen.width <= 1024 ? 48 : 24,
+      yAxisTickDensity: 70,
+      xAxisDomainLineStroke: '#C0C0BB',
+      yAxisDomainLineStroke: '#C0C0BB',
+      xAxisSizeTickOuter: 0,
+      yAxisSizeTickOuter: 0
+    };
+
+    d3.csv("./data/coe-results.csv", function(data) {
+      res = data.map((d,i) => {
+        return {
+          date : parseDate(d.month),
+          bidding_no : +d.bidding_no,
+          event : d.month + " :" + d.bidding_no, // create a unique identifier to each bidding exercise
+          vehicle_class : d.vehicle_class,
+          premium : +d.premium
+        }
+      })
+
+      // LEGEND
+      d3.select('#chart').append('svg').append('g')
+        .attr('transform', `translate(${legend_margin_left},${legend_margin_top})`)
+        .call(colorLegend, {
+          colorScale,
+          circleRadius: 6,
+          spacing: screen.width <= 1024 ? 80 : 120,
+          textOffset: 10,
+          textSize: screen.width <= 1024 ? "11px" : "13px",
+          type: 'horizontal'
+        });
+
+      render(res)
+
+    })
+
+    window.addEventListener('resize', render);
+    
+    function render(res) {
+      var body = d3.select('#chart')
+      myResponsiveComponent(body, Object.assign({}, dvtTheme, {
+        width:  screen.width <= 420 ? 600 : document.body.clientWidth * 0.9,
+        height: document.body.clientHeight * 0.9,
+        margin: { top: margin_top, bottom: margin_bottom, left: margin_left, right: margin_right },
+        xAxisLabel: 'Bidding Exercise',
+        yAxisLabel: 'Price (SGD$)'
+      }));
+    }
+
+    function roundToNearest10K(x) {
+      return Math.round(x / 10000) * 10000
+    }
+
+    function myResponsiveComponent(selection, props) {
+      const { width, height, margin } = props;
+      
+      let svg = selection.selectAll('svg').data([null]);
+      svg = svg.enter().append('svg')
+        .merge(svg)
+          .attr('width', width)
+          .attr('height', height);
+  
+      const { g, innerWidth, innerHeight } = marginConvention(svg, { width, height, margin });
+
+      // Y-AXIS
+      const yScale = d3.scaleLinear()
+        .domain([0, roundToNearest10K(d3.max(res, d => d.premium))])
+        .range([innerHeight, 0]);
+
+      labeledYAxis(g, Object.assign({}, props, {
+        yScale,
+        innerHeight,
+        yAxisSizeTickInner: -innerWidth,
+        type: 'linear'
+      }));
+      
+      // X-AXIS
+      const xScale = d3.scaleBand()
+        .domain(res.map(d=>d.event))
+        .range([0, innerWidth]);
+
+      labeledXAxis(g, Object.assign({}, props, {
+        xScale,
+        innerWidth,
+        innerHeight,
+        xAxisSizeTickInner: -innerHeight,
+        type: 'band'
+      }));
+
+      // APPEND MULTIPLE LINES //
+      var lineOpacity = 1
+      var lineStroke = "1.8px"
+
+      var lineGenerator = d3.line()
+        .x(d => xScale(d.event) + xScale.bandwidth() / 2)
+        .y(d => yScale(d.premium))
+
+      var res_nested = d3.nest() // necessary to nest data so that keys represent each vehicle category
+        .key(d=>d.vehicle_class)
+        .entries(res)
+
+      var glines = g.selectAll('.line-group').data(res_nested)
+
+      glines.enter().append('g')
+          .attr('class', 'line-group')  
+        .append('path')
+          .attr('class', 'line')  
+          .style('stroke', (d, i) => colorScale(i))
+          .style('fill', 'none')
+          .style('opacity', lineOpacity)
+          .style('stroke-width', lineStroke)
+
+      svg.selectAll('.line')
+        .merge(glines)
+          .attr('d', d => lineGenerator(d.values))
+
+    }
+  </script>
+</body>
+</html>

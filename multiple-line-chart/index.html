@@ -157,7 +157,8 @@
 
         var yAxis = d3.axisLeft(yScale)
           .ticks(10, "s")
-          .tickSize(-width)
+          .tickSizeOuter(0)
+          .tickSizeInner(-width)
 
         g.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 
