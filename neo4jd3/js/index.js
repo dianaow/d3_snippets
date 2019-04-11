@@ -40,7 +40,11 @@ function transformData(error, entity, officer, edges) {
     }
   })
 
-  officer_new = officer_new.filter(d=>d.countries=='Singapore')
+  officer_new = officer_new.filter(d=>d.name == 'Budhrani - Vandana')
+  entity_new = entity_new.filter(d=>d.name == 81010180)
+  entity_new = entity_new.filter(d=>d.name == 81013483)
+  entity_new = entity_new.filter(d=>d.name == 82012889)
+
   var edges_matched = edges_new.map((d,i) => {
     return Object.assign({}, d, officer_new.find(b=>b.node_id===d.start_id) ||{});
   })
@@ -115,7 +119,7 @@ function transformData(error, entity, officer, edges) {
 
   console.log(data)
 
-  render(data)
+  //render(data)
 }
 
 

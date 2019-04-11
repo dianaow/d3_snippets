@@ -20,7 +20,7 @@ var svg = d3.select('#chart')
 var nodes = svg.append('g')
   .attr('class', 'nodes')
 
-var links = svg.append('g')
+var lines = svg.append('g')
   .attr('class', 'links')
 
 function sq(x) { return x*x ; }
@@ -104,13 +104,29 @@ function transformData(error, entity, officer, edges) {
   data.nodes = []
   data.relationships = []
 
+  function onlyUnique(value, index, self) { 
+    return self.indexOf(value) === index;
+  }
+  var unique = data.map(d=>d.name).filter(onlyUnique)
+
+  var xScale = d3.scaleTime()
+    .domain(d3.extent(data, d=>d.start_date))
+    .rangeRound([0, width])
+
+  var yScale = d3.scaleBand()
+    .domain(unique)
+    .range([height, 0])
+    .padding(10)
+
   officer_new.map((d,i) => {
   	var tmp = {
       'id': d.node_id,
       'labels': ['Officer'],
       'properties': {'name': d.name, 'country': d.countries}, 
       'fill': 'red',
-      'radius': 4
+      'radius': 4,
+      'x': ,
+      'y': height/2
     }
   	data.nodes.push(tmp) 
   })
@@ -126,8 +142,9 @@ function transformData(error, entity, officer, edges) {
   })
 
   diagram = voronoi(data.nodes)
-  nodesSave = nodes
-  drawNodes(nodes)
+  console.log(data.nodes)
+  nodesSave = data.nodes
+  drawNodes(data.nodes)
 
   ////////////////////////////// Create links ///////////////////////////////
 
@@ -153,9 +170,8 @@ function transformData(error, entity, officer, edges) {
     d.center = d.sign ? centers.c2 : centers.c1;
   })
 
-  linkSave = links;
-  drawLinks(links)
-
+  linkSave = data.relationships
+  drawLinks(data.relationships)
 
 }
 
@@ -191,7 +207,7 @@ function drawNodes(data) {
 ////////////////////////////// Draw the links ////////////////////////////
 
 function drawLinks(data) {
-
+  console.log(data)
   glines = lines.selectAll('.line-group').data(data, d=>d.id)
 
   var entered_lines = glines.enter().append('g')
@@ -237,17 +253,10 @@ function findCenters(r, p1, p2) {
   return { c1 : res1, c2 : res2} ;  
 }
 
-function drawCircleArc(c, r, p1, p2, side) {
-  var ang1 = Math.atan2(d.a.y-c.y, p1.x-c.x);
-  var ang2 = Math.atan2(p2.y-c.y, p2.x-c.x);
+var arcGenerator = d3.arc()
+  .innerRadius(d=>d.r)
+  .startAngle(d=>Math.atan2(d.source.y-d.center.y,d.source.x-d.center.x))
+  .endAngle(d=>Math.atan2(d.target.y-d.center.y, d.target.x-d.center.x))
 
-  var arcGenerator = d3.arc()
-    .x(d=>d.x)
-    .x(d=>d.y)
-    .innerRadius(d=>d.radius)
-    .startAngle(ang)
-    .endAngle(2 * Math.PI)
-
-}
 
 window.onload = init;
