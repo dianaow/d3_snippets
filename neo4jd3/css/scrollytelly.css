@@ -18,7 +18,7 @@ article {
 .step {
 	min-height: 67vh;
 	margin-bottom: 1rem;
-	background-color: white;
+	background-color: black;
 	transition: background-color 250ms ease-in-out;
 }
 
@@ -42,7 +42,7 @@ figure.sticky {
 	position: sticky;
 	width: 100%;
 	height: 50vh;
-	background: silver;
+	background: black;
 	margin: 0;
 	top: 25vh;
 	left: 0;

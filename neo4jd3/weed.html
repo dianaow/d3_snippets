@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="utf-8">
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+  <link href="https://fonts.googleapis.com/css?family=Poppins|Roboto|Karla" rel="stylesheet">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width">
+  <title>scrollytelling</title>
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+  <script src="./js/stickyfill.min.js"></script>
+  <script src="./js/enter-view.min.js"></script>
+  <link rel="stylesheet" href="./css/scrollytelly.css">
+
+  <style>
+    body { margin:0;position:fixed;top:0;right:0;bottom:0;left:0; background-color:black;}
+    .step { background-color: black; color: white;}
+  </style>
+</head>
+
+<body>
+
+  <section id='scrolly-side'>
+    <div class='scrolly'>
+      
+      <article>
+        <div class='step' data-index='0'><p>TEST 1</p></div>
+        <div class='step' data-index='1'><p>TEST 2</p></div>
+        <div class='step' data-index='2'><p>TEST 3</p></div>
+        <div class='step' data-index='3'><p>TEST 4</p></div>
+      </article>
+
+        <figure class='sticky'>
+        </figure>
+      
+    </div>
+  </section>
+
+  <script>
+    
+    var thicknessScale = d3.scaleLinear()
+      .range([1,5])
+      .domain([0,1]);
+
+    var radiusScale = d3.scaleLinear()
+      .range([1,10])
+      .domain([0,1]);
+
+    var treeData =
+      {
+        "name": "Root",
+        "children": [
+          { 
+            "name": "Company A ",
+            "children": [
+              { "name": "Shareholder of A", "score": 0.7 },
+              { "name": "Shareholder of A", "score": 0.7 }
+            ],
+          },
+          { "name": "Company B",
+            "children": [
+              { "name": "Company C: Affliated",
+                "children": [
+                  { "name": "Employee of C", "score": 0.8},
+                  { "name": "Director of C", "score": 0.5}
+                ],
+               "score": 1
+              },
+              { "name": "Director of B", "score": 0.5}
+            ],
+          }
+        ]
+      }
+    
+    // Feel free to change or delete any of the code you see in this editor!
+    // set the dimensions and margins of the diagram
+    var margin = {top: 40, right: 90, bottom: 50, left: 90},
+        width = 860 - margin.left - margin.right,
+        height = 500 - margin.top - margin.bottom;
+
+    // declares a tree layout and assigns the size
+    var treemap = d3.tree()
+        .size([width, height]);
+
+    //  assigns the data to a hierarchy using parent-child relationships
+    var nodes = d3.hierarchy(treeData);
+
+    function renderChart() {
+
+      // maps the node data to the tree layout
+      nodes = treemap(nodes);
+
+      // append the svg obgect to the body of the page
+      // appends a 'group' element to 'svg'
+      // moves the 'group' element to the top left margin
+      var svg = d3.select(".sticky").append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom),
+          g = svg.append("g")
+            .attr("transform",
+                  "translate(" + margin.left + "," + margin.top + ")");
+
+      // adds the links between the nodes
+      var link = g.selectAll(".link")
+          .data( nodes.descendants().slice(1))
+        .enter().append("path")
+          .attr("class", "link")
+          .attr('stroke', 'green')
+          .attr('stroke-width', thicknessScale(d=>d.score))
+      		.attr('fill', 'transparent')
+          .attr("d", function(d) {
+             return "M" + d.x + "," + d.y
+               + "C" + d.x + "," + (d.y + d.parent.y) / 2
+               + " " + d.parent.x + "," +  (d.y + d.parent.y) / 2
+               + " " + d.parent.x + "," + d.parent.y;
+             });
+
+      // adds each node as a group
+      var node = g.selectAll(".node")
+          .data(nodes.descendants())
+        .enter().append("g")
+          .attr("class", function(d) { 
+            return "node" + 
+              (d.children ? " node--internal" : " node--leaf"); })
+          .attr("transform", function(d) { 
+            return "translate(" + d.x + "," + d.y + ")"; });
+
+      // adds the circle to the node
+      node.append("circle")
+        .attr('fill', 'green')
+        .attr("r", radiusScale(d=>d.score));
+
+      // adds the text to the node
+      node.append("text")
+        .attr("dy", ".35em")
+        .attr("y", function(d) { return d.children ? -20 : 20; })
+        .style("text-anchor", "middle")
+        .text(function(d) { return d.data.name; });
+  
+    }
+
+    //////////////////////////// Set up the scroller /////////////////////////////
+    const container = d3.select('#scrolly-side');
+    const stepSel = container.selectAll('.step');
+    var finish = false  
+
+    function updateChart(index){
+      if(index===0 & finish==false){
+        renderChart()
+      } else if(index==1 & finish==false){  
+      }   
+    }
+
+    function init() {
+      Stickyfill.add(d3.select('.sticky').node());
+
+      enterView({
+        selector: stepSel.nodes(),
+        offset: 0.5,
+        enter: function(el) {
+          const index = +d3.select(el).attr('data-index');
+          updateChart(index);
+        },
+        exit: function(el) {
+          let index = +d3.select(el).attr('data-index');
+          index = Math.max(0, index - 1);
+          updateChart(index);
+        }
+      });
+    }
+
+    init()
+
+  </script>
+</body>

@@ -40,10 +40,13 @@ function transformData(error, entity, officer, edges) {
     }
   })
 
-  officer_new = officer_new.filter(d=>d.name == 'Budhrani - Vandana')
-  entity_new = entity_new.filter(d=>d.name == 81010180)
-  entity_new = entity_new.filter(d=>d.name == 81013483)
-  entity_new = entity_new.filter(d=>d.name == 82012889)
+  officer_new = officer_new.filter(d=>d.name == 'Lee - Hsien Yang' || d.name == 'Lee - Suet Fern' || d.name == "Lee - Hsien Yang & Lim Suet Fern" )
+  edges_new1 = officer_new.map((d,i) => {
+    return Object.assign({}, d, edges_new.find(b=>b.node_id===d.start_id) ||{});
+  })
+  console.log(edges_new1)
+
+  edges_new1 = edges_new1.filter(d=>d.node_id == 82021344 || d.node_id == 82005889)
 
   var edges_matched = edges_new.map((d,i) => {
     return Object.assign({}, d, officer_new.find(b=>b.node_id===d.start_id) ||{});
