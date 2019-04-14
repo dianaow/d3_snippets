@@ -13,7 +13,7 @@
   <link rel="stylesheet" href="./css/scrollytelly.css">
 
   <style>
-    body { margin:0;position:fixed;top:0;right:0;bottom:0;left:0; background-color:black;}
+    body { background-color:black; color: white;}
     .step { background-color: black; color: white;}
   </style>
 </head>
@@ -39,7 +39,7 @@
   <script>
     
     var thicknessScale = d3.scaleLinear()
-      .range([1,5])
+      .range([1,10])
       .domain([0,1]);
 
     var radiusScale = d3.scaleLinear()
@@ -49,9 +49,10 @@
     var treeData =
       {
         "name": "Root",
+        "score": 1,
         "children": [
           { 
-            "name": "Company A ",
+            "name": "Company A ", "score": 0.7 ,
             "children": [
               { "name": "Shareholder of A", "score": 0.7 },
               { "name": "Shareholder of A", "score": 0.7 }
@@ -59,12 +60,11 @@
           },
           { "name": "Company B",
             "children": [
-              { "name": "Company C: Affliated",
+              { "name": "Company C: Affliated", "score": 0.8,
                 "children": [
                   { "name": "Employee of C", "score": 0.8},
                   { "name": "Director of C", "score": 0.5}
                 ],
-               "score": 1
               },
               { "name": "Director of B", "score": 0.5}
             ],
@@ -75,7 +75,7 @@
     // Feel free to change or delete any of the code you see in this editor!
     // set the dimensions and margins of the diagram
     var margin = {top: 40, right: 90, bottom: 50, left: 90},
-        width = 860 - margin.left - margin.right,
+        width = 660 - margin.left - margin.right,
         height = 500 - margin.top - margin.bottom;
 
     // declares a tree layout and assigns the size
@@ -106,13 +106,13 @@
         .enter().append("path")
           .attr("class", "link")
           .attr('stroke', 'green')
-          .attr('stroke-width', thicknessScale(d=>d.score))
+          .attr('stroke-width', d=>thicknessScale(d.data.score))
       		.attr('fill', 'transparent')
           .attr("d", function(d) {
-             return "M" + d.x + "," + d.y
-               + "C" + d.x + "," + (d.y + d.parent.y) / 2
-               + " " + d.parent.x + "," +  (d.y + d.parent.y) / 2
-               + " " + d.parent.x + "," + d.parent.y;
+             return "M" + d.x + "," + (height-d.y)
+               + "C" + d.x + "," + ((height-d.y) + (height-d.parent.y)) / 2
+               + " " + d.parent.x + "," +  ((height-d.y)+(height-d.parent.y)) / 2
+               + " " + d.parent.x + "," + (height-d.parent.y);
              });
 
       // adds each node as a group
@@ -123,12 +123,15 @@
             return "node" + 
               (d.children ? " node--internal" : " node--leaf"); })
           .attr("transform", function(d) { 
-            return "translate(" + d.x + "," + d.y + ")"; });
+            return "translate(" + d.x + "," + (height-d.y) + ")"; });
 
+      console.log(nodes.descendants())
       // adds the circle to the node
       node.append("circle")
         .attr('fill', 'green')
-        .attr("r", radiusScale(d=>d.score));
+        .attr("r", d=>{
+          return radiusScale(d.data.score)
+        });
 
       // adds the text to the node
       node.append("text")

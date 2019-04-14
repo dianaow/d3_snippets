@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Poppins|Roboto|Karla" rel="stylesheet">
+    <style>
+    body {
+      font-family: 'Karla', sans-serif;
+      background-color: #D3D3D3;
+      color: black
+    }
+    text {
+      font-family: 'Karla', sans-serif;
+      font-size: 20px;
+    }
+
+    #chart {
+      text-align: center;
+    }
+    #clickerWrapper {
+      top: 0;
+      z-index: 1;
+      display: block;
+      position: relative;
+      width: 600px;
+      padding-top: 5px;
+      visibility: auto;
+      text-align: center;
+      margin: 0 auto;
+    }
+
+    #clicker {
+      z-index: 1;
+      display: block;
+      font-size: 30px;
+      font-weight: 300;
+      color: #081EFF;
+      position: relative;
+      /*width: 80px;*/
+      text-align: center;
+      width: 30%;
+      margin: 0 auto;
+      border: 1px solid;
+      border-color: #081EFF;
+      cursor: pointer;
+    }
+    </style>
+  </head>
+  <body>
+    <div id="body">
+      <div id="chart">    
+        <div id="clickerWrapper">
+          <div id="progress"></div>
+          <div id="clicker">Let's Start</div>
+        </div>
+      </div>
+    </div>
+    
+    <script src="sixdegrees1.js"></script>
+   </body>
+</html>
