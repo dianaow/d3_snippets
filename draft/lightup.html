@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+
+
+<html>
+<meta charset="utf-8">
+<style>
+body {
+  background-color: black;
+}
+.link {
+  stroke: lightgrey
+  stroke-opacity: 1;
+}
+
+</style>
+<body>
+
+<div id="viz"></div>
+
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script>
+
+var width = 1600,
+    height = 800
+  radius = 5;
+
+var zoom = d3.behavior.zoom()
+    .scaleExtent([1, 10])
+    .on("zoom", zoomed);
+
+var svg = d3.select("#viz").append("svg")
+    .attr("width", width)
+    .attr("height", height);
+  
+var container = svg.append("rect")
+  .attr("width", width)
+  .attr("height", height)
+  .style("fill", "none")
+
+g.call(d3.zoom().scaleExtent([1 / 2, 4]).on('zoom', function() {console.log("hi")}))
+
+function zoomed() {
+  console.log(d3.event.translate, d3.event.scale)
+  g.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+}
+
+var force = d3.layout.force()
+    .gravity(.07)
+    .distance(75)
+    .charge(-200)
+    .size([width, height]);
+  
+var colors = ['#fd150b','#ff8314','#ffc33b','#f3f5e7','#6fb7d0','#2970ac', '#fd150b','#ff8314','#ffc33b','#f3f5e7', '#fd150b','#ff8314','#ffc33b','#f3f5e7','#6fb7d0','#2970ac', '#fd150b','#ff8314','#ffc33b','#f3f5e7']
+
+var domain_arr = d3.range(1,20).map(function (i){
+  return 'Organisation ' + i;
+})
+
+var colorScale = d3.scale.ordinal()
+  .range(colors)
+  .domain(domain_arr)
+
+d3.json("groups.json", function(error, json) {
+  force
+      .nodes(json.nodes)
+      .links(json.links)
+      .start();
+
+    var drag = force.drag()
+    .on("dragstart", dragstart);
+
+  var link = g.selectAll(".link")
+      .data(json.links)
+    .enter().append("line")
+      .attr("class", "link")
+    .style("stroke", "#d4d4d4")
+    .style("stroke-opacity", "0.5")
+    .style("stroke-width", 1.5 );
+
+  var node = g.selectAll(".node")
+      .data(json.nodes)
+    .enter().append("g")
+      .attr("class", "node")
+    .on("dblclick", dblclick)
+    
+      .call(drag)
+      .call(force.drag);
+
+  node.append("circle")
+      .attr("class", "node")
+      .attr("r", radius)
+      .style("fill", function(d) {
+        console.log(colorScale(d.group))
+       return colorScale(d.group); });
+
+   d3.selectAll("circle")
+    .attr("r", function(d) { 
+      if (d.group === "Group") { return "10"}
+      else return "5" });
+
+  force.on("tick", function() {
+  
+    node.attr("cx", function(d) { return d.x = Math.max(radius, Math.min(width - radius, d.x)); })
+        .attr("cy", function(d) { return d.y = Math.max(radius, Math.min(height - radius, d.y)); });
+    link.attr("x1", function(d) { return d.source.x; })
+        .attr("y1", function(d) { return d.source.y; })
+        .attr("x2", function(d) { return d.target.x; })
+        .attr("y2", function(d) { return d.target.y; });
+
+    node.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+  });
+  
+  function dblclick(d) {
+    d3.select(this).classed("fixed", d.fixed = false);
+  }
+
+  function dragstart(d) {
+    d3.select(this).classed("fixed", d.fixed = true);
+  }
+  
+  
+});
+
+</script>

@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Force-Directed Graph</title>
+<style>
+
+.node {
+  cursor: pointer;
+  stroke-width: 1.5px;
+}
+
+.link {
+  fill: none;
+  stroke: grey;
+  stroke-width: 1.5px;
+}
+
+</style>
+<body>
+<script src="//d3js.org/d3.v3.min.js"></script>
+<script>
+
+var width = 1200,
+  height = 1000;
+
+var force = d3.layout.force()
+  .size([width, height])
+  .linkDistance(height / 10)
+  .charge(function(node) {
+    if (node.type !== 'Parent') return -2000;
+    return -20;
+  })
+  .friction(0.4)
+  .on("tick", tick)
+
+var svg = d3.select("body").append("svg")
+  .attr("width", width)
+  .attr("height", height);
+
+var pathG = svg.append("g")
+  .attr("class", "pathG")
+ 
+var circleG = svg.append("g")
+  .attr("class", "circleG")
+
+// build the arrow.
+svg.append("svg:defs").selectAll("marker")
+  .data(["end"]) // Different link/path types can be defined here
+  .enter().append("svg:marker") // This section adds in the arrows
+  .attr("id", function(d) {
+    return d;
+  })
+  .attr("viewBox", "0 -5 10 10")
+  .attr("refX", 12)
+  .attr("refY", 0)
+  .attr("markerWidth", 8)
+  .attr("markerHeight", 4)
+  .attr("orient", "auto")
+  .attr("class", "arrow")
+  .append("path")
+  .attr("d", "M0,-5L10,0L0,5");
+
+var nodes = []
+var edges = []
+d3.json("dummy_data.json", function(error, json) {
+  if (error) throw error;
+
+  json.links.forEach(function(e, i) {
+    var sourceNode = json.nodes.filter(function(n) {
+        return n.id === e.source;
+      })[0],
+      targetNode = json.nodes.filter(function(n) {
+        return n.id === e.target;
+      })[0];
+
+    edges.push({
+      source: sourceNode,
+      target: targetNode,
+      id: i
+    });
+  });
+
+  nodes = json.nodes.slice()
+  for(var i=0; i<nodes.length; i++) {
+    nodes[i].collapsing = 0;
+    nodes[i].collapsed = false;
+  }
+
+  update();
+
+})
+
+function update(){
+
+  nodes = nodes.filter(function(d) {
+    return d.collapsing == 0 && d.collapsed==false
+  });
+
+  var links = edges.filter(function(d) {
+    return d.source.collapsing == 0 && d.target.collapsing == 0;
+  });
+  
+  force
+    .nodes(nodes)
+    .links(links)
+    .start();
+
+  entered_path = pathG.selectAll('path').data(links, d=>d.id)
+  
+  entered_path.exit().remove();
+  
+  link = entered_path.enter().append("path")
+    .attr("class", "link")
+    .attr("marker-end", "url(#end)");
+
+  gcircle = circleG.selectAll('circle').data(nodes, d=>d.id)
+
+  entered_circles = gcircle 
+    .enter().append('g')
+
+  gcircle.exit().remove();
+
+  circle = entered_circles
+    .append('circle') 
+    .attr("class", "node")
+    .merge(gcircle.selectAll('circle'))
+    .attr('id', function(d) { return d.id })
+    .attr("r", function(d) {
+      d.radius = 4;
+      return d.radius
+    })
+
+  text = entered_circles
+    .append("text")
+    .attr("x", 0)
+    .attr("y", -10)
+    .style('color', 'black')
+    .attr("dy", ".35em")
+    .attr("text-anchor", "middle")
+    .attr("class", "text") 
+    .merge(gcircle.selectAll('text'))
+    .text(function(d) { return d.id })
+    
+  entered_circles.on('click', click);
+  
+}
+
+function tick() {
+
+  // make sure the nodes do not overlap the arrows
+  link.attr("d", function(d) {
+    // Total difference in x and y from source to target
+    diffX = d.target.x - d.source.x;
+    diffY = d.target.y - d.source.y;
+
+    // Length of path from center of source node to center of target node
+    pathLength = Math.sqrt((diffX * diffX) + (diffY * diffY));
+
+    // x and y distances from center to outside edge of target node
+    offsetX = (diffX * d.target.radius) / pathLength;
+    offsetY = (diffY * d.target.radius) / pathLength;
+
+    return "M" + d.source.x + "," + d.source.y + "L" + (d.target.x - offsetX) + "," + (d.target.y - offsetY);
+  });
+
+  entered_circles.attr("transform", function(d) {
+    return "translate(" + d.x + "," + d.y + ")";
+  });
+
+}
+
+function click(d) {
+  if (!d3.event.defaultPrevented) {
+
+    var inc = d.collapsed ? -1 : 1;
+    recurse(d);
+
+    function recurse(sourceNode){
+      //check if link is from this node, and if so, collapse
+      edges.forEach(function(l) {
+        if (l.source.id === sourceNode.id){
+          l.target.collapsing += inc;
+          //recurse(l.target);
+
+          edges.filter(e=>e.target.id == l.target.id).forEach(function(e) {
+            console.log(e)
+            nodes.forEach(function(n) {
+              if (n.id === e.source.id){
+                console.log(n.id)
+                n.collapsing = 1;
+                n.collapsed = !n.collapsed;
+              }
+            })
+          })
+
+        }
+      })    
+    }
+    d.collapsed = !d.collapsed;
+  }      
+  update();
+}
+
+</script>
+

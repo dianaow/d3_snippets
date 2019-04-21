@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="http://d3js.org/d3.v4.min.js"></script>
+  <script src="https://d3js.org/d3-color.v1.min.js"></script>
+  <script src="https://d3js.org/d3-interpolate.v1.min.js"></script>
+  <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+  <script src="mouseEvents.js"></script>
+
+  <style>
+    body {
+      margin: 0px;
+      padding: 0px;
+      border: 0px;
+      background-color: #101420;
+      font-family: 'Muli', sans-serif;
+      color: #a8a394;
+    }
+    #chart {
+      display: flex; /* required */
+      flex-flow: row nowrap; /* required */
+    }
+    .canvas-nodes, .canvas-links {
+      box-sizing: border-box; /* required */
+      flex: none; /* required */
+      pointer-events: none;
+      z-index: -1;
+      /* to check if overlay is aligned */
+      /*border: 2px solid white;*/ 
+    }
+    .canvas-nodes {
+      margin-left: -1250px;
+    }
+
+    #chart svg {
+      z-index: 2;
+      flex: none; 
+      margin-left: -1250px;
+    }
+    .link {
+      stroke: lightgrey
+      stroke-opacity: 1;
+    }
+    .hoverRect {
+      fill: none;
+      pointer-events: all;
+    }
+
+    </style>
+  </head>
+<body>
+
+  <div id="chart"></div>
+  <script src="main.js"></script>
+
+</body>
+</html>

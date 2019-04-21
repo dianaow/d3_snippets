@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Force-Directed Graph</title>
+<style>
+
+.node {
+  cursor: pointer;
+  stroke-width: 1.5px;
+}
+
+.link {
+  fill: none;
+  stroke: grey;
+  stroke-width: 1.5px;
+}
+
+</style>
+<body>
+<script src="//d3js.org/d3.v4.min.js"></script>
+<script>
+var width = 1200,
+  height = 1000;
+
+var simulation = d3.forceSimulation()
+    .force("link", d3.forceLink().id(function(d) { return d.id; }).distance(100).strength(0.8))
+    .force("charge", d3.forceManyBody())
+    .stop()
+
+var svg = d3.select("body").append("svg")
+  .attr("width", width)
+  .attr("height", height)
+  .append("g").attr("transform", "translate(" + width / 2 + "," + height / 2 + ")")
+
+var pathG = svg.append("g")
+  .attr("class", "pathG")
+ 
+var circleG = svg.append("g")
+  .attr("class", "circleG")
+
+var link = pathG.selectAll(".link");
+var node = circleG.selectAll(".node");
+
+// build the arrow.
+svg.append("svg:defs").selectAll("marker")
+  .data(["end"]) // Different link/path types can be defined here
+  .enter().append("svg:marker") // This section adds in the arrows
+  .attr("id", function(d) {
+    return d;
+  })
+  .attr("viewBox", "0 -5 10 10")
+  .attr("refX", 12)
+  .attr("refY", 0)
+  .attr("markerWidth", 8)
+  .attr("markerHeight", 4)
+  .attr("orient", "auto")
+  .attr("class", "arrow")
+  .append("svg:path")
+  .attr("d", "M0,-5L10,0L0,5");
+
+var a = {id: "a"},
+    b = {id: "b"},
+    c = {id: "c"},
+    nodes = [a],
+    links = [];
+
+execute(function() {
+ update();
+ execute(function() {
+  nodes.push(b)
+  nodes.push(c)
+  links.push({source: a, target: b}); // Add a-b.
+  links.push({source: b, target: c}); // Add b-c.
+  links.push({source: c, target: b}); // Add c-a
+  update();
+ });
+});
+
+
+function execute(callback) {
+  setTimeout(function() {
+    callback();
+  }, 1000);
+}
+
+
+function update(){
+
+  link = link.data(links, function(d) { return d.source.id + "-" + d.target.id; })
+  
+  link.exit().remove();
+  
+  link = link.enter().append("path")
+    .merge(link)
+    .attr("class", "link")
+    .attr("marker-end", "url(#end)")
+    
+  node = node.data(nodes, d=>d.id);
+  
+  node.exit().remove();
+  
+  node = node.enter().append("circle")
+    .attr('id', function(d) { return d.id })
+    .attr("class", "node")
+    .attr("r", function(d) {
+      d.radius = 4;
+      return d.radius
+    })
+    .merge(node)
+  
+  node = node.enter().append("text")
+    .attr('text', function(d) { return d.id })
+    .attr("class", "text")
+    .merge(node)
+  
+  simulation.nodes(nodes).on("tick", ticked)
+  simulation.force('link').links(links)
+  simulation.alpha(1).restart();
+  console.log(nodes, links)
+
+}
+
+function ticked() {
+
+  // make sure the nodes do not overlap the arrows
+  link.attr("d", function(d) {
+    // Total difference in x and y from source to target
+    diffX = d.target.x - d.source.x;
+    diffY = d.target.y - d.source.y;
+
+    // Length of path from center of source node to center of target node
+    pathLength = Math.sqrt((diffX * diffX) + (diffY * diffY));
+
+    // x and y distances from center to outside edge of target node
+    offsetX = (diffX * d.target.radius) / pathLength;
+    offsetY = (diffY * d.target.radius) / pathLength;
+
+    return "M" + d.source.x + "," + d.source.y + "L" + (d.target.x - offsetX) + "," + (d.target.y - offsetY);
+  });
+
+  node.attr("transform", function(d) {
+    return "translate(" + d.x + "," + d.y + ")";
+  });
+
+}
+
+
+</script>
+

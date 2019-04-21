@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+.links line {
+  stroke: #999;
+  stroke-opacity: 0.6;
+}
+
+.nodes circle {
+  stroke: #fff;
+  stroke-width: 1.5px;
+}
+
+text {
+  font-family: sans-serif;
+  font-size: 10px;
+}
+
+</style>
+<svg width="960" height="600"></svg>
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script>
+
+var screenWidth = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
+var screenHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
+var canvasDim = { width: screenWidth * 0.9, height: screenHeight * 0.9}
+var margin = {top: 30, right: 20, bottom: 20, left: 80}
+var width = canvasDim.width - margin.left - margin.right
+var height = canvasDim.height - margin.top - margin.bottom
+
+var svg = d3.select("svg")
+
+// set up filter
+svg.append('filter')
+  .attr('id','desaturate')
+  .append('feColorMatrix')
+  .attr('type','matrix')
+  .attr('values',"0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0 0 0 1 0");
+
+var colorScale = d3.scaleOrdinal()
+  .domain(['good', 'bad'])
+  .range(['#081EFF', 'black'])
+
+var simulation = d3.forceSimulation()
+    .force("link", d3.forceLink().id(function(d) { return d.id; }).strength(0.08))
+    .force("charge", d3.forceManyBody())
+    .force("center", d3.forceCenter(width / 2, height / 2))
+
+function draw() {
+
+  d3.json("dummy_data.json", function(error, graph) {
+    if (error) throw error;
+
+    var link = svg.append("g")
+        .attr("class", "links")
+      .selectAll("line")
+      .data(graph.links)
+      .enter().append("line")
+        .attr("stroke-width", '4px')
+        .attr("class", function(d,i) { return "link-" + d.source + '-' + d.target })
+
+    var node = svg.append("g")
+      .selectAll("g")
+      .data(graph.nodes)
+      .enter().append("g")
+      .attr("class", function(d,i) { return "node-" + d.id})
+    
+    node.append("defs").attr("id", "imgdefs")
+      .append("pattern")
+        .attr("id", function(d,i) { return "image-" + d.id})
+        .attr("height", 46)
+        .attr("width", 46)
+      .append('image')
+        .attr("xlink:href",  function(d,i) { 
+          return d.label == "bad" ? ("./criminals/" + d.id + ".jpg") : null
+        })  
+        .style("filter", function(d,i) { 
+          return d.label == "bad" ? ("filter", "url(#desaturate)") : null // apply grey filter only on star players
+        })
+        .attr("x", 2)
+        .attr("y", 2)
+        .attr("height", 46)
+        .attr("width", 46)
+
+
+    var circles = node.append("circle")
+        .attr("r", function(d,i) { return d.label == "bad" ? 22 : 10})
+        .attr("fill", function(d) { return d.label == "bad" ? "url(#" + ("image-" + d.id) + ")" : colorScale(d.label); })
+        .attr("stroke", "grey")
+        .attr("stroke-width", "2px")
+        .call(d3.drag()
+            .on("start", dragstarted)
+            .on("drag", dragged)
+            .on("end", dragended));
+
+    simulation
+        .nodes(graph.nodes)
+        .on("tick", ticked);
+
+    simulation.force("link")
+        .links(graph.links);
+
+    function ticked() {
+      link
+          .attr("x1", function(d) { return d.source.x; })
+          .attr("y1", function(d) { return d.source.y; })
+          .attr("x2", function(d) { return d.target.x; })
+          .attr("y2", function(d) { return d.target.y; });
+
+      node
+          .attr("transform", function(d) {
+            return "translate(" + d.x + "," + d.y + ")";
+          })
+    }
+  });
+
+}
+
+function dragstarted(d) {
+  if (!d3.event.active) simulation.alphaTarget(0.3).restart();
+  d.fx = d.x;
+  d.fy = d.y;
+}
+
+function dragged(d) {
+  d.fx = d3.event.x;
+  d.fy = d3.event.y;
+}
+
+function dragended(d) {
+  if (!d3.event.active) simulation.alphaTarget(0);
+  d.fx = null;
+  d.fy = null;
+}
+
+function execute(callback) {
+  setTimeout(function() {
+    callback();
+  }, 100);
+}
+
+draw()
+//execute(function() {
+
+ //draw()
+
+ //execute(function() {
+
+  //d3.selectAll("line[class*='" + "Jondrette" + "']")
+    //.transition().duration(100)
+    //.style("opacity", 1)
+    //.style('stroke', 'black')
+
+ //});
+//});
+    
+</script>
