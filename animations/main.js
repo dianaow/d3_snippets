@@ -53,7 +53,7 @@ var svg = d3.select('#chart')
 
 var g = svg
   .append("g")
-  .attr("transform", "translate(" + (margin.left + width/2) + "," + (margin.top) + ")")
+  .attr("transform", "translate(" + (margin.left + width/2) + "," + (margin.top) + ")scale(0.5, 0.5)")
   .style("isolation", "isolate");
  
 var hoverRect = g.append("rect")
@@ -65,7 +65,7 @@ var hoverRect = g.append("rect")
 
 
 ///////////////////////////////////////////////////////////////////////////
-////////////////////////// Create scales ////////////////////////////
+///////////////////////////// Create scales ///////////////////////////////
 ///////////////////////////////////////////////////////////////////////////
 var colorScale = d3.scaleLinear()
   .domain([1, 8, 17])
@@ -178,13 +178,15 @@ d3.json("./data/groups2.json", function(error, json) {
   ////////////////////////////// Set up zoom ////////////////////////////////
   ///////////////////////////////////////////////////////////////////////////
   function zoomed() {
-    console.log(d3.event.transform)
     transform = d3.event.transform;
     drawLinks(links);
     drawNodes(nodes); 
   }
 
-  d3.selectAll('#chart').call(d3.zoom().scaleExtent([1 / 2, 4]).on('zoom', zoomed))
+  var transform = d3.zoomIdentity.translate(margin.left + width/2, margin.top).scale(0.5);
+  var zoom = d3.zoom().scaleExtent([0.5, 4]).on('zoom', zoomed)
+  g.call(zoom) // adds zoom functionality
+    .call(zoom.transform, transform) // inits zoom
 
 
   ///////////////////////////////////////////////////////////////////////////
@@ -197,13 +199,12 @@ d3.json("./data/groups2.json", function(error, json) {
 
     //Find the nearest person to the mouse, within a distance of X pixels
     //var m = d3.mouse(this);
-    //console.log(m)
     //var found = diagram.find(m[0], m[1], 10);
-
+    //console.log(found)
     //if (found) { 
+      //simulation.stop()
       //d3.event.preventDefault();
       //mouseOvered(found.data, nodes); 
-      //d3.call()
     //} else { 
       //mouseOut() 
     //} 
@@ -212,11 +213,122 @@ d3.json("./data/groups2.json", function(error, json) {
   //})
 
   ///////////////////////////////////////////////////////////////////////////
+  ///////////////// Selective nodes and links highlight /////////////////////
+  ///////////////////////////////////////////////////////////////////////////
+  function hop1() {
+
+    var nodesToHighlight = [153, 280, 284]
+    var labels = ['Shareholder', "Company A", "Company B"]
+    nodesSave
+      .filter(function(d) { return nodesToHighlight.indexOf(d.id) > -1; })
+      .forEach(function(d,i) {
+        ctxNodes.globalAlpha = 0.5;
+        ctxNodes.fillStyle = "navy";
+        ctxNodes.fillRect(d.x+16, d.y-15, 120, 30);
+
+        ctxNodes.globalAlpha = 1;
+        ctxNodes.font = "20px Helvetica";
+        ctxNodes.fillStyle =  'lightyellow'
+        ctxNodes.fillText(labels[i], d.x+16, d.y+10);
+
+        ctxNodes.shadowBlur = 0
+        ctxNodes.shadowColor = 'lightyellow'
+        ctxNodes.beginPath();
+        ctxNodes.moveTo(d.x + d.radius, d.y);
+        ctxNodes.arc(d.x, d.y, d.radius, 0, 2 * Math.PI);
+        ctxNodes.fill();
+        ctxNodes.closePath();
+      });
+
+    var mainNode = [153]
+    linkSave
+      .filter(function(d) { return mainNode.indexOf(d.source.id) > -1 || mainNode.indexOf(d.target.id) > -1; })
+      .forEach(function(d) {
+        ctxLinks.globalAlpha = 0.5;
+        ctxLinks.fillStyle = "darkred";
+        ctxLinks.fillRect(d.source.x + (d.target.x - d.source.x)/2 + 5, d.source.y + (d.target.y - d.source.y)/2 - 16, 80, 20);
+
+        ctxLinks.globalAlpha = 1;
+        ctxLinks.font = "16px Helvetica";
+        ctxLinks.fillStyle = "lightyellow";
+        ctxLinks.fillText("Affliated", d.source.x + (d.target.x - d.source.x)/2 + 10, d.source.y + (d.target.y - d.source.y)/2);
+
+        ctxLinks.strokeStyle = "lightyellow";
+        ctxLinks.lineWidth = 3; 
+        ctxLinks.beginPath();
+        drawCircleArc(d.center, d.r, d.source, d.target, d.sign);
+        ctxLinks.stroke();
+        ctxLinks.closePath();
+      })
+
+  }
+
+  function hop2() {
+
+    var nodesToHighlight = [150, 151, 152, 153, 154, 155, 156, 157, 158, 159, 170, 179, 193, 194, 195, 196, 197, 198, 199, 200, 201, 202, 203, 204, 205, 206]
+    var labels = ["Person A", "Person B", "Person C"]
+    nodesSave
+      .filter(function(d) { return nodesToHighlight.indexOf(d.id) > -1; })
+      .forEach(function(d,i) {
+        if(labels[i]) { 
+          console.log(d)
+          ctxNodes.globalAlpha = 0.5;
+          ctxNodes.fillStyle = "navy";
+          ctxNodes.fillRect(d.x+8, d.y-10, 50, 16);
+
+          ctxNodes.globalAlpha = 1;
+          ctxNodes.font = "10px Helvetica";
+          ctxNodes.fillStyle = "lightyellow";
+          ctxNodes.fillText(labels[i] ? labels[i] : "", d.x+8, d.y);
+        }
+        
+        ctxNodes.shadowBlur = 0
+        ctxNodes.shadowColor = 'lightyellow'
+        ctxNodes.beginPath();
+        ctxNodes.moveTo(d.x + d.radius, d.y);
+        ctxNodes.arc(d.x, d.y, d.radius, 0, 2 * Math.PI);
+        ctxNodes.fill();
+        ctxNodes.closePath();
+      });
+
+    var mainNode = [280, 284]
+    linkSave
+      .filter(function(d) { return mainNode.indexOf(d.source.id) > -1 || mainNode.indexOf(d.target.id) > -1; })
+      .forEach(function(d) {
+        //ctxLinks.globalAlpha = 0.2;
+        //ctxLinks.fillStyle = "darkred";
+        //ctxLinks.fillRect(d.source.x + (d.target.x - d.source.x)/2 + 10, d.source.y + (d.target.y - d.source.y)/2, 100, 20);
+
+        //ctxLinks.font = "16px Helvetica";
+        //ctxLinks.fillStyle = "lightyellow";
+        //ctxLinks.fillText("", d.source.x + (d.target.x - d.source.x)/2 + 10, d.source.y + (d.target.y - d.source.y)/2);
+
+        ctxLinks.strokeStyle = "lightyellow";
+        ctxLinks.lineWidth = 3; 
+        ctxLinks.globalAlpha = 0.8;
+        ctxLinks.beginPath();
+        drawCircleArc(d.center, d.r, d.source, d.target, d.sign);
+        ctxLinks.stroke();
+        ctxLinks.closePath();
+      })
+
+  }
+
+  execute_short(function() {
+    simulation.stop()
+    hop1()
+    execute_short(function() {
+      hop2()
+    })
+  })
+
+  ///////////////////////////////////////////////////////////////////////////
   ///////////////// Run animation (Highlight + zoom out) ////////////////////
   ///////////////////////////////////////////////////////////////////////////
-  execute(function() {
-    runAnimation()
-  })
+  //execute(function() {
+    //simulation.stop()
+    //runAnimation()
+  //})
 
   function runAnimation() {
     var startPoint = diagram.find(-22, -14, 10)
@@ -227,12 +339,6 @@ d3.json("./data/groups2.json", function(error, json) {
         //.call(zoom.transform, transform)
         //.call(transition)
     //}, 2200)
-  }
-
-  function transform() {
-    return d3.zoomIdentity
-        .translate(width / 2, height / 2)
-        .scale(2)
   }
 
 
@@ -328,7 +434,13 @@ function drawCircleArc(c, r, p1, p2, side) {
 function execute(callback) {
   setTimeout(function() {
     callback();
-  }, 5000);
+  }, 4000);
+}
+
+function execute_short(callback) {
+  setTimeout(function() {
+    callback();
+  }, 2000);
 }
 
 function clearCanvas() {

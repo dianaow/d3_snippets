@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+</head>
+<body>
+<div id="chart"></div>
+<script>
+
+  var data
+  var counter = 0
+  var gnodes = null
+  var entered_nodes = null
+  var axisPad = 6
+
+  var canvasDim = { width: 1250, height: 1200}
+  var margin = {top: 30, right: 30, bottom: 20, left: 30}
+  var width = canvasDim.width - margin.left - margin.right
+  var height = canvasDim.height - margin.top - margin.bottom
+
+  var svg = d3.select("#chart").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+  var nodes = svg.append('g')
+    .attr('class', 'nodes')
+
+  var xScale = d3.scaleLinear()
+    .domain([0, 1])
+    .rangeRound([0, width])
+
+  xAxis = d3.axisTop(xScale).tickSize(-height).tickPadding(20)
+
+  var colorScale = d3.scaleOrdinal()
+    .domain(["1", "2", "3", "4", "5", "6", "7", "8"])
+    .range(['#f0f0f0','#d9d9d9','#bdbdbd','#969696','#737373','#525252','#252525','#000000'])
+
+  var radiusScale = d3.scaleLinear()
+    .domain(d3.range(1,9))
+    .range(d3.range(6, 30, 3))
+
+  //var x_axis = svg.append("g")
+    //.attr("class", "x_axis")
+    //.attr("transform", "translate(0," + 0 +  ")")
+
+  //d3.select(".x_axis")
+    //.call(xAxis)
+    //.call(g => {
+      //g.selectAll("text").attr("transform", `translate(0, -10)`)
+        //.attr("y", axisPad)
+        //.attr('fill', '#A9A9A9')
+        //.style('font-size', 14)
+      //g.selectAll("line")
+        //.attr('stroke', '#A9A9A9')
+        //.attr('stroke-dasharray', "4")
+      //g.select(".domain").remove()
+    //})
+
+  //svg.append("line")
+    //.attr('class', 'x_axis2_line')
+    //.attr('x1', xScale(0))
+    //.attr('x2', xScale(1))
+    //.attr('y1', height/2)
+    //.attr('y2', height/2)
+    //.attr('stroke', 'black')
+    //.attr('stroke-width', 2)
+
+  var simulation = d3.forceSimulation()  
+    .force("x", d3.forceX(function(d) { return d.x }).strength(0.8))
+    .force("y", d3.forceY(height / 2))
+    .force("collide", d3.forceCollide(function(d,i) { return d.radius+5 }))
+    .stop()
+
+  for (var i = 0; i < 4; i++) {
+    execute(function() {
+      changeScenario()
+      execute(function() {
+        update()
+        simulation.nodes(data).on('tick', ticked)
+        simulation.alpha(1).restart()
+      })
+    })
+  }
+
+  function changeScenario() {
+
+    shuffled = shuffle(d3.range(1,104))
+
+    var arr = [10]
+    data = shuffled.map(function(d,i) {
+      return {
+        id: i,
+        x: xScale(getRndBias(0, 1, 0.15, 0.8)),
+        y: height/2,
+        score: getRndBias(0, 1, 0.15, 1),
+        color: arr.indexOf(i) ? colorScale(getRandomArbitrary(1, 8).toString()) : 'red',
+        radius: radiusScale(getRandomArbitrary(1, 8))
+      }
+    })
+    //console.log(data)
+  
+  }
+
+  function update() {
+
+    nodes = nodes.selectAll('.node-group').data(data, d=>d.id)
+
+    nodes.exit().remove();
+
+    nodes = nodes.enter().append('circle')
+      .attr("class", "node-group")
+      .attr('fill-opacity', 1)
+      .attr('stroke', 'none')
+      .attr("transform", function(d,i) { return "translate(" + d.x + "," + d.y + ")" })
+      .merge(nodes)
+
+  }
+
+  function ticked() {
+
+    nodes
+      .transition()
+      .duration(700)
+      .attr("transform", function(d,i) { return "translate(" + d.x + "," + d.y + ")" })
+      .attr('r', function (d) { return d.radius })
+      .attr('fill', function(d,i) { return d.color })
+
+  }
+
+
+  ///////////////////////////////////////////////////////////////////////////
+  ///////////////////////////// Helper functions ////////////////////////////
+  ///////////////////////////////////////////////////////////////////////////
+  function execute(callback) {
+    setTimeout(function() {
+      callback();
+    }, 2000);
+  }
+
+  function getRndBias(min, max, bias, influence) {
+    var rnd = Math.random() * (max - min) + min,   // random in range
+        mix = Math.random() * influence;           // random mixer
+    return rnd * (1 - mix) + bias * mix;           // mix full range and bias
+  }
+
+  function getRandomArbitrary(min, max) {
+    return Math.round(Math.random() * (max - min) + min)
+  }
+
+  function shuffle(array) {
+  var currentIndex = array.length, temporaryValue, randomIndex;
+
+  // While there remain elements to shuffle...
+  while (0 !== currentIndex) {
+
+    // Pick a remaining element...
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex -= 1;
+
+    // And swap it with the current element.
+    temporaryValue = array[currentIndex];
+    array[currentIndex] = array[randomIndex];
+    array[randomIndex] = temporaryValue;
+  }
+
+  return array;
+}
+
+
+</script>
+</body>
+</html>

@@ -73,7 +73,7 @@ function scatter() {
     .force("collide", d3.forceCollide(function(d,i) { return d.radius + 5}))
     .stop();
 
-  for (var i = 0; i < 150; ++i) simulation1.tick()
+  for (var i = 0; i < 200; ++i) simulation1.tick()
 
   var voronoi_data = d3.voronoi()
     .extent([[0, 0], [width, height]])

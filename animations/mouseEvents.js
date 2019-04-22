@@ -21,7 +21,7 @@ function mouseOvered(d, nodes) {
 }//mouseOvered
 
 function initiateConnectionSearch(d, nodes) {
-
+    d.id = 153
     //After a each a mouse out may run again
     doMouseOut = true;
 
@@ -48,7 +48,7 @@ function findConnections(nodes, selectedNodes, selectedNodeIDs, oldLevelSelected
     for(var k = 0; k < oldLevelSelectedNodes.length; k++) {
       //Request all the linked nodes
       var connectedNodes = linkedToID[oldLevelSelectedNodes[k]];
-      //console.log(connectedNodes)
+      console.log(connectedNodes)
       //Take out all nodes already in the data
       connectedNodes = connectedNodes.filter(function(n) {
         return selectedNodeIDs.indexOf(n) === -1
@@ -110,7 +110,7 @@ function showNodes(id, nodeIDs, allNodeIDs, selectedNodes) {
 
   //Draw the more visible lines
   linkSave
-    .filter(function(d) { return allNodeIDs.indexOf(d.source.id) > -1 && allNodeIDs.indexOf(d.target.id) > -1; })
+    .filter(function(d) { return allNodeIDs.indexOf(d.source.id) > -1 || allNodeIDs.indexOf(d.target.id) > -1; })
     .forEach(function(d) {
       //console.log(d)
       d.hoverMin = 1000;
