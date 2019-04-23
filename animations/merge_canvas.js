@@ -3,13 +3,13 @@
 /////////////////////////////////////////////////////////////////////////// 
 var simulation;
 var margin = {
-  top: 500,
+  top: 50,
   right: 10,
   bottom: 10,
   left: 10
 };
-var totalWidth = 1250;
-var totalHeight = 1200;
+var totalWidth = 1200;
+var totalHeight = 900;
 var width = totalWidth - margin.left - margin.right;
 var height = totalHeight - margin.top - margin.bottom;
 
@@ -100,7 +100,7 @@ function getSimulationData() {
 	 execute(function() {
 	  cluster()
 	   execute(function() {
-	    unify()
+	    inject()
 	   });
 	 });
 	});
@@ -117,10 +117,10 @@ function scatter() {
 	simulation = d3.forceSimulation(nodes)
 		.alpha(.02)
 		.force('charge', d3.forceManyBody().strength(-30))
-    .force("x", d3.forceX(function (d) { return d.x }))
-    .force("y", d3.forceY(function (d) { return d.y }))
-    .force("collide", d3.forceCollide(function(d,i) { return d.radius + 5}))
- 	
+	    .force("x", d3.forceX(function (d) { return d.x }))
+	    .force("y", d3.forceY(function (d) { return d.y }))
+	    .force("collide", d3.forceCollide(function(d,i) { return d.radius + 5}))
+	 	
 	simulation.on('tick', ticked);
 
 	function ticked() {
@@ -152,8 +152,8 @@ function cluster() {
 	simulation.stop();
 
 	simulation
-		.force('charge', d3.forceManyBody().strength(-5))
-		.force('x', d3.forceX(function(d) { return d.outcome === 0 ? width * 0.25 : width * 0.95; }) )
+		.force('charge', d3.forceManyBody().strength(-30))
+		.force('x', d3.forceX(function(d) { return d.outcome === 0 ? width * 0.35 : width * 0.9; }) )
 		.force('y', d3.forceY(height/2))
 		.force("collide", d3.forceCollide(function(d,i) { return d.radius + 5}))
 		
@@ -163,15 +163,15 @@ function cluster() {
 
 }
 
-function unify() {
+function inject() {
 
 	simulation.stop();
 
 	simulation
-		.force('charge', d3.forceManyBody().strength(-5))
+		.force('charge', d3.forceManyBody().strength(-30))
 		// to weaken pull towards fixed width and create a nice aesthetic circle
 		// leave it at default strength and ensure forceX is not simply 'width/2'
-		.force('x', d3.forceX(function(d) { return d.outcome === 0 ? width * 0.5 : width * 0.25; })) 
+		.force('x', d3.forceX(function(d) { return d.outcome === 0 ? width * 0.5 : width * 0.22; })) 
 		.force('y', d3.forceY(height/2))
 		.force("collide", d3.forceCollide(function(d,i) { return d.radius + 5}))
 		
@@ -192,7 +192,7 @@ function getRandomArbitrary(min, max) {
 function execute(callback) {
   setTimeout(function() {
     callback();
-  }, 3000);
+  }, 2500);
 }
 
 //Find the device pixel ratio

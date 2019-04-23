@@ -105,7 +105,7 @@
     groupsEnter.append("defs").attr("id", "imgdefs")
       .append("pattern")
         .attr("id", function(d,i) { return "image-" + d.id})
-        .attr("height", d=>d.radius)
+        .attr("height", function(d) { return d.radius})
         .attr("width", d=>d.radius)
       .append('image')
         .attr("xlink:href", function(d,i) { 

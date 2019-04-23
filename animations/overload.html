@@ -17,8 +17,8 @@
 <script src="https://d3js.org/d3.v4.min.js"></script>
 <script>
 
-var diameter = 350,
-    circleSize = d3.scaleLinear().range([100000, 300000]);
+var diameter = 300,
+    circleSize = d3.scaleLinear().range([20, 100]);
 
   var duration = 300;
   
@@ -30,9 +30,8 @@ var svg = d3.select("div")
     .attr("transform", "translate(" + diameter / 2 + " " + diameter / 2 + ")");
 
 var children = initialLayout(randomData(30));
-
-var radiusScale = d3
-  .scaleSqrt()
+console.log(children)
+var radiusScale = d3.scaleSqrt()
   .domain([children[0].value, children[1].value])
   .range([children[0].r, children[1].r]);
 
@@ -60,16 +59,17 @@ function render() {
   groupsEnter.append("defs").attr("id", "imgdefs")
     .append("pattern")
       .attr("id", function(d,i) { return "image-" + d.id})
-      .attr("height", d=>d.data ? radiusScale(d.data.size) : d.r)
-      .attr("width", d=>d.data ? radiusScale(d.data.size) : d.r)
+      .attr("height", d=>d.data ? d.r : d.r)
+      .attr("width", d=>d.data ? d.r : d.r)
     .append('image')
       .attr("xlink:href", function(d,i) { 
+        //console.log(d.data ? radiusScale(d.data.size) : d.r)
         return (d.data ? "./icons_svg/" + d.data.image.toString() + ".svg" : "./icons_svg/" + d.image.toString() + ".svg") || null
       }) 
-      .attr("x", d=>d.data ? radiusScale(d.data.size)/2  : d.r/2)
-      .attr("y", d=>d.data ? radiusScale(d.data.size)/2  : d.r/2)
-      .attr("height", d=>d.data ? radiusScale(d.data.size)  : d.r)
-      .attr("width", d=>d.data ? radiusScale(d.data.size)  : d.r)
+      .attr("x", d=>d.data ? d.r/2 : d.r/2)
+      .attr("y", d=>d.data ? d.r/2 : d.r/2)
+      .attr("height", d=>d.data ? d.r : d.r)
+      .attr("width", d=>d.data ? d.r : d.r)
 
   groupsEnter.merge(groups)
       .attr('transform', (d, i) =>
@@ -85,7 +85,7 @@ function render() {
     .attr("r", 0)
     .merge(groups.select('circle'))
       .transition()
-      .attr("r", d => d.r); 
+      .attr("r", d=>d.data ? d.r : d.r); 
 
   groupsEnter.append('circle')
     .attr("fill", function(d) { return "url(#" + ("image-" + d.id) + ")" || "black" })
@@ -94,13 +94,14 @@ function render() {
     .attr("r", 0)
     .merge(groups.select('circle'))
       .transition()
-      .attr("r", d => d.r); 
+      .attr("r", d=>d.data ? d.r : d.r); 
 }
 
 function addCircle() {
-
-  var newValue = circleSize(Math.random()),
-    neighbor = d3.scan(children, function(a, b) {
+  
+  var newValue = circleSize(Math.random())
+  console.log(radiusScale(newValue))
+  var neighbor = d3.scan(children, function(a, b) {
       return Math.abs(a.value - newValue) - Math.abs(b.value - newValue)
     }),
     newNode = {
@@ -144,7 +145,7 @@ function initialLayout(data) {
     .id(d => d.id)
     .parentId(d => d.parent);
 
-  var pack = d3.pack().size([diameter - 4, diameter - 4]);
+  var pack = d3.pack().size([diameter, diameter]);
 
   var root = stratify(data)
     .sum(d => d.size)

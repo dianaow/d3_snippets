@@ -39,6 +39,18 @@ var ctxNodes = canvasNodes.node().getContext("2d")
 ctxNodes.scale(sf,sf);
 ctxNodes.translate(margin.left + width/2, margin.top);
 
+// Another canvas layer just to ovelay captions
+var canvasCaptions = d3.select('#chart').append("canvas").attr('class', 'canvas-captions')
+var ctxCaptions = canvasCaptions.node().getContext("2d")
+canvasCaptions
+  .attr('width', sf * totalWidth)
+  .attr('height', sf * totalHeight)
+  .style('width', totalWidth + "px")
+  .style('height', totalHeight + "px")
+
+ctxCaptions.scale(sf,sf);
+ctxCaptions.translate(margin.left + width/2, margin.top);
+
 var linkedByIndex = {},
     linkedToID = {},
     nodeByID = {};
@@ -164,6 +176,12 @@ d3.json("./data/groups2.json", function(error, json) {
   ///////////////////////////////////////////////////////////////////////////
   //////////////////////////// Run simulation ///////////////////////////////
   /////////////////////////////////////////////////////////////////////////// 
+  
+  //umm....there is a flying node that needs to be fixed.
+  //var sourceids = links.map(d=>d.source)
+  //var targetids = links.map(d=>d.target)
+  //nodes = nodes.filter(function(d){ return sourceids.indexOf(d.id) > -1 || targetids.indexOf(d.id) > -1 })
+
   simulation.nodes(nodes).on("tick", function() {
     drawLinks(links);
     drawNodes(nodes);
@@ -218,7 +236,7 @@ d3.json("./data/groups2.json", function(error, json) {
   function hop1() {
 
     var nodesToHighlight = [153, 280, 284]
-    var labels = ['Shareholder', "Company A", "Company B"]
+    var labels = ['Shareholder X', "Company A", "Company B"]
     nodesSave
       .filter(function(d) { return nodesToHighlight.indexOf(d.id) > -1; })
       .forEach(function(d,i) {
@@ -260,6 +278,16 @@ d3.json("./data/groups2.json", function(error, json) {
         ctxLinks.stroke();
         ctxLinks.closePath();
       })
+
+    // Title
+    ctxCaptions.globalAlpha = 0.5;
+    ctxCaptions.fillStyle = "black";
+    ctxCaptions.fillRect(-margin.left - width/2 + 100, -margin.top + 300, 200, 100);
+
+    ctxCaptions.globalAlpha = 1;
+    ctxCaptions.font = "22px Helvetica";
+    ctxCaptions.fillStyle = "lightyellow";
+    ctxCaptions.fillText("Entities one degree of separation from Shareholder X ", -margin.left - width/2 + 100, -margin.top + 300);
 
   }
 
@@ -312,23 +340,35 @@ d3.json("./data/groups2.json", function(error, json) {
         ctxLinks.closePath();
       })
 
+    // Title
+    ctxCaptions.clearRect(-margin.left - width/2, -margin.top, totalWidth, totalHeight);
+
+    ctxCaptions.globalAlpha = 0.5;
+    ctxCaptions.fillStyle = "black";
+    ctxCaptions.fillRect(-margin.left - width/2 + 100, -margin.top + 300, 200, 100);
+
+    ctxCaptions.globalAlpha = 1;
+    ctxCaptions.font = "22px Helvetica";
+    ctxCaptions.fillStyle = "lightyellow";
+    ctxCaptions.fillText("Entities two degree of separation from Shareholder X", -margin.left - width/2 + 100, -margin.top + 300);
+
   }
 
-  execute_short(function() {
-    simulation.stop()
-    hop1()
-    execute_short(function() {
-      hop2()
-    })
-  })
+  //execute_short(function() {
+    //simulation.stop()
+    //hop1()
+    //execute_short(function() {
+      //hop2()
+    //})
+  //})
 
   ///////////////////////////////////////////////////////////////////////////
   ///////////////// Run animation (Highlight + zoom out) ////////////////////
   ///////////////////////////////////////////////////////////////////////////
-  //execute(function() {
-    //simulation.stop()
-    //runAnimation()
-  //})
+  execute(function() {
+    simulation.stop()
+    runAnimation()
+  })
 
   function runAnimation() {
     var startPoint = diagram.find(-22, -14, 10)
@@ -434,7 +474,7 @@ function drawCircleArc(c, r, p1, p2, side) {
 function execute(callback) {
   setTimeout(function() {
     callback();
-  }, 4000);
+  }, 3000);
 }
 
 function execute_short(callback) {
