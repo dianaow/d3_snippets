@@ -17,6 +17,8 @@ var screenWidth = Math.max(document.documentElement.clientHeight, window.innerHe
 var screenHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
 var canvasDim = { width: screenWidth, height: screenHeight}
 
+var crime = ["Money Laundering", "Credit card fraud", "Sanctioned transaction", "Ponzi schemes", "Terrorist financing"]
+
 ///////////////////////////////////////////////////////////////////////////
 //////////////////// Set up and initiate containers ///////////////////////
 /////////////////////////////////////////////////////////////////////////// 
@@ -60,11 +62,11 @@ getSimulationData();
 function getSimulationData() {
 
   var dummyData = []
-  d3.range(1,4).map((d,i) => {
-    dummyData.push({"outcome": 1, 'color': 'red', 'radius': 22})
+  d3.range(1,6).map((d,i) => {
+    dummyData.push({"outcome": 1, 'color': 'red', 'radius': 22, 'label':i})
   })
   d3.range(1,200).map((d,i) => {
-    dummyData.push({"outcome": 0, 'color': colorScale(getRandomArbitrary(1, 8).toString()), 'radius': radiusScale(getRandomArbitrary(1, 8))})
+    dummyData.push({"outcome": 0, 'color': colorScale(getRandomArbitrary(1, 8).toString()), 'radius': radiusScale(getRandomArbitrary(1, 8)), 'label': crime[getRandomArbitrary(0, 5)]})
   })
 
   nodes = dummyData.map(function (d, i) {
@@ -74,7 +76,8 @@ function getSimulationData() {
         x: +Math.random(),
         y: +Math.random(),
         color: d.color,
-        radius: d.radius
+        radius: d.radius,
+        label: d.label
     }
   })
 
@@ -121,6 +124,9 @@ function getSimulationData() {
     cluster()
      execute(function() {
       inject()
+      execute(function() {
+        regroup()
+      })
      });
    });
   });
@@ -155,7 +161,7 @@ function scatter() {
 }
 
 function cluster() {
-
+  console.log('hi')
   simulation.stop();
 
   simulation
@@ -179,6 +185,26 @@ function inject() {
     // to weaken pull towards fixed width and create a nice aesthetic circle
     // leave it at default strength and ensure forceX is not simply 'width/2'
     .force('x', d3.forceX(function(d) { return d.data.outcome === 0 ? width * 0.5 : width * 0.2; })) 
+    .force('y', d3.forceY(height/2))
+    .force("collide", d3.forceCollide(function(d,i) { return d.data.radius + 5}))
+    
+  simulation.alpha(0.5);
+
+  simulation.restart();
+
+}
+
+function regroup() {
+
+  simulation.stop();
+
+  simulation
+    .force('charge', d3.forceManyBody().strength(-30))
+    // to weaken pull towards fixed width and create a nice aesthetic circle
+    // leave it at default strength and ensure forceX is not simply 'width/2'
+    .force('x', d3.forceX(function(d) { 
+      console.log(crime.indexOf(d.label) + 1 * 400)
+      return crime.indexOf(d.label) + 1 * 400 })) 
     .force('y', d3.forceY(height/2))
     .force("collide", d3.forceCollide(function(d,i) { return d.data.radius + 5}))
     
