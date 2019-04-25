@@ -55,8 +55,6 @@ var linkedByIndex = {},
     linkedToID = {},
     nodeByID = {};
 
-var transform = d3.zoomIdentity;
-
 //SVG container
 var svg = d3.select('#chart')
   .append("svg")
@@ -65,7 +63,7 @@ var svg = d3.select('#chart')
 
 var g = svg
   .append("g")
-  .attr("transform", "translate(" + (margin.left + width/2) + "," + (margin.top) + ")scale(0.5, 0.5)")
+  .attr("transform", "translate(" + (margin.left + width/2) + "," + (margin.top) + ")scale(1, 1)")
   .style("isolation", "isolate");
  
 var hoverRect = g.append("rect")
@@ -193,21 +191,6 @@ d3.json("./data/groups2.json", function(error, json) {
 
 
   ///////////////////////////////////////////////////////////////////////////
-  ////////////////////////////// Set up zoom ////////////////////////////////
-  ///////////////////////////////////////////////////////////////////////////
-  function zoomed() {
-    transform = d3.event.transform;
-    drawLinks(links);
-    drawNodes(nodes); 
-  }
-
-  var transform = d3.zoomIdentity.translate(margin.left + width/2, margin.top).scale(0.5);
-  var zoom = d3.zoom().scaleExtent([0.5, 4]).on('zoom', zoomed)
-  g.call(zoom) // adds zoom functionality
-    .call(zoom.transform, transform) // inits zoom
-
-
-  ///////////////////////////////////////////////////////////////////////////
   /////////////////////// Capture mouse events //////////////////////////////
   ///////////////////////////////////////////////////////////////////////////
   var currentHover = null;
@@ -246,48 +229,17 @@ d3.json("./data/groups2.json", function(error, json) {
 
         ctxNodes.globalAlpha = 1;
         ctxNodes.font = "20px Helvetica";
-        ctxNodes.fillStyle =  'lightyellow'
+        ctxNodes.fillStyle =  'white'
         ctxNodes.fillText(labels[i], d.x+16, d.y+10);
 
         ctxNodes.shadowBlur = 0
-        ctxNodes.shadowColor = 'lightyellow'
+        ctxNodes.shadowColor = 'white'
         ctxNodes.beginPath();
         ctxNodes.moveTo(d.x + d.radius, d.y);
         ctxNodes.arc(d.x, d.y, d.radius, 0, 2 * Math.PI);
         ctxNodes.fill();
         ctxNodes.closePath();
       });
-
-    var mainNode = [153]
-    linkSave
-      .filter(function(d) { return mainNode.indexOf(d.source.id) > -1 || mainNode.indexOf(d.target.id) > -1; })
-      .forEach(function(d) {
-        ctxLinks.globalAlpha = 0.5;
-        ctxLinks.fillStyle = "darkred";
-        ctxLinks.fillRect(d.source.x + (d.target.x - d.source.x)/2 + 5, d.source.y + (d.target.y - d.source.y)/2 - 16, 80, 20);
-
-        ctxLinks.globalAlpha = 1;
-        ctxLinks.font = "16px Helvetica";
-        ctxLinks.fillStyle = "lightyellow";
-        ctxLinks.fillText("Affliated", d.source.x + (d.target.x - d.source.x)/2 + 10, d.source.y + (d.target.y - d.source.y)/2);
-
-        ctxLinks.strokeStyle = "lightyellow";
-        ctxLinks.lineWidth = 3; 
-        ctxLinks.beginPath();
-        drawCircleArc(d.center, d.r, d.source, d.target, d.sign);
-        ctxLinks.stroke();
-        ctxLinks.closePath();
-      })
-
-    // Title
-    ctxCaptions.globalAlpha = 0.5;
-    ctxCaptions.fillStyle = "black";
-    ctxCaptions.fillRect(-margin.left - width/2 + 100, -margin.top + 300, 200, 100);
-
-    ctxCaptions.globalAlpha = 1;
-    ctxCaptions.font = "22px Helvetica";
-    ctxCaptions.fillStyle = "lightyellow";
-    ctxCaptions.fillText("Entities one degree of separation from Shareholder X ", -margin.left - width/2 + 100, -margin.top + 300);
 
   }
 
@@ -299,19 +251,18 @@ d3.json("./data/groups2.json", function(error, json) {
       .filter(function(d) { return nodesToHighlight.indexOf(d.id) > -1; })
       .forEach(function(d,i) {
         if(labels[i]) { 
-          console.log(d)
           ctxNodes.globalAlpha = 0.5;
           ctxNodes.fillStyle = "navy";
-          ctxNodes.fillRect(d.x+8, d.y-10, 50, 16);
+          ctxNodes.fillRect(d.x+8, d.y-14, 60, 20);
 
           ctxNodes.globalAlpha = 1;
-          ctxNodes.font = "10px Helvetica";
-          ctxNodes.fillStyle = "lightyellow";
-          ctxNodes.fillText(labels[i] ? labels[i] : "", d.x+8, d.y);
+          ctxNodes.font = "14px Helvetica";
+          ctxNodes.fillStyle = "white";
+          ctxNodes.fillText(labels[i] ? labels[i] : "", d.x+10, d.y);
         }
         
         ctxNodes.shadowBlur = 0
-        ctxNodes.shadowColor = 'lightyellow'
+        ctxNodes.shadowColor = 'white'
         ctxNodes.beginPath();
         ctxNodes.moveTo(d.x + d.radius, d.y);
         ctxNodes.arc(d.x, d.y, d.radius, 0, 2 * Math.PI);
@@ -331,7 +282,7 @@ d3.json("./data/groups2.json", function(error, json) {
         //ctxLinks.fillStyle = "lightyellow";
         //ctxLinks.fillText("", d.source.x + (d.target.x - d.source.x)/2 + 10, d.source.y + (d.target.y - d.source.y)/2);
 
-        ctxLinks.strokeStyle = "lightyellow";
+        ctxLinks.strokeStyle = "white";
         ctxLinks.lineWidth = 3; 
         ctxLinks.globalAlpha = 0.8;
         ctxLinks.beginPath();
@@ -340,35 +291,157 @@ d3.json("./data/groups2.json", function(error, json) {
         ctxLinks.closePath();
       })
 
+  }
+
+  function hop3() {
+
+    var nodesToHighlight = [15, 30, 45, 60, 75, 125]
+
+    nodesSave
+      .filter(function(d) { return nodesToHighlight.indexOf(d.id) > -1; })
+      .forEach(function(d,i) {
+        ctxNodes.shadowBlur = 0
+        ctxNodes.shadowColor = 'white'
+        ctxNodes.beginPath();
+        ctxNodes.moveTo(d.x + d.radius*1.4, d.y);
+        ctxNodes.arc(d.x, d.y, d.radius*1.4, 0, 2 * Math.PI);
+        ctxNodes.fill();
+        ctxNodes.closePath();
+      });
+  }
+
+  function hop4() {
+
+    var nodesToHighlight = [153, 280, 284]
+    var colors = ["red", "#d9d9d9", "#969696"]
+    var threeNodes = nodesSave.filter(function(d) { return nodesToHighlight.indexOf(d.id) > -1; })
+    threeNodes.forEach((d,i)=>{
+      d.color = colors[i]
+    })
+
+    gCircle = g.selectAll('.infected').data(threeNodes)
+
+    gCircle
+      .enter().append('circle')
+        .attr('class', "infected")
+        .attr("fill", "white") 
+        .attr("cx", d=> d.x+d.radius/4-2)
+        .attr("cy", d=> d.y+d.radius/4-2)
+        .attr('r', d=>d.radius)
+        .merge(gCircle)
+        .transition().ease(d3.easeCubicOut).duration(1000)
+        .attr("cx", d=> d.x+d.radius/4-2)
+        .attr("cy", d=> d.y+d.radius/4-2)
+        .attr('r', d=>d.radius*1.4)
+        .attr("fill", d=> d.color) 
+        .attr("fill-opacity", 1)
+        .attr('stroke', "black")
+        .attr('stroke-width', "3px")
+
+    // highlight the links
+    var mainNode = [153]
+    linkSave
+      .filter(function(d) { return mainNode.indexOf(d.source.id) > -1 || mainNode.indexOf(d.target.id) > -1; })
+      .forEach(function(d) {
+        //ctxLinks.globalAlpha = 1;
+        //ctxLinks.font = "16px Helvetica";
+        //ctxLinks.fillStyle = "white";
+        //ctxLinks.fillText("Affliated", d.source.x + (d.target.x - d.source.x)/2 + 14, d.source.y + (d.target.y - d.source.y)/2+8);
+
+        ctxLinks.strokeStyle = "white";
+        ctxLinks.lineWidth = 3; 
+        ctxLinks.beginPath();
+        drawCircleArc(d.center, d.r, d.source, d.target, d.sign);
+        ctxLinks.stroke();
+        ctxLinks.closePath();
+      })
+
     // Title
-    ctxCaptions.clearRect(-margin.left - width/2, -margin.top, totalWidth, totalHeight);
-
-    ctxCaptions.globalAlpha = 0.5;
-    ctxCaptions.fillStyle = "black";
-    ctxCaptions.fillRect(-margin.left - width/2 + 100, -margin.top + 300, 200, 100);
-
     ctxCaptions.globalAlpha = 1;
     ctxCaptions.font = "22px Helvetica";
     ctxCaptions.fillStyle = "lightyellow";
-    ctxCaptions.fillText("Entities two degree of separation from Shareholder X", -margin.left - width/2 + 100, -margin.top + 300);
+    ctxCaptions.fillText("With knowledge graphs, we identify risk levels of entities", -margin.left - width/2 + 100, -margin.top + 300);
 
   }
 
-  //execute_short(function() {
-    //simulation.stop()
-    //hop1()
-    //execute_short(function() {
-      //hop2()
-    //})
-  //})
+  function hop5() {
+
+    var nodesToHighlight = [153, 280, 284]
+    var labels = ['Shareholder X', "Company A", "Company B"]
+
+    var zoom = d3.zoom()
+        .on("zoom", zoomed);
+
+    ctxLinks.clearRect(-margin.left - width/2, -margin.top, totalWidth, totalHeight);
+    ctxNodes.clearRect(-margin.left - width/2, -margin.top, totalWidth, totalHeight);
+
+    d3.select(".canvas-nodes").transition()
+      .duration(1000)
+      .call(zoom.transform, transform)
+      .call(transition);
+
+    function zoomed() { //zoom is buggy
+      ctxNodes.save();
+      ctxNodes.clearRect(-margin.left - width/2, -margin.top, totalWidth, totalHeight);
+      ctxNodes.translate(d3.event.transform.x, d3.event.transform.y);
+      ctxNodes.scale(d3.event.transform.k, d3.event.transform.k);
+      nodesSave
+        .filter(function(d) { return nodesToHighlight.indexOf(d.id) > -1; })
+        .forEach(function(d,i) {
+          ctxNodes.shadowBlur = 0
+          ctxNodes.shadowColor = 'white'
+          ctxNodes.beginPath();
+          ctxNodes.moveTo(d.x + d.radius*1.4, d.y);
+          ctxNodes.arc(d.x, d.y, d.radius*1.4, 0, 2 * Math.PI);
+          ctxNodes.fill();
+          ctxNodes.closePath();
+        });
+        
+      ctxNodes.restore();
+    }
+
+    function transform() {
+      return d3.zoomIdentity
+          .translate(-width/2, height/2)
+          .scale(2)
+    }
+
+    function transition(canvas) {
+      if(canvas){
+        canvas.transition()
+            .delay(500)
+            .duration(3000)
+            .call(zoom.transform, transform)
+            .on("end", function() { canvas.call(transition); });
+      }
+    }
+
+  }
+
+  execute_short(function() {
+    simulation.stop()
+    hop1()
+    execute(function() {
+      hop2()
+      execute(function() {
+        hop3()
+        execute(function() {
+          hop4()
+          //execute(function() {
+            //hop5()
+          //})
+        })
+      })
+    })
+  })
 
   ///////////////////////////////////////////////////////////////////////////
   ///////////////// Run animation (Highlight + zoom out) ////////////////////
   ///////////////////////////////////////////////////////////////////////////
-  execute(function() {
-    simulation.stop()
-    runAnimation()
-  })
+  //execute(function() {
+    //simulation.stop()
+    //runAnimation()
+  //})
 
   function runAnimation() {
     var startPoint = diagram.find(-22, -14, 10)
@@ -392,8 +465,6 @@ d3.json("./data/groups2.json", function(error, json) {
 function drawNodes(nodes, opacity, fill) {
   ctxNodes.save()
   ctxNodes.clearRect(-margin.left - width/2, -margin.top, totalWidth, totalHeight);
-  ctxNodes.translate(transform.x, transform.y);
-  ctxNodes.scale(transform.k, transform.k);
   nodes.forEach(function(d) {
     ctxNodes.beginPath();
     ctxNodes.moveTo(d.x + d.radius, d.y);
@@ -416,8 +487,6 @@ function drawNodes(nodes, opacity, fill) {
 function drawLinks(links) {
   ctxLinks.save()
   ctxLinks.clearRect(-margin.left - width/2, -margin.top, totalWidth, totalHeight);
-  ctxLinks.translate(transform.x, transform.y);
-  ctxLinks.scale(transform.k, transform.k);
   links.forEach(function(d) {
     //Find a good radius
     d.r = Math.sqrt(sq(d.target.x - d.source.x) + sq(d.target.y - d.source.y)) * 2;
@@ -474,7 +543,7 @@ function drawCircleArc(c, r, p1, p2, side) {
 function execute(callback) {
   setTimeout(function() {
     callback();
-  }, 3000);
+  }, 5000);
 }
 
 function execute_short(callback) {

@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////////
 ///////////////////////////////// Globals /////////////////////////////////
 /////////////////////////////////////////////////////////////////////////// 
-var simulation, countsExtended
+var simulation, countsExtended, nodesThree, gCircle, gCircle1
 var margin = {
   top: 50,
   right: 10,
@@ -35,6 +35,16 @@ canvas
 context.scale(sf,sf)
 context.translate(margin.left, margin.top);
 
+//SVG container to hold captions
+var svg = d3.select('#chart')
+  .append("svg")
+  .attr("width", totalWidth)
+  .attr("height", totalHeight)
+
+var g = svg
+  .append("g")
+  .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+
 ///////////////////////////////////////////////////////////////////////////
 ///////////////////////////// Create scales ///////////////////////////////
 ///////////////////////////////////////////////////////////////////////////
@@ -46,41 +56,68 @@ var colorScale = d3.scaleOrdinal()
 // link random distribution to color scale
 
 var radiusScale = d3.scaleLinear()
-.domain(d3.range(1,6))
-.range(d3.range(3, 18, 3))
+.domain(d3.range(1,5))
+.range(d3.range(3, 15, 3))
 
 var xScale = d3.scaleLinear()
   .range([0, width])
   
 var yScale = d3.scaleLinear()
-  .range([0, height])
+  .range([100, height])
   
+var buffer = 500
 var xScaleDist = d3.scaleBand()
-  .range([margin.left+100, width])
+  .range([0, width])
   .domain(["1", "2", "3", "4", "5", "6", "7", "8", "9"])
 
 var yScaleCount = d3.scaleLinear()
 	.range([height, height*(3/4)])
 	
+
 ///////////////////////////////////////////////////////////////////////////
-////////////////////////// Initialize the force ///////////////////////////
+/////////////////////////////////// Initialize ////////////////////////////
 ///////////////////////////////////////////////////////////////////////////
 
 getSimulationData();
 
-
-///////////////////////////////////////////////////////////////////////////
-////////////////////////////// Data processing ////////////////////////////
-///////////////////////////////////////////////////////////////////////////
-
 function getSimulationData() {
+
+	execute1000(function() {
+	  scatter(); // kick off simulation
+	  //cycleCaptions(0)
+	  execute(function() {
+	    cluster()
+	    //cycleCaptions(1)
+	   	execute(function() {
+	    inject()
+	    //cycleCaptions(2)
+	      //cycleCaptions(3)
+	      execute(function() {
+	      	infect()
+	      	execute(function() {
+	      		migrate()
+	      	})
+	      	//cycleCaptions(4)
+			  })
+	   });
+	 });
+	});
+	    
+} 
+
+
+///////////////////////////////////////////////////////////////////////////
+/////////////////////// Modify simulation params //////////////////////////
+///////////////////////////////////////////////////////////////////////////
+
+function scatter() {
 
   var dummyData = []
   d3.range(1,4).map((d,i) => {
     dummyData.push({"outcome": 1, 'color': 'red', 'radius': 22, 'label':crime[i], 'band': "9"})
   })
   d3.range(1,300).map((d,i) => {
-  	var rand = getRandomArbitrary(1, 8).toString()
+  	var rand = Math.round(randn_bm(1, 8, 0.7))
     dummyData.push({"outcome": 0, 'color': colorScale(rand), 'band': rand, 'radius': radiusScale(getRandomArbitrary(1, 8)), 'label': crime[getRandomArbitrary(0, 3)]})
   })
 
@@ -110,31 +147,6 @@ function getSimulationData() {
     d.y = yScale(d.y)
   })
 
-	execute(function() {
-	 scatter(nodes); // kick off simulation
-	 execute(function() {
-	  cluster()
-	   	execute(function() {
-	    inject()
-	  	execute(function() {
-	  		shiftTop()
-		    execute1000(function() {
-		      distribute()
-		    })
-		  })
-	   });
-	 });
-	});
-	    
-} 
-
-
-///////////////////////////////////////////////////////////////////////////
-/////////////////////// Modify simulation params //////////////////////////
-///////////////////////////////////////////////////////////////////////////
-
-function scatter() {
-
 	simulation = d3.forceSimulation(nodes)
 		.alpha(.02)
 		.force('charge', d3.forceManyBody().strength(-30))
@@ -155,19 +167,7 @@ function scatter() {
 
 	}
 
-	function drawNode(d) {
-
-		context.globalAlpha = d.hide ? 0 : 1;
-		context.beginPath();
-		context.moveTo(d.x + d.radius, d.y);
-		context.arc(d.x, d.y, d.radius, 0, 2 * Math.PI);
-		context.fillStyle = d.color;
-		context.fill();
-		
-	}
-
 }
-
 
 function cluster() {
 
@@ -203,26 +203,7 @@ function inject() {
 
 }
 
-function infect() {
-
-	nodes.forEach(d=>{
-		d.infect = d.outcome==0 ? getRandomArbitrary(0, 1) : 1
-	})
-  nodes.forEach(d=>{
-  	d.color =  d.infect==1 ? "red": d.color
-  })
-
-	simulation.stop();
-
-	simulation.nodes(nodes)
-
-	simulation.alpha(0.5);
-
-	simulation.restart();
-
-
-}
-
+// not in use
 function regroup() {
 
   simulation.stop();
@@ -249,9 +230,8 @@ function regroup() {
 
 }
 
-function shiftTop() {
-
-	simulation.stop();
+// not in use
+function distribute() {
 
 	// find count within each category 
 	var counts = nodes.reduce((p, c) => {
@@ -270,41 +250,9 @@ function shiftTop() {
 	yScaleCount.domain([0,d3.max(countsExtended, function(d) { return d.count })])
 
   nodes.forEach((d,i)=>{
-  	d.hide = true,
-  	d.radius = 18,
-    d.x1 = xScaleDist(d.band)
-  })
-  console.log(nodes)
-  
-  simulation.nodes(nodes)
-  	.alpha(.02)
-    .force('charge', d3.forceManyBody().strength(-30))
-    .force('x', d3.forceX(function(d) { return d.x1 }).strength(0.45))
-    .force('y', d3.forceY(height/4))
-    //.force("bounce", d3.forceBounce(function(d,i) { return d.radius }))
-   	.force('container', d3.forceSurface()
-		.surfaces([
-			{from: {x:0,y:0}, to: {x:0,y:height/4}},
-			{from: {x:0,y:height/4}, to: {x:width,y:height/4}},
-			{from: {x:width,y:height/4}, to: {x:width,y:0}},
-			{from: {x:width,y:0}, to: {x:0,y:0}}
-		])
-		.oneWay(true)
-		.radius(d => d.radius)
-	);
-
-  simulation.alpha(0.5);
-
-  simulation.restart();
-}
-
-function distribute() {
-
-  nodes.forEach((d,i)=>{
-  	d.hide = false,
-  	d.radius = 18,
-    d.x1 = xScaleDist(d.band),
-    d.y1 = yScaleCount(countsExtended.find(b=>b.name==d.band).count),
+  	d.radius = 12,
+    d.x1 = d.outcome==0 ? xScaleDist(d.band) : getRandomArbitrary(0, width),
+    d.y1 = d.outcome==0 ? yScaleCount(countsExtended.find(b=>b.name==d.band).count) : height-50,
     d.width = xScaleDist.bandwidth()
     //d.x = Math.max(d.radius, Math.min(width+d.width-d.radius, d.x1)),
     //d.y = Math.max(d.radius, Math.min(height-d.radius, d.y1))
@@ -313,10 +261,11 @@ function distribute() {
   simulation.stop();
 
   simulation.nodes(nodes)
-  	.alphaDecay(.005)
-  	.velocityDecay(0.6)
+  	//.alphaDecay(.005)
+  	.velocityDecay(0.2)
     .force('charge', d3.forceManyBody().strength(-30))
-    .force('x', d3.forceX(function(d) { return d.x1 }).strength(0.45))
+     .force("collide", d3.forceCollide(function(d,i) { return d.radius + 3}))
+    .force('x', d3.forceX(function(d) { return d.x1 }).strength(0.2))
     .force('y', d3.forceY(function(d) { return d.y1 }).strength(0.2))
     //.force("bounce", d3.forceBounce(function(d,i) { return d.radius }))
    	.force('container', d3.forceSurface()
@@ -330,12 +279,185 @@ function distribute() {
 		.radius(d => d.radius)
 	);
 
-  simulation.alpha(0.1);
+  simulation.alpha(0.5);
 
   simulation.restart();
 
 }
 
+function infect() {
+
+	simulation.stop()
+
+	var nodesSaved = simulation.nodes()
+
+	// change some nodes to red color
+	// ensure a node from each category changes
+	var nodesToRed = [10, 20, 30, 40, 50, 60, 70, 80, 90, 110, 120, 130, 140, 150, 160, 170, 180]
+	// hide all nodes except for three random nodes
+	var nodesToHighlight = [100, 200, 300]
+	nodesSaved.forEach(d=>{
+		d.infect = (nodesToRed.indexOf(d.id)!=-1 && d.radius > 18) ? 1 : 0
+		d.fadeOut = nodesToHighlight.indexOf(d.id) == -1 ? true : false
+	})
+
+  var infected = nodesSaved.filter(d=>d.infect == 1)
+
+ 	gCircle = g.selectAll('.infected').data(infected)
+
+	gCircle
+		.enter().append('circle')
+			.attr('class', "infected")
+			.attr("fill", d=> "red") 
+			.attr("fill-opacity", 0)
+			.attr("cx", d=> d.x+d.radius/2)
+			.attr("cy", d=> d.y+d.radius/2)
+			.attr('r', d=>d.radius)
+			.merge(gCircle)
+			.transition().ease(d3.easeLinear).duration(1500)
+			.attr("cx", d=> d.x+d.radius/2)
+			.attr("cy", d=> d.y+d.radius/2)
+			.attr('r', d=>d.radius*	1.25)
+			.attr("fill-opacity", 1)
+
+}
+
+function migrate() {
+
+	d3.selectAll('.infected').remove()
+	d3.selectAll('canvas').remove()
+
+	var nodesSaved = simulation.nodes()
+	var nodesToHighlight = [100, 200, 300]
+	nodesThree = nodesSaved.filter(d=>(nodesToHighlight.indexOf(d.id) != -1))
+
+ 	gCircle1 = g.selectAll('.threeleft').data(nodesThree)
+
+	var entered_circles = gCircle1
+		.enter().append('circle')
+			.attr('class', "threeleft")
+			.attr("fill", d=> d.color) 
+			.attr("fill-opacity", 1)
+			.attr('r', d=>d.radius)
+			.attr("cx", d=> d.x+d.radius/2)
+			.attr("cy", d=> d.y+d.radius/2)
+			
+	gCircle1 = gCircle1.merge(entered_circles)
+
+	gText = g.selectAll('text').data(nodesThree)
+
+	entered_text = gText
+		.enter().append('text')
+			.attr("font-family", "Helvetica")
+			.attr("font-size", "22px")
+			.attr("text-anchor", "middle")
+			.attr("fill", "black")
+			.attr("fill-opacity", 0)
+			.attr("x", d=>d.x)
+			.attr("y", d=>d.y)
+
+  simulation.nodes(nodesThree)
+  	.alphaDecay(.005)
+  	.velocityDecay(0.2)
+    .force('charge', d3.forceManyBody().strength(-30))
+    .force("collide", d3.forceCollide(function(d,i) { return d.radius + 50}))
+    .force('x', d3.forceX(function(d) { return width/2 }))
+    .force('y', d3.forceY(function(d) { return height/2 }))
+    .on('tick', toMigrate)
+
+  simulation.alpha(0.1);
+
+  simulation.restart();
+
+  function toMigrate() {
+  	gCircle1
+  		.attr("cx", d=> d.x+d.radius/2)
+			.attr("cy", d=> d.y+d.radius/2)
+  }
+
+  var labels = ['Shareholder X', 'Company A', 'Company B']
+
+  setTimeout(function() {
+		gCircle1
+				.transition().ease(d3.easeLinear).duration(1500)
+				.attr("fill", "white")
+				.attr("stroke", "black")
+				.attr('stroke-width', "4px")
+
+		entered_text
+				.merge(gText)
+				.transition().ease(d3.easeLinear).duration(1500)
+				.text((d,i)=> labels[i])
+				.attr("x", d=>d.x)
+				.attr("y", d=>d.y-25)
+				.attr("fill-opacity", 1)
+
+		gText.exit().remove()
+
+	 }, 3500)
+}
+
+
+function cycleCaptions(sceneNumber) {
+
+	var captions = [
+	{text: "The complex and scattered world of data", x:width/2, y:50}, 
+	{text: "We collect the data", x:width/2, y:height/50}, 
+	{text: "We merge the data", x:width/2, y:height/50}, 
+	{text: "We find insights based on current data", x:width/2, y:50}, 
+	{text: "Financial crime spreads beyond individuals and firms. It is dynamic.", x:width/2, y:50}, 
+	{text: "When a new crime arises, Who is good? Who is bad? Who is in between?", x:width/2, y:50}]
+
+	var choice = captions[sceneNumber]
+
+	gText = g.selectAll('text').data([choice])
+
+	entered_text = gText
+		.enter().append('text')
+			.attr("font-family", "Helvetica")
+			.attr("font-size", "32px")
+			.attr("text-anchor", "middle")
+			.attr("fill", "#111CFF") //refinitiv blue color
+			.attr("fill-opacity", 0)
+			.attr("x", width/2)
+			.attr("y", 50)
+
+	entered_text
+			.merge(gText)
+			.transition().ease(d3.easeCubic).duration(1000)
+			.text(d=> d.text)
+			.attr("x", d=> d.x)
+			.attr("y", d=> d.y)
+			.attr("fill-opacity", 1)
+
+	gText.exit().remove()
+
+}
+
+function drawNode(d) {
+
+	context.globalAlpha = 1;
+	context.beginPath();
+	context.moveTo(d.x + d.radius, d.y);
+	context.arc(d.x, d.y, d.radius, 0, 2 * Math.PI);
+	context.fillStyle = d.color;
+	context.fill();
+	context.closePath();	
+	
+}
+
+function drawLinks(d) {
+
+	context.globalAlpha = 1;
+  context.strokeStyle = "black";
+  context.lineWidth = 4; 
+  context.beginPath();
+  context.moveTo(d.source.x, d.source.y)
+  context.lineTo(d.target.x, d.target.y)
+  context.stroke();
+  context.closePath();	
+	
+}
 
 ///////////////////////////////////////////////////////////////////////////
 ///////////////////////////// Helper functions ////////////////////////////
@@ -361,13 +483,13 @@ function getRandomArbitrary(min, max) {
 function execute(callback) {
   setTimeout(function() {
     callback();
-  }, 4000);
+  }, 5000);
 }
 
 function execute1000(callback) {
   setTimeout(function() {
     callback();
-  }, 1000);
+  }, 2000);
 }
 
 //Find the device pixel ratio
