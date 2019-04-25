@@ -65,9 +65,9 @@ var xScale = d3.scaleLinear()
 var yScale = d3.scaleLinear()
   .range([100, height])
   
-var buffer = 500
+var buffer = 400
 var xScaleDist = d3.scaleBand()
-  .range([0, width])
+  .range([buffer, width-buffer])
   .domain(["1", "2", "3", "4", "5", "6", "7", "8", "9"])
 
 var yScaleCount = d3.scaleLinear()
@@ -86,20 +86,7 @@ function getSimulationData() {
 	  scatter(); // kick off simulation
 	  //cycleCaptions(0)
 	  execute(function() {
-	    cluster()
-	    //cycleCaptions(1)
-	   	execute(function() {
-	    inject()
-	    //cycleCaptions(2)
-	      //cycleCaptions(3)
-	      execute(function() {
-	      	infect()
-	      	execute(function() {
-	      		migrate()
-	      	})
-	      	//cycleCaptions(4)
-			  })
-	   });
+	  	distribute()
 	 });
 	});
 	    
@@ -116,7 +103,7 @@ function scatter() {
   d3.range(1,4).map((d,i) => {
     dummyData.push({"outcome": 1, 'color': 'red', 'radius': 22, 'label':crime[i], 'band': "9"})
   })
-  d3.range(1,300).map((d,i) => {
+  d3.range(1,400).map((d,i) => {
   	var rand = Math.round(randn_bm(1, 8, 0.7))
     dummyData.push({"outcome": 0, 'color': colorScale(rand), 'band': rand, 'radius': radiusScale(getRandomArbitrary(1, 8)), 'label': crime[getRandomArbitrary(0, 3)]})
   })
@@ -252,7 +239,7 @@ function distribute() {
   nodes.forEach((d,i)=>{
   	d.radius = 12,
     d.x1 = d.outcome==0 ? xScaleDist(d.band) : getRandomArbitrary(0, width),
-    d.y1 = d.outcome==0 ? yScaleCount(countsExtended.find(b=>b.name==d.band).count) : height-50,
+    d.y1 = d.outcome==0 ? yScaleCount(countsExtended.find(b=>b.name==d.band).count) : height-100,
     d.width = xScaleDist.bandwidth()
     //d.x = Math.max(d.radius, Math.min(width+d.width-d.radius, d.x1)),
     //d.y = Math.max(d.radius, Math.min(height-d.radius, d.y1))
@@ -266,14 +253,14 @@ function distribute() {
     .force('charge', d3.forceManyBody().strength(-30))
      .force("collide", d3.forceCollide(function(d,i) { return d.radius + 3}))
     .force('x', d3.forceX(function(d) { return d.x1 }).strength(0.2))
-    .force('y', d3.forceY(function(d) { return d.y1 }).strength(0.2))
+    .force('y', d3.forceY(function(d) { return d.y1 }).strength(0.3))
     //.force("bounce", d3.forceBounce(function(d,i) { return d.radius }))
    	.force('container', d3.forceSurface()
 		.surfaces([
-			{from: {x:0,y:0}, to: {x:0,y:height}},
-			{from: {x:0,y:height}, to: {x:width,y:height}},
-			{from: {x:width,y:height}, to: {x:width,y:0}},
-			{from: {x:width,y:0}, to: {x:0,y:0}}
+			{from: {x:buffer,y:0}, to: {x:buffer,y:height}},
+			{from: {x:buffer,y:height}, to: {x:width-buffer,y:height}},
+			{from: {x:width-buffer,y:height}, to: {x:width-buffer,y:0}},
+			{from: {x:width-buffer,y:0}, to: {x:buffer,y:0}}
 		])
 		.oneWay(true)
 		.radius(d => d.radius)
@@ -483,7 +470,7 @@ function getRandomArbitrary(min, max) {
 function execute(callback) {
   setTimeout(function() {
     callback();
-  }, 5000);
+  }, 2000);
 }
 
 function execute1000(callback) {

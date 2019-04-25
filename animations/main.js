@@ -368,12 +368,14 @@ d3.json("./data/groups2.json", function(error, json) {
 
     var nodesToHighlight = [153, 280, 284]
     var labels = ['Shareholder X', "Company A", "Company B"]
+    var colors = ["red", "#d9d9d9", "#969696"]
 
     var zoom = d3.zoom()
         .on("zoom", zoomed);
 
-    ctxLinks.clearRect(-margin.left - width/2, -margin.top, totalWidth, totalHeight);
-    ctxNodes.clearRect(-margin.left - width/2, -margin.top, totalWidth, totalHeight);
+    d3.selectAll('.infected')
+      //.transition().ease(d3.easeLinear).duration(500)
+      .style('opacity', 0)
 
     d3.select(".canvas-nodes").transition()
       .duration(1000)
@@ -389,21 +391,38 @@ d3.json("./data/groups2.json", function(error, json) {
         .filter(function(d) { return nodesToHighlight.indexOf(d.id) > -1; })
         .forEach(function(d,i) {
           ctxNodes.shadowBlur = 0
-          ctxNodes.shadowColor = 'white'
+          ctxNodes.shadowColor = colors[i]
           ctxNodes.beginPath();
           ctxNodes.moveTo(d.x + d.radius*1.4, d.y);
           ctxNodes.arc(d.x, d.y, d.radius*1.4, 0, 2 * Math.PI);
           ctxNodes.fill();
           ctxNodes.closePath();
         });
-        
       ctxNodes.restore();
-    }
 
+      var mainNode = [153]
+      ctxLinks.save();
+      ctxLinks.clearRect(-margin.left - width/2, -margin.top, totalWidth, totalHeight);
+      ctxLinks.translate(d3.event.transform.x, d3.event.transform.y);
+      ctxLinks.scale(d3.event.transform.k, d3.event.transform.k);
+      linkSave
+        .filter(function(d) { return mainNode.indexOf(d.source.id) > -1 || mainNode.indexOf(d.target.id) > -1; })
+        .forEach(function(d) {
+          ctxLinks.strokeStyle = "white";
+          ctxLinks.lineWidth = 3; 
+          ctxLinks.beginPath();
+          drawCircleArc(d.center, d.r, d.source, d.target, d.sign);
+          ctxLinks.stroke();
+          ctxLinks.closePath();
+        })
+      ctxLinks.restore();
+
+    }
     function transform() {
       return d3.zoomIdentity
-          .translate(-width/2, height/2)
-          .scale(2)
+          .translate(nodesSave[1].x, height/2)
+          .scale(1.5)
+          //.translate(-nodesSave[1].x, nodesSave[1].y)
     }
 
     function transition(canvas) {
@@ -427,9 +446,9 @@ d3.json("./data/groups2.json", function(error, json) {
         hop3()
         execute(function() {
           hop4()
-          //execute(function() {
-            //hop5()
-          //})
+          execute(function() {
+            hop5()
+          })
         })
       })
     })
@@ -543,7 +562,7 @@ function drawCircleArc(c, r, p1, p2, side) {
 function execute(callback) {
   setTimeout(function() {
     callback();
-  }, 5000);
+  }, 2000);
 }
 
 function execute_short(callback) {
