@@ -30,9 +30,10 @@ var g = svg
 ///////////////////////////// Create scales ///////////////////////////////
 ///////////////////////////////////////////////////////////////////////////
 
+var color = ['#f0f0f0','#d9d9d9','#bdbdbd','#969696','#737373','#525252','#252525','#000000']
 var colorScale = d3.scaleOrdinal()
   .domain(["1", "2", "3", "4", "5", "6", "7", "8"])
-  .range(['#f0f0f0','#d9d9d9','#bdbdbd','#969696','#737373','#525252','#252525','#000000'])
+  .range(color)
 
 // link random distribution to color scale
 
@@ -59,32 +60,12 @@ var yScaleCount = d3.scaleLinear()
 ////////////////////////// Initialize the force ///////////////////////////
 ///////////////////////////////////////////////////////////////////////////
 
-getSimulationData();
+run();
 
 
-function getSimulationData() {
+function run() {
 
-  execute1000(function() {
-    scatter(); // kick off simulation
-    //cycleCaptions(0)
-    execute(function() {
-      cluster()
-      //cycleCaptions(1)
-      execute(function() {
-      inject()
-      //cycleCaptions(2)
-        //cycleCaptions(3)
-        execute(function() {
-          infect()
-          execute(function() {
-            migrate()
-          })
-          //cycleCaptions(4)
-        })
-     });
-   });
-  });
-      
+  distribute()
 } 
 
 ///////////////////////////////////////////////////////////////////////////
@@ -298,6 +279,112 @@ function migrate() {
    }, 3500)
 }
 
+
+function distribute() {
+
+  var dummyData = []
+  d3.range(1,4).map((d,i) => {
+    dummyData.push({"outcome": 1, 'color': 'red', 'radius': 22, 'label':crime[i], 'band': "9", "id": "9-" + i.toString()})
+  })
+  d3.range(1,400).map((d,i) => {
+    var rand = Math.round(randn_bm(1, 8, 0.7))
+    dummyData.push({
+      "outcome": 0, 
+      'color': colorScale(rand),
+      'band': rand, 
+      'radius': radiusScale(getRandomArbitrary(1, 8)),
+      'label': crime[getRandomArbitrary(0, 3)],
+      "id": rand + '-' + i.toString()
+    })
+  })
+
+  nodes = dummyData.map(function (d, i) {
+    return {
+        id: i,
+        outcome: d.outcome,
+        x: +Math.random(),
+        y: +Math.random(),
+        color: d.color,
+        radius: d.radius,
+        label: d.label ? d.label : "Money Laundering",
+        band : d.band
+    }
+  })
+
+  var tilesPerRow = 10
+  var tileSize = 22
+  var barWidth = 220
+
+  // find count within each category 
+  var counts = nodes.reduce((p, c) => {
+    var name = c.band;
+    if (!p.hasOwnProperty(name)) {
+      p[name] = 0;
+    }
+    p[name]++;
+    return p;
+  }, {});
+
+  countsExtended = Object.keys(counts).map(k => {
+    var circles_arr = nodes.filter(d=>d.band==k)
+    console.log(circles_arr)
+    return {name: k, count: counts[k]}; circles_arr:  circles_arr});
+
+  var u = g.selectAll("g").data(countsExtended.map(d=>d.count))
+
+  u.enter()
+    .append("g")
+    .merge(u)
+    .each(updateBar)
+
+  function updateBar(num, i) {
+    var tiles = getTiles(num, color[i], num)
+    console.log(tiles)
+    var u = d3.select(this)
+      .attr("transform", "translate(" + i * barWidth + ", 500)")
+      .selectAll("rect")
+      .data(tiles);
+ 
+     u.enter()
+      .append("circle")
+      .attr('class', 'distributed-' + d.id)
+      .style("stroke", "white")
+      .style("stroke-width", "1")
+      .style("shape-rendering", "crispEdges")
+      .merge(u)
+      .attr('fill', d=>d.color)
+      .attr("cx", function(d) {
+        return d.x;
+      })
+      .attr("cy", function(d) {
+        return d.y;
+      })
+      .attr("r", tileSize/2)
+     
+    u.exit().remove();
+
+  }
+
+  function getTiles(num, color) {
+    var tiles = [];
+     
+    for(var i = 0; i < num; i++) {
+      var rowNumber = Math.floor(i / tilesPerRow);
+      tiles.push({
+        x: (i % tilesPerRow) * tileSize,
+        y: -(rowNumber + 1) * tileSize, 
+        color: color
+      });
+    }
+     
+    return tiles
+  }
+
+  // get an array of x-coord and y-coord of all nodes
+  var xycoord = []
+  g.selectAll('circle.distributed').each(function(d) {
+    xycoord.push({x:d3.select(this).attr('cx'), y:d3.select(this).attr('cy'), i:d3.select(this).attr('class')})
+  })}
 
 ///////////////////////////////////////////////////////////////////////////
 ///////////////////////////// Helper functions ////////////////////////////

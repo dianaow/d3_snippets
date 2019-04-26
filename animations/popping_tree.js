@@ -1,10 +1,3 @@
-<!DOCTYPE html>
-<meta charset="utf-8">
-<title>Force-Directed Graph</title>
-<body>
-<script src="//d3js.org/d3.v3.min.js"></script>
-<script>
-
 var canvasDim = { width: 1000, height: 1000 }
 var margin = {top: 0, right: 0, bottom: 0, left: 0}
 var width = canvasDim.width - margin.left - margin.right
@@ -16,7 +9,7 @@ var force = d3.layout.force()
     .size([width, height])
     .on("tick", tick);
 
-var svg = d3.select("body").append("svg")
+var svg = d3.select(".modal-content").append("svg")
     .attr("width", width)
     .attr("height", height)
     .attr('transform', 'translate(100, 20)')
@@ -24,30 +17,34 @@ var svg = d3.select("body").append("svg")
 var link = svg.selectAll(".link"),
     node = svg.selectAll(".node");
 
-d3.json("./data/dummy_data1.json", function(error, json) {
-  if (error) throw error;
+run()
 
-  root = json;
-  flatten(root); //to set ids
-  setParents(root, null);
-  collapseAll(root);
-  root.children = root._children;
-  root._children = null;
+function run() {
+  d3.json("./data/dummy_data1.json", function(error, json) {
+    if (error) throw error;
 
-  execute(function() {
-   update()
-   execute(function() {
-     animate()
-      execute(function() {
+    root = json;
+    flatten(root); //to set ids
+    setParents(root, null);
+    collapseAll(root);
+    root.children = root._children;
+    root._children = null;
+
+    execute(function() {
+     update()
+     execute(function() {
        animate()
         execute(function() {
-          animate()
+         animate()
+          execute(function() {
+            animate()
+          });
         });
-      });
-   });
-  });
+     });
+    });
 
-});
+  });
+}
 
 function update() {
   var nodes = flatten(root),
@@ -213,5 +210,3 @@ function animate() {
   })
 
 }
-
-</script>

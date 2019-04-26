@@ -75,16 +75,15 @@ var yScaleCount = d3.scaleLinear()
 	
 
 ///////////////////////////////////////////////////////////////////////////
-/////////////////////////////////// Initialize ////////////////////////////
+///////////////////////// Initialize the force ////////////////////////////
 ///////////////////////////////////////////////////////////////////////////
 
-getSimulationData();
+run();
 
-function getSimulationData() {
+function run() {
 
 	execute1000(function() {
 	  scatter(); // kick off simulation
-	  //cycleCaptions(0)
 	  execute(function() {
 	  	distribute()
 	 });
@@ -217,7 +216,7 @@ function regroup() {
 
 }
 
-// not in use
+// not in use as unable to make an aesthetic normal distribute shaped with the nodes using this method
 function distribute() {
 
 	// find count within each category 

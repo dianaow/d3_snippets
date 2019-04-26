@@ -1,0 +1,15 @@
+body {
+  background-color: white;
+  color: black
+}
+    
+.node {
+  cursor: pointer;
+  stroke-width: 1.5px;
+}
+
+.link {
+  fill: none;
+  stroke: grey;
+  stroke-width: 1.5px;
+}
