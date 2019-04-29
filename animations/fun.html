@@ -1,96 +1,168 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
-    <script src="https://d3js.org/d3.v3.min.js"></script>
+    <meta name="viewport" content="width=device-width">
     <link rel="stylesheet" href="general.css" />
-    <style>
-    body {
-      background-color: white;
-      color: black
-    }
-    .modal {
-      position: fixed;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.5);
-      opacity: 0;
-      visibility: hidden;
-      transform: scale(1.1);
-      transition: visibility 0s linear 0.25s, opacity 0.25s 0s, transform 0.25s;
-    }
-    .modal-content {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background-color: white;
-      padding: 1rem 1.5rem;
-      width: 80rem;
-      height: 60rem;
-      border-radius: 0.5rem;
-    }
-    .close-button {
-      float: right;
-      width: 1.5rem;
-      line-height: 1.5rem;
-      text-align: center;
-      cursor: pointer;
-      border-radius: 0.25rem;
-      background-color: lightgray;
-    }
-    .close-button:hover {
-      background-color: darkgray;
-    }
-    .show-modal {
-      opacity: 1;
-      visibility: visible;
-      transform: scale(1.0);
-      transition: visibility 0s linear 0s, opacity 0.25s 0s, transform 0.25s;
-    }
-    .trigger {
-      background-image: url('icon.png');
-      background-position: center; /* 0px 0px; */
-      background-repeat: no-repeat;
-      background-color: white;
-      padding: 1rem 1.5rem;
-      width: 24rem;
-      height: 24rem;
-      border-radius: 0.5rem;
-    }
-    </style>
   </head>
   <body>
     <div id="body">
-      <button class="trigger"><img href='icon.png'></button>
-      <div class="modal">
-          <div class="modal-content">
-              <span class="close-button">×</span>
-          </div>
+
+    <div class='box-wrapper'>
+      <div class='box-group'>
+
+        <div class='group'>
+            <div class="trigger" id="trigger1">
+              <img src="./images/poppingtree.png"></img>
+            </div>
+            <div class="modal">
+              <div class="modal-content1">
+                <span class="close-button">×</span>
+              </div>
+            </div>
+ 
+            <div class="trigger" id="trigger2">
+              <img src="./images/overload.png"></img>
+            </div>
+            <div class="modal">
+              <div class="modal-content2">
+                  <span class="close-button">×</span>
+              </div>
+            </div>
+
+            <div class="trigger" id="trigger3">
+              <img src="./images/beeswarm.png"></img>
+            </div>
+            <div class="modal">
+              <div class="modal-content3">
+                  <span class="close-button">×</span>
+              </div>
+            </div>
+
+        </div>
+
+        <div class='group'>
+
+            <div class="trigger" id="trigger7">
+              <img src="./images/constellation.png"></img>
+            </div>
+            <div class="modal">
+              <div class="modal-content7">
+                  <span class="close-button">×</span>
+              </div>
+            </div>
+
+            <div class="trigger" id="trigger5">
+              <img src="./images/merge.png"></img>
+            </div>
+            <div class="modal">
+              <div class="modal-content5">
+                <span class="close-button">×</span>
+              </div>
+            </div>
+
+            <div class="trigger" id="trigger6">
+              <img src="./images/morph.png"></img>
+            </div>
+            <div class="modal">
+              <div class="modal-content6">
+                <div id="clickerWrapper">
+                  <div id="clicker">Morph!</div>
+                </div>
+                <span class="close-button">×</span>
+              </div>
+            </div>
+
+        </div>
+
+        <div class='group'>
+
+            <div class="trigger" id="trigger4">
+              <img src="./images/circlepack.png"></img>
+            </div>
+            <div class="modal">
+              <div class="modal-content4">
+                <span class="close-button">×</span>
+              </div>
+            </div>
+ 
+        </div>
+
       </div>
+    </div>
     </div>
 
     <script>
-      var modal = document.querySelector(".modal");
-      var trigger = document.querySelector(".trigger");
-      var closeButton = document.querySelector(".close-button");
 
-      function toggleModal() {
-          modal.classList.toggle("show-modal");
-          run()
+      var btn = document.getElementsByClassName("trigger");
+      
+      for (var i = 0; i < btn.length; i++) {
+        var thisBtn = btn[i];
+
+        thisBtn.addEventListener("click", function(){
+
+          var modal = this.nextElementSibling;
+          modal.classList.add("show-modal");
+          var closeButton = modal.querySelector(".close-button");
+          var trigger = this.id
+
+          if (trigger === "trigger1") {
+            poppingtree.run()
+            closeButton.addEventListener("click", function() {
+              modal.classList.remove("show-modal") 
+              poppingtree.clear()
+            } );
+          } else if (trigger === "trigger2") {
+            overload.run()
+            closeButton.addEventListener("click", function() { 
+              modal.classList.remove("show-modal")
+              overload.clear() 
+            } );
+          } else if (trigger === "trigger3") {
+            beeswarm.run()
+            closeButton.addEventListener("click", function() { 
+              modal.classList.remove("show-modal")
+              beeswarm.clear() 
+            } );
+          } else if (trigger === "trigger4") {
+            circlepack.run()
+            closeButton.addEventListener("click", function() { 
+              modal.classList.remove("show-modal")
+              circlepack.clear() 
+            } );
+          } else if (trigger === "trigger5") {
+            merge.run()
+            closeButton.addEventListener("click", function() { 
+              modal.classList.remove("show-modal")
+              merge.clear() 
+            } );
+          } else if (trigger === "trigger6") {
+            morph.run()
+            closeButton.addEventListener("click", function() { 
+              modal.classList.remove("show-modal")
+              morph.clear() 
+            } );
+          } else if (trigger === "trigger7") {
+            constellation.run()
+            closeButton.addEventListener("click", function() { 
+              modal.classList.remove("show-modal")
+              constellation.clear() 
+            } );
+          } 
+        })
       }
 
-      function windowOnClick(event) {
-          if (event.target === modal) {
-              toggleModal();
-          }
-      }
-      trigger.addEventListener("click", toggleModal);
-      closeButton.addEventListener("click", toggleModal);
-      window.addEventListener("click", windowOnClick);
     </script>
-    <script src="popping_tree.js"></script>
+    <script src="https://d3js.org/d3.v3.min.js"></script>
+    <script src="./js/popping_tree.js"></script>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="https://d3js.org/d3-color.v1.min.js"></script>
+    <script src="https://d3js.org/d3-interpolate.v1.min.js"></script>
+    <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+    <script src="./js/overload.js"></script>
+    <script src="./js/beeswarm.js"></script>
+    <script src="./js/circle_packing.js"></script>
+    <script src="./js/merge_svg.js"></script>
+    <script src="./js/morph.js"></script>
+    <script src="./js/constellation/main.js"></script>
    </body>
 </html>

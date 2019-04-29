@@ -1,0 +1,73 @@
+#scrolly-side .scrolly {
+	display: flex;
+	max-width: 99rem;
+	margin: 3rem auto;
+	padding: 1rem;
+}
+
+* {
+ 	flex: 1;
+ }
+
+article {
+	padding-right: 1rem;
+	max-width: 30rem;
+}
+	
+.step {
+	min-height: 67vh;
+	margin-bottom: 1rem;
+  border: 1px white;
+	transition: background-color 250ms ease-in-out;
+}
+
+.step:last-of-type {
+	margin-bottom: 0;
+}
+.step.is-active {
+	background-color: gray;
+}
+}
+
+article > p {
+	margin: 0;
+	padding: 1rem;
+	text-align: center;
+	font-weight: 400;
+	color: black;
+}	
+
+figure.sticky {
+	position: sticky;
+	width: 100%;
+	height: 80vh;
+  border: 1px white;
+	margin: 0;
+	top: 5vh;
+	left: 0;
+}
+
+.bar-outer {
+	position: absolute;
+	top: 50%;
+	left: 5%;
+	transform: translateY(-50%);
+	width: 90%;
+	height: 4rem;
+	background-color: green;
+}
+
+.bar-inner {
+	width: 10%;
+	height: 100%;
+	transition: width 1s ease-in-out;
+	background-color: red;
+}
+
+.bowl {
+	position: absolute;
+	top: 50%;
+	left: 5%;
+	transform: translateY(-50%);
+	background-color: transparent;
+}
