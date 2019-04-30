@@ -149,7 +149,7 @@ var morph = function () {
       simulation1.stop()
       for (var i = 0; i < 100; ++i) simulation1.tick()
       simulation1.alpha(1).alphaDecay(0.1).restart()
-
+    
     })
     clicked=1
   }
