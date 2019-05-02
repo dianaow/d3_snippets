@@ -34,6 +34,22 @@ var distribute = function () {
   ///////////////////////////////////////////////////////////////////////////
   /////////////////////////////////// CORE //////////////////////////////////
   ///////////////////////////////////////////////////////////////////////////
+  // create selector for duration and delay parameters
+  var select = d3.select('#curveSettings')
+    .append('select')
+    .attr('class','select')
+    .on('change', function() {
+      var val = d3.select('select').property('value');
+      d3.select('#curveLabel').text(val);
+
+    });
+
+  var delayRange = 
+  var options = select
+    .selectAll('option')
+    .data(delayRange).enter()
+    .append('option')
+      .text(function (d) { return +d; });
 
   return { 
     clear : function () {

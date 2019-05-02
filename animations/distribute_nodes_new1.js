@@ -9,6 +9,7 @@ var distribute = function () {
   var width = canvasDim.width - margin.left - margin.right;
   var height = canvasDim.height - margin.top - margin.bottom;
   var modal = d3.select(".modal-content5")
+  var links_filt = []
 
   var linkedByIndex = {},
       linkedToID = {},
@@ -213,7 +214,6 @@ var distribute = function () {
       .entries(links)
 
     links_nested = links_nested.sort(function(a,b) { return d3.descending(a.value, b.value) })
-    var links_filt = []
     for(var i = 0; i < top; i++) {
       links_filt.push(links_nested[i])
     }
@@ -245,11 +245,10 @@ var distribute = function () {
     colorTopNodes.domain(groupIDs)
       
     // callback to ensure connection search completes before rendering force layout
-    function findAllConnections(callback) {
+    function findAllConnections() {
       groupIDs.map(d=>{
         initiateConnectionSearch(d, nodes)
       })
-      setTimeout(callback(), 3000)
     }
 
     function initiateConnectionSearch(d, nodes) {
@@ -372,22 +371,9 @@ var distribute = function () {
       //for (var i = 0; i < 200; ++i) simulation.tick()
       //simulation.alpha(1).alphaDecay(0.1).restart()
       enter(nodes, links)
-      console.log(nodes, links)
+
     }
     
-    findAllConnections(runSimulation) 
-    execute(function() {
-      fling()
-      //createConvexHullLayer(nodes, groupIDs)
-      execute(function() {
-        focus()
-        execute(function() {
-          var distributed = distributedData(nodes)
-          distributedUpdate(distributed) 
-        })
-      })
-    })
-
     ///////////////////////////////////////////////////////////////////////////
     //////////////////////////// Graph Network plot ///////////////////////////
     ///////////////////////////////////////////////////////////////////////////
@@ -424,7 +410,7 @@ var distribute = function () {
         .attr('stroke', function(d) {return d.strokeColor})
         .attr('fill', function(d) {return d.color_new ? d.color_new : d.color})
         .attr('class',function(d) {return 'nucleus-' + d.group})
-        .attr('id', function(d) {return d.id}) 
+        .attr('id', function(d) {return groupIDs.indexOf(d.group) + "-" + d.id}) 
 
       circle.attr("transform", function(d) { 
         return "translate(" + d.x + "," + d.y + ")"; })
@@ -433,13 +419,10 @@ var distribute = function () {
     //////////////////////// Fling nodes away /////////////////////////////
     function fling() {
 
-      var forceX = d3.forceX(function (d) { return width/2})
-          .strength(function (d) { return d.group == 'disconnected' ? 0 : 0.1}) // this gives the flinging motion
-
-      var forceY = d3.forceY(function (d) {return height/2})
-          .strength(function (d) { return d.group == 'disconnected' ? 0 : 0.1})
-
       simulation.stop()
+
+      var forceX = d3.forceX(function (d) { return width/2 }).strength(0.1)
+      var forceY = d3.forceY(function (d) { return height/2 }).strength(0.1)
 
       simulation
         .force('charge', d3.forceManyBody(function (d) { return d.group == 'disconnected' ? -2000 : -20}))
@@ -456,7 +439,7 @@ var distribute = function () {
       simulation.stop()
 
       nodes = nodes.filter(d=>d.group != 'disconnected')
-      links = []
+      links = links.filter(d=>d.group != 'disconnected')
       //console.log(nodes, links)
 
       path = path.data(links, d=>d.id)
@@ -471,8 +454,21 @@ var distribute = function () {
       
       circle = circle.enter().append("circle").merge(circle)
 
+      var forceX = d3.forceX(function (d) { 
+        var group = modulePosition.find(g=>g.group = d.id)
+        console.log(group.coordinates.x)
+        return group ? group.coordinates.x : width/2
+      }).strength(0.1)
+
+      var forceY = d3.forceY(function (d) {
+        var group = modulePosition.find(g=>g.group = d.id)
+        return group ? group.coordinates.y : height/2
+      }).strength(0.1)
+
       simulation
-        .force("link", d3.forceLink().strength(function(d) {return 0.8}))
+        .force("link", d3.forceLink().strength(function(d) {return 0.7}))
+        .force("x", forceX)
+        .force("y", forceY)
 
       simulation.nodes(nodes).on("tick", update)
       simulation.force('link').links(links)
@@ -483,7 +479,30 @@ var distribute = function () {
       function hideLinks() {
         path.transition().duration(1000).attr('opacity', 0)
       }
+
     }
+
+    ///////////////////////////////////////////////////////////////////////////
+    ///////////////////////////// Run in sequence /////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////
+    findAllConnections() 
+    var distributed = distributedData(nodes)
+    console.log(distributed)
+
+    execute(function() {
+      runSimulation()
+      execute(function() {
+        fling()
+        //createConvexHullLayer(nodes, groupIDs)
+        execute(function() {
+          focus()
+          execute(function() {
+            distributedUpdate(distributed) 
+          })
+        })
+      })
+    })
+
 
   }
   ///////////////////////////////////////////////////////////////////////////
@@ -494,36 +513,26 @@ var distribute = function () {
 
     var tilesPerRow = 10
     var tileSize = nodeRadius
-    var barWidth = 100
-
-    // find count of nodes within each category 
-    var counts = nodes.reduce((p, c) => {
-      var name = c.group; // key property
-      if (!p.hasOwnProperty(name)) {
-        p[name] = 0;
-      }
-      p[name]++;
-      return p;
-    }, {});
-
-    countsExtended = Object.keys(counts).map((k,i) => {
-      var circles_arr = nodes.filter(d=>d.group==k) // array of node ids part of the group
-      return {counter:i, name: k, count: counts[k], node_IDs: circles_arr}
-    })
+    var barWidth = 220
 
     // get x-y coordinates of all tiles first without rendering the dotted bar chart
+    //var dataAll = links_filt.map(d=>d.count)
     var arrays = []
-    for (var key in countsExtended) {
-      console.log(countsExtended[key].count, countsExtended[key].counter, countsExtended[key].name, countsExtended[key].node_IDs)
-      var tiles = getTiles(countsExtended[key].count, countsExtended[key].counter, countsExtended[key].name, countsExtended[key].node_IDs) // pass in groupId and count of nodes within each group
-      arrays.push(tiles)  
+    //dataAll.map((d,i) => {
+      //var tiles = getTiles(d, i)
+      //arrays.push(tiles)
+    //})
+
+    for (var key in links_filt) {
+      var tiles = getTiles(links_filt[key].value, links_filt[key].key, key)
+      arrays.push(tiles)
     }
 
     var distributed = [].concat.apply([], arrays)
     console.log(distributed)
     return distributed
 
-    function getTiles(num, counter, group, node_IDs) {
+    function getTiles(num, group, counter) {
       var tiles = [];
       for(var i = 0; i < num; i++) {
         var rowNumber = Math.floor(i / tilesPerRow)
@@ -531,14 +540,13 @@ var distribute = function () {
           x: ((i % tilesPerRow) * tileSize) + (counter * barWidth) + tileSize,
           y: -(rowNumber + 1) * tileSize + height, 
           color: colorTopNodes(group),
-          class: 'nucleus-' + group.toString(), // follow same class name as set when rendering force layout
-          radius: tileSize/2,
-          id: node_IDs[i].id
+          class: 'nucleus-' + group, 
+          id: counter + '-' + i + num, // index each node (NOTE: this is has to be the same index as force layout's nodes)
+          radius: tileSize
         });
       }
       return tiles
     }
-
   }
 
 
@@ -548,26 +556,25 @@ var distribute = function () {
 
   function distributedUpdate(data) {
 
-    circle = circle.data(data, d=>d.id)
+    circle = circle.selectAll('circle').data(data, d=>d.id)
     
     circle.exit().remove();
-    
+      
     circle = circle.merge(circle)
 
     var t = d3.transition()
       .duration(2100)
       .ease(d3.easeQuadOut)
+      
     // transition each node one by one within each group at the same time
     groupIDs.map((d,i)=> {
-      console.log(d, circle.filter("circle[class*='" + d.toString() + "']"))
-      circle.filter("circle[class*='" + d.toString() + "']")
-        .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; })
+      console.log(circle.filter("circle[class*='" + i.toString() + "']"))
+      circle.filter("circle[class*='" + i.toString() + "']")
         .transition(t)
         .delay(function(d,i){ return 10*i }) // transition each node one by one based on index
         //.delay(function(d,i){ return d.length }) // transition each node one by one based on length of trajectory
-        .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; })
-        .attr('stroke-width', function(d) {return d.strokeWidth})
-        .attr('stroke', function(d) {return d.strokeColor})
+        .attr('cx', d => d.x)
+        .attr('cy', d => d.y)
     })
 
   }
