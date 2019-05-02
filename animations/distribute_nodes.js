@@ -4,8 +4,8 @@ var distribute = function () {
   ///////////////////////////////// Globals /////////////////////////////////
   /////////////////////////////////////////////////////////////////////////// 
   var simulation, circles, g
-  var canvasDim = { width: 1200, height: 800}
-  var margin = {top: 0, right: 0, bottom: 0, left: 0}
+  var canvasDim = { width: screen.width*0.9, height: screen.height*0.8}
+  var margin = {top: 20, right: 20, bottom: 20, left: 20}
   var width = canvasDim.width - margin.left - margin.right;
   var height = canvasDim.height - margin.top - margin.bottom;
   var crime = ["Money Laundering", "Sanctioned transaction", "Terrorist financing"]
@@ -29,7 +29,7 @@ var distribute = function () {
     .range([0, width])
 
   var yScale = d3.scaleLinear()
-    .range([0, height])
+    .range([0, height*(1/2)])
 
   ///////////////////////////////////////////////////////////////////////////
   /////////////////////////////////// CORE //////////////////////////////////
@@ -53,20 +53,33 @@ var distribute = function () {
       var nodes = getData()
       var distributed = distributedData(nodes) // run this function first to get IDs of nodes
       var scattered = scatteredData(distributed) // modify x-y coordinates only
-
+      
+      distributed.forEach((d,i) => {
+        d.length = getPathLength(scattered, d)
+      })
+      console.log(distributed)
       update(scattered, 'scattered')
       scatter(scattered)
 
-      //execute(function() {
-        //cluster()
+      execute(function() {
+        cluster()
         execute(function() {
           simulation.stop()
           update(distributed, 'distributed')
         })
-      //})
+      })
  
     }
   }
+
+  ///////////////////////////////////////////////////////////////////////////
+  ///////////////////////// Find length of trajectory ///////////////////////
+  ///////////////////////////////////////////////////////////////////////////
+  function getPathLength(other, d) {
+    var d2 = other.find(b=>b.id==d.id)
+    var len = Math.sqrt((Math.pow(d.x-d2.x,2))+(Math.pow(d.y-d2.y,2)))
+    return len
+  } 
 
   ///////////////////////////////////////////////////////////////////////////
   //////////////////////////// Data Processing //////////////////////////////
@@ -239,6 +252,11 @@ var distribute = function () {
 
   }
 
+
+  ///////////////////////////////////////////////////////////////////////////
+  //////////////////////////// Updated node positions ///////////////////////
+  ///////////////////////////////////////////////////////////////////////////
+
   function update(data, type) {
     console.log(data)
     circles = g.selectAll('circle').data(data, d=>d.id)
@@ -265,16 +283,16 @@ var distribute = function () {
     } else if(type=='distributed'){
 
       var t = d3.transition()
-        .duration(1100)
+        .duration(2100)
         .ease(d3.easeQuadOut)
-        .delay(function(d,i){ return 5*i }) // transition each node one by one based on index
-        //.delay(function(d,i){ return 20*i }) // transition each node one by one based on length of trajectory
-
+        
       // transition each node one by one within each group at the same time
       category.map((d,i)=> {
         circles.filter("circle[id^='" + i.toString() + "']")
           .transition(t)
-          .attr('cx', d=> d.x)
+          //.delay(function(d,i){ return 100*i }) // transition each node one by one based on index
+          .delay(function(d,i){ return d.length*10 }) // transition each node one by one based on length of trajectory
+          .attr('cx', d => d.x)
           .attr('cy', d => d.y)
       })
       
