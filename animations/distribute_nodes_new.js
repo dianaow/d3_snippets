@@ -328,14 +328,14 @@ var distribute = function () {
 
       //Make the x-position equal to the x-position specified in the module positioning object or, if module not labeled, set it to center
       var forceX = d3.forceX(function (d) { 
-        var group = modulePosition.find(g=>g.group = d.id)
+        var group = modulePosition.find(g=>g.group == d.id)
         return group ? group.coordinates.x : width/2
       }).strength(0.2)
 
       //Same for forceY--these act as a gravity parameter so the different strength determines how closely
       //the individual nodes are pulled to the center of their module position
       var forceY = d3.forceY(function (d) {
-        var group = modulePosition.find(g=>g.group = d.id)
+        var group = modulePosition.find(g=>g.group == d.id)
         return group ? group.coordinates.y : height/2
       }).strength(0.2)
 
@@ -372,7 +372,7 @@ var distribute = function () {
       //for (var i = 0; i < 200; ++i) simulation.tick()
       //simulation.alpha(1).alphaDecay(0.1).restart()
       enter(nodes, links)
-      console.log(nodes, links)
+
     }
     
     findAllConnections(runSimulation) 
@@ -381,9 +381,14 @@ var distribute = function () {
       //createConvexHullLayer(nodes, groupIDs)
       execute(function() {
         focus()
+        setTimeout(function() {
+          simulation.stop()
+          circle.exit().remove()
+          distributedUpdate(nodes)
+        }, 2000)
         execute(function() {
           var distributed = distributedData(nodes)
-          distributedUpdate(distributed) 
+          distributedUpdate(distributed)
         })
       })
     })
@@ -457,7 +462,7 @@ var distribute = function () {
 
       nodes = nodes.filter(d=>d.group != 'disconnected')
       links = []
-      //console.log(nodes, links)
+      //console.log(nodes, links) x
 
       path = path.data(links, d=>d.id)
   
@@ -471,8 +476,19 @@ var distribute = function () {
       
       circle = circle.enter().append("circle").merge(circle)
 
+      var forceX = d3.forceX(function (d) { 
+        var group = modulePosition.find(g=>g.group == d.id)
+        return group ? group.coordinates.x : width/2
+      }).strength(0.2)
+
+      var forceY = d3.forceY(function (d) {
+        var group = modulePosition.find(g=>g.group == d.id)
+        return group ? group.coordinates.y : height/2
+      }).strength(0.2)
+
       simulation
-        .force("link", d3.forceLink().strength(function(d) {return 0.8}))
+        .force("x", forceX)
+        .force("y", forceY)
 
       simulation.nodes(nodes).on("tick", update)
       simulation.force('link').links(links)
@@ -493,7 +509,7 @@ var distribute = function () {
   function distributedData(nodes) {
 
     var tilesPerRow = 10
-    var tileSize = nodeRadius
+    var tileSize = nodeRadius * 2
     var barWidth = 100
 
     // find count of nodes within each category 
@@ -514,13 +530,12 @@ var distribute = function () {
     // get x-y coordinates of all tiles first without rendering the dotted bar chart
     var arrays = []
     for (var key in countsExtended) {
-      console.log(countsExtended[key].count, countsExtended[key].counter, countsExtended[key].name, countsExtended[key].node_IDs)
       var tiles = getTiles(countsExtended[key].count, countsExtended[key].counter, countsExtended[key].name, countsExtended[key].node_IDs) // pass in groupId and count of nodes within each group
       arrays.push(tiles)  
     }
 
     var distributed = [].concat.apply([], arrays)
-    console.log(distributed)
+
     return distributed
 
     function getTiles(num, counter, group, node_IDs) {
@@ -528,6 +543,8 @@ var distribute = function () {
       for(var i = 0; i < num; i++) {
         var rowNumber = Math.floor(i / tilesPerRow)
         tiles.push({
+          //x: node_IDs[i].x,
+          //y: node_IDs[i].y,
           x: ((i % tilesPerRow) * tileSize) + (counter * barWidth) + tileSize,
           y: -(rowNumber + 1) * tileSize + height, 
           color: colorTopNodes(group),
@@ -548,28 +565,40 @@ var distribute = function () {
 
   function distributedUpdate(data) {
 
-    circle = circle.data(data, d=>d.id)
-    
-    circle.exit().remove();
-    
-    circle = circle.merge(circle)
+    var circles1 = d3.selectAll('circle').data(data, d=>d.id)
+
+    var entered_circles = circles1
+      .enter()
+      .append('circle')
+        .style('opacity', 1)
+        .attr('class',function(d) {return 'nucleus-' + d.group})
+        .attr('id', d => d.id)
+        .attr('transform', 'translate(0,0)')
+        .attr('cx', d => d.x)
+        .attr('cy', d => d.y)
+        .style('fill', d => d.color)
+        .attr('r', d => d.radius)
+        .attr('stroke-width', function(d) {return d.strokeWidth})
+        .attr('stroke', function(d) {return d.strokeColor})
+
+    circles1 = circles1.merge(entered_circles)
 
     var t = d3.transition()
       .duration(2100)
       .ease(d3.easeQuadOut)
+      
     // transition each node one by one within each group at the same time
     groupIDs.map((d,i)=> {
-      console.log(d, circle.filter("circle[class*='" + d.toString() + "']"))
-      circle.filter("circle[class*='" + d.toString() + "']")
-        .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; })
+      circles1.filter("circle[class*='" + d.toString() + "']")
         .transition(t)
         .delay(function(d,i){ return 10*i }) // transition each node one by one based on index
-        //.delay(function(d,i){ return d.length }) // transition each node one by one based on length of trajectory
-        .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; })
-        .attr('stroke-width', function(d) {return d.strokeWidth})
-        .attr('stroke', function(d) {return d.strokeColor})
+        //.delay(function(d,i){ return d.length*10 }) // transition each node one by one based on length of trajectory
+        .attr('transform', 'translate(0,0)')
+        .attr('cx', d => d.x)
+        .attr('cy', d => d.y)
     })
 
+  
   }
 
   ///////////////////////////////////////////////////////////////////////////

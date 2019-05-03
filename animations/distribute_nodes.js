@@ -44,7 +44,7 @@ var distribute = function () {
 
     });
 
-  var delayRange = 
+  var delayRange = range(10, 110, 10)
   var options = select
     .selectAll('option')
     .data(delayRange).enter()
@@ -296,7 +296,7 @@ var distribute = function () {
         .attr('cx', d => d.x)
         .attr('cy', d => d.y)
 
-    } else if(type=='distributed'){
+    } else if(type=='distributed_by_index'){
 
       var t = d3.transition()
         .duration(2100)
@@ -307,11 +307,14 @@ var distribute = function () {
         circles.filter("circle[id^='" + i.toString() + "']")
           .transition(t)
           //.delay(function(d,i){ return 100*i }) // transition each node one by one based on index
-          .delay(function(d,i){ return d.length*10 }) // transition each node one by one based on length of trajectory
+          .delay(function(d,i){ return d.length*DELAY }) // transition each node one by one based on length of trajectory
           .attr('cx', d => d.x)
           .attr('cy', d => d.y)
       })
-      
+     
+    } else if(type=='distributed_by_index'){
+
+
     }
 
   }
