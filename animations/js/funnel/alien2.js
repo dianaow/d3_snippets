@@ -29,6 +29,12 @@ var graph = function () {
       .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+      var misc = modal.append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
       countriesGroup = svg
        .append("g")
        .attr("id", "map")
@@ -122,68 +128,12 @@ var graph = function () {
         .links(graph.links)
         .layout(12);
 
-      drawMap()
-      //execute(function() {
-        //drawSankey()
-      //})
-
-      ///////////////////////////////////////////////////////////////////////////
-      //////////////////////// Render links (with gradient) /////////////////////
-      ///////////////////////////////////////////////////////////////////////////
-
-      // append a defs (for definition) element to your SVG
-      const defs = svg.append('defs');
-
-      sankey  
-        .nodes(graph.nodes, d=>d.node)
-        .links(graph.links, d=>"link link-" + d.source.name + "-" + d.target.name)
-        .layout(13);
-
-      // add in the links
-      var link = svg.append("g").selectAll(".link")
-          .data(graph.links)
-          .enter().append("path")
-          .attr("class", "link")
-          .attr("d", curve)
-          .style("fill", "none")
-          .style("stroke-width", function (d) {
-            return d.dy;
-          })
-          .style("stroke-opacity", 1)
-          .sort(function (a, b) {
-              return b.dy - a.dy;
-          })
-          .style("stroke", "black")
-      createGradient()
-      function createGradient() {
-        link.style("stroke", function(d,i) {
-              // make unique gradient ids  
-              const gradientID = `gradient${i}`;
-
-              const startColor = colorScale(d.source.name);
-              const stopColor = colorScale(d.target.name);
-
-              const linearGradient = defs.append('linearGradient')
-                  .attr('id', gradientID)
-                  .attr("gradientTransform", "rotate(90)");
-
-              linearGradient.selectAll('stop') 
-                .data([                             
-                    {offset: '50%', color: startColor },      
-                    {offset: '75%', color: stopColor }    
-                  ])                  
-                .enter().append('stop')
-                .attr('offset', d => {
-                  return d.offset; 
-                })   
-                .attr('stop-color', d => {
-                  return d.color;
-                });
-
-              return `url(#${gradientID})`;
-
+      execute(function() {
+        drawMap()
+        execute(function() {
+          drawSankey()
         })
-      }
+      })
 
       ///////////////////////////////////////////////////////////////////////////
       //////////////////////////////// Render map ///////////////////////////////
@@ -194,9 +144,9 @@ var graph = function () {
       // Define map projection
       var projection = d3
          .geoEquirectangular()
-         .center([0, -15]) // set centre to further North
-         .scale([width/2]) // scale to fit group width
-         .translate([0,height]) // ensure centred in group
+         .center([0, 0]) // set centre to further North
+         .scale([width/2.9]) // scale to fit group width
+         .translate([width/4,height*(3/4)]) // ensure centred in group
 
       // Define map path
       var path = d3.geoPath()
@@ -256,177 +206,238 @@ var graph = function () {
       }
 
       ///////////////////////////////////////////////////////////////////////////
-      //////////////////////// Manually customize node position /////////////////
+      //////////////////////// Render links (with gradient) /////////////////////
       ///////////////////////////////////////////////////////////////////////////
+      function drawSankey() {
 
-      function manualLayout() {
-        //http://stackoverflow.com/questions/10337640/how-to-access-the-dom-element-that-correlates-to-a-d3-svg-object
-        //displacements in order of foo nodes (foo[0][j])
-        sel_centroids = [["China", 634.194630559586, 635.0270986503383], 
-        ["Japan", 843.1827606083929, 628.7319117178528],
-        ["Singapore", 634.1835276619687, 850.0700164287862],
-        ["Russia", 590.624592166605, 479.7527504395012],
-        ["Mexico", -626.2801271358472, 712.0830341822129],
-        ["Italy", 73.73151618184028, 596.9405003263257],
-        ["Canada", -600.5279945467455, 483.5307006702942]
-        ]
+        // append a defs (for definition) element to your SVG
+        const defs = svg.append('defs');
 
-        for (j=0; j < sel_centroids.length; j++) {
-          //pickNode = foo.nodes()[j]; // do not select node based on index
-          pickNode = d3.select('.node-' + sel_centroids[j][0]) // select the node based on class name
-          d = graph.nodes.find(function(d) {  return d.name == sel_centroids[j][0] }); // get the properties of that node
-          pickNode.attr("transform", 
-                "translate(" + (
-                       d.x = sel_centroids[j][1]
-              ) + "," + (
-                       d.y = sel_centroids[j][2] //Math.max(0, Math.min(height - d.dy, d3.event.y))
-                ) + ")");
-       
+        sankey  
+          .nodes(graph.nodes, d=>d.node)
+          .links(graph.links, d=>"link link-" + d.source.name + "-" + d.target.name)
+          .layout(13);
+
+        // add in the links
+        var link = svg.append("g").selectAll(".link")
+            .data(graph.links)
+            .enter().append("path")
+            .attr("class", "link")
+            .attr("d", curve)
+            .style("fill", "none")
+            .style("stroke-width", function (d) {
+              return d.dy;
+            })
+            .style("stroke", "black")
+            //.style("stroke-opacity", 0.2)
+            .sort(function (a, b) {
+                return b.dy - a.dy;
+            })
+          
+        createGradient()
+
+        function createGradient() {
+          link.style("stroke", function(d,i) {
+            // make unique gradient ids  
+            const gradientID = `gradient${i}`;
+
+            const startColor = colorScale(d.source.name);
+            const stopColor = colorScale(d.target.name);
+
+            const linearGradient = defs.append('linearGradient')
+                .attr('id', gradientID)
+                .attr("gradientTransform", "rotate(90)");
+
+            var stops1 = [   
+              {offset: '0%', color: startColor, opacity: 1 },                           
+              {offset: '50%', color: startColor, opacity: 0.8 },      
+              {offset: '75%', color: stopColor, opacity: 0.6 },  
+            ]
+
+            var stops2 = [   
+              {offset: '0%', color: startColor, opacity:  0.6 },                           
+              {offset: '50%', color: startColor, opacity: 0.4 },      
+              {offset: '75%', color: stopColor, opacity: 0.2 }    
+            ]
+
+            linearGradient.selectAll('stop') 
+              .data(['Spaceship'].indexOf(d.source.name) != -1 ? stops1 : stops2)                  
+              .enter().append('stop')
+              .attr('offset', d => {
+                return d.offset; 
+              })   
+              .attr('stop-color', d => {
+                return d.color;
+              })
+              .attr('stop-opacity', d => {
+                return d.opacity;
+              });
+
+            return `url(#${gradientID})`;
+
+          })
         }
 
-        categories =[["Sanctions", 20, 0], ["Sanctions", 20, 0], ["Sanctions", 20, 0]]
+        ///////////////////////////////////////////////////////////////////////////
+        //////////////////////// Manually customize node position /////////////////
+        ///////////////////////////////////////////////////////////////////////////
 
-        for (j=0; j < categories.length; j++) {
-          //pickNode = foo.nodes()[j]; // do not select node based on index
-          pickCircle = d3.select('.circle-' + categories[j][0])
-          pickNode = d3.select('.node-' + categories[j][0]) // select the node based on class name
-          d = graph.nodes.find(function(d) {  return d.name == categories[j][0] }); // get the properties of that node
-          pickNode.attr("transform", 
-                "translate(" + (
-                       d.x = d.x + categories[j][1]
-              ) + "," + (
-                       d.y = d.y + categories[j][2] //Math.max(0, Math.min(height - d.dy, d3.event.y))
-                ) + ")");
+        function manualLayout() {
+          console.log(sel_centroids)
+          //http://stackoverflow.com/questions/10337640/how-to-access-the-dom-element-that-correlates-to-a-d3-svg-object
+          //displacements in order of foo nodes (foo[0][j])
+          sel_centroids1 = [["China", 634.194630559586, 635.0270986503383], 
+          ["Japan", 843.1827606083929, 628.7319117178528],
+          ["Singapore", 634.1835276619687, 850.0700164287862],
+          ["Russia", 590.624592166605, 479.7527504395012],
+          ["Mexico", -626.2801271358472, 712.0830341822129],
+          ["Italy", 73.73151618184028, 596.9405003263257],
+          ["Canada", -600.5279945467455, 483.5307006702942]
+          ]
 
-        }
-
-
-        sankey.relayout();
-        link.attr("d", curve);
-      }
-
-      ///////////////////////////////////////////////////////////////////////////
-      ////////////////////////////////// Render nodes ///////////////////////////
-      ///////////////////////////////////////////////////////////////////////////
-
-      // add in the nodes
-      var node = svg.append("g").selectAll(".node")
-          .data(graph.nodes)
-          .enter().append("g")
-          .attr("class", function(d) { return "node node-" + d.name })
-          .attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")" })
-          .call(function () {
-           manualLayout();
-          });
-
-      // add the circles for the nodes
-      node.append("circle")
-          .attr("class", function(d) { return "circle-" + d.name })
-          .attr("cy", function (d) {
-              return d.name == 'Spaceship' ? sankey.nodeWidth()/2-200 : sankey.nodeWidth()/2;
-          })
-          .attr("cx", function (d) {
-              return d.dy/2;
-          })
-          .attr("r", function (d) {
-              return d.name == 'Spaceship' ? 300 : d.dy/2;
-          })
-          .style("fill", function (d) {
-              return colorScale(d.name)
-          })
-          .style("fill-opacity", 1)
-          .style("shape-rendering", "crispEdges")
-          .append("title")
-          .text(function (d) {
-              return d.name + "\n" + d.value
-          });
-
-
-      // add in the title for the nodes
-      node.append("text")
-          .attr("y", function (d) {
-              return - 6 + sankey.nodeWidth() / 2 - Math.sqrt(d.dy);
-          })
-          .attr("x", function (d) {
-              return d.dy / 2;
-          })
-          .attr("dy", ".35em")
-          .attr("text-anchor", "end")
-          .attr("text-shadow", "0 1px 0 #fff")
-          .attr("transform", null)
-          .text(function (d) {
-              return d.name;
-          })
-          .filter(function (d) {
-              return d.x < width / 2;
-          })
-          .attr("x", function (d) {
-              return 6 + sankey.nodeWidth() / 2 + Math.sqrt(d.dy);
-          })
-          .attr("text-anchor", "start");
-
-
-      ///////////////////////////////////////////////////////////////////////////
-      ////////////////////// Marker moving along path ///////////////////////////
-      ///////////////////////////////////////////////////////////////////////////
-      trickling()
-
-      function trickling() {
-        var FREQ = 1000
-        var SPEED = 10000
-
-        var freqCounter = 1;
-        var linkExtent = d3.extent(graph.links, function (d) {return d.value});
-        var frequencyScale = d3.scaleLinear().domain(linkExtent).range([1,FREQ]);
-        var particleSize = d3.scaleLinear().domain(linkExtent).range([0.2,2]);
-
-        graph.links.forEach(function (link) {
-          link.freq = frequencyScale(link.value);
-          link.particleSize = particleSize(link.value);
-          link.particleColor = d3.scaleLinear().domain([1,SPEED]).range([colorScale(link.source.name), colorScale(link.target.name)]); // don't transition color of nodes
-        })
-
-        var t = d3.timer(tick, SPEED);
-        var particles = [];
-
-        function tick(elapsed, time) {
-
-          particles = particles.filter(function (d) {return d.time > (elapsed - SPEED)});
-          if (freqCounter > FREQ) {
-            freqCounter = 1;
+          for (j=0; j < sel_centroids.length; j++) {
+            //pickNode = foo.nodes()[j]; // do not select node based on index
+            pickNode = d3.select('.node-' + sel_centroids[j][0]) // select the node based on class name
+            d = graph.nodes.find(function(d) {  return d.name == sel_centroids[j][0] }); // get the properties of that node
+            pickNode.attr("transform", 
+                  "translate(" + (
+                         d.x = sel_centroids[j][1]
+                ) + "," + (
+                         d.y = sel_centroids[j][2] //Math.max(0, Math.min(height - d.dy, d3.event.y))
+                  ) + ")");
+         
           }
 
-          d3.selectAll("path.link")
-          .each(
-            function (d) {
-              if (d.freq >= freqCounter) {
-                var offsetX = (Math.random() - .2) * sankey.nodeWidth();
-                var offsetY = (Math.random() - .5) * d.dy;
-                particles.push({link: d, time: elapsed, offsetX: offsetX, offsetY: offsetY, path: this})
-              }
+          categories =[["Sanctions", 20, 0], ["Sanctions", 20, 0], ["Sanctions", 20, 0]]
+
+          for (j=0; j < categories.length; j++) {
+            //pickNode = foo.nodes()[j]; // do not select node based on index
+            pickCircle = d3.select('.circle-' + categories[j][0])
+            pickNode = d3.select('.node-' + categories[j][0]) // select the node based on class name
+            d = graph.nodes.find(function(d) {  return d.name == categories[j][0] }); // get the properties of that node
+            pickNode.attr("transform", 
+                  "translate(" + (
+                         d.x = d.x + categories[j][1]
+                ) + "," + (
+                         d.y = d.y + categories[j][2] //Math.max(0, Math.min(height - d.dy, d3.event.y))
+                  ) + ")");
+
+          }
+
+          sankey.relayout();
+          link.attr("d", curve);
+        }
+
+        ///////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////// Render nodes ///////////////////////////
+        ///////////////////////////////////////////////////////////////////////////
+
+        // add in the nodes
+        var node = svg.append("g").selectAll(".node")
+            .data(graph.nodes)
+            .enter().append("g")
+            .attr("class", function(d) { return "node node-" + d.name })
+            .attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")" })
+            .call(function () {
+             manualLayout();
             });
 
-          particleEdgeCanvasPath(elapsed);
-          freqCounter++;
 
-        }
-        
-        function particleEdgeCanvasPath(elapsed) {
+        // add the circles for the nodes
+        node.filter(function(d) { return d.name == 'Spaceship'})
+          .append("circle")
+            .attr("class", function(d) { return "circle-" + d.name })
+            .attr("cy",  sankey.nodeWidth()/2-200)
+            .attr("cx", function (d) { return d.dy/2 })
+            .attr("r", 300)
+            .style("fill", 'black')
+            .style("fill-opacity", 2)
+            .style("shape-rendering", "crispEdges")
 
-          context.clearRect(-margin.left, -margin.top, canvasDim.width, canvasDim.height);
+        node.append("rect")
+            .attr("height", sankey.nodeWidth())
+            .attr("width", function(d) { return d.dy })
+            .style("fill", function(d) { return colorScale(d.name) })
+            .style("stroke", "none")
+            .style("fill-opacity", function(d) { return filteredCountries.indexOf(d.name) != -1 ? 0.2 : 0.6 })
+          .append("title")
+            .text(function(d) { return d.name });
 
-          context.fillStyle = "grey";
-          context.lineWidth = "1px";
+        node.append("rect")
+            .attr("height", sankey.nodeWidth())
+            .attr("width", function(d) { return d.dy })
+            .style("fill", function(d) { return colorScale(d.name) })
+            .style("stroke", "none")
+            .style("fill-opacity", function(d) { return filteredCountries.indexOf(d.name) != -1 ? 0.2 : 0.6 })
+          .append("title")
+            .text(function(d) { return d.name });
 
-          for (var x in particles) {
-              var currentTime = elapsed - particles[x].time;
-              var currentPercent = currentTime / SPEED * particles[x].path.getTotalLength();
-              var currentPos = particles[x].path.getPointAtLength(currentPercent)
-              context.beginPath();
-              //context.fillStyle = particles[x].link.particleColor(currentTime);
-              context.arc(currentPos.x+ particles[x].offsetX, currentPos.y + particles[x].offsetY, particles[x].link.particleSize, 0, 2*Math.PI);
-              context.fill();
+        ///////////////////////////////////////////////////////////////////////////
+        ////////////////////// Marker moving along path ///////////////////////////
+        ///////////////////////////////////////////////////////////////////////////
+        trickling()
+
+        function trickling() {
+          var FREQ = 200
+          var SPEED = 8000
+
+          var freqCounter = 1;
+          var linkExtent = d3.extent(graph.links, function (d) {return d.value});
+          var frequencyScale = d3.scaleLinear().domain(linkExtent).range([1,FREQ]);
+          var particleSize = d3.scaleLinear().domain(linkExtent).range([0.2,2]);
+
+          graph.links.forEach(function (link) {
+            link.freq = link.value;
+            link.particleSize = 2;
+            //link.particleSize = particleSize(link.value);
+            link.particleColorTime = d3.scaleLinear().domain([SPEED/2,SPEED]).range(["black", colorScale(link.target.name)])
+            link.particleColor = colorScale(link.source.name)
+            //link.particleColor = d3.scaleLinear().domain([1,SPEED]).range([colorScale(link.source.name), colorScale(link.target.name)]); // don't transition color of nodes
+          })
+
+          var t = d3.timer(tick, SPEED);
+          var particles = [];
+
+          function tick(elapsed, time) {
+
+            particles = particles.filter(function (d) {return d.time > (elapsed - SPEED)});
+            if (freqCounter > FREQ) {
+              freqCounter = 1;
+            }
+
+            d3.selectAll("path.link")
+            .each(
+              function (d) {
+                if (d.freq >= freqCounter) {
+                  var offsetX = (Math.random() - .5) * sankey.nodeWidth();
+                  var offsetY = (Math.random() - .5) * d.dy;
+                  particles.push({link: d, time: elapsed, offsetX: offsetX, offsetY: offsetY, path: this})
+                }
+              });
+
+            particleEdgeCanvasPath(elapsed);
+            freqCounter++;
+
           }
+          
+          function particleEdgeCanvasPath(elapsed) {
+
+            context.clearRect(-margin.left, -margin.top, canvasDim.width, canvasDim.height);
+
+            context.fillStyle = "grey";
+            context.lineWidth = "1px";
+
+            for (var x in particles) {
+                var currentTime = elapsed - particles[x].time;
+                var currentPercent = currentTime / SPEED * particles[x].path.getTotalLength();
+                var currentPos = particles[x].path.getPointAtLength(currentPercent)
+                context.beginPath();
+                context.fillStyle = filteredCountries.indexOf(particles[x].link.target.name) != -1 ? particles[x].link.particleColor : particles[x].link.particleColorTime(currentTime)
+                context.arc(currentPos.x+ particles[x].offsetX, currentPos.y + particles[x].offsetY, particles[x].link.particleSize, 0, 2*Math.PI);
+                context.fill();
+            }
+          }
+
         }
 
       }
