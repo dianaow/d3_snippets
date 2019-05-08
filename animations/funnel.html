@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <script src="http://d3js.org/d3.v4.min.js"></script>
+  <script src="https://d3js.org/d3-color.v1.min.js"></script>
+  <script src="https://d3js.org/d3-interpolate.v1.min.js"></script>
+  <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+  <style>
+    #chart {
+      display: flex; /* required */
+      flex-flow: row nowrap; /* required */
+    }
+    .canvas {
+      box-sizing: border-box; /* required */
+      flex: none; /* required */
+      pointer-events: none;
+      z-index: 2;
+      /* to check if overlay is aligned */
+      /*border: 2px solid black;*/
+    }
+    #chart svg {
+      z-index: -1;
+      flex: none; 
+      margin-left: -1250px;
+    }
+
+    #map rect {
+      fill: none;
+      /* to check if overlay is aligned */
+      /*stroke-width: 1px;*/
+      /*stroke: black;*/
+    }
+
+    #map path {
+      fill: lightgrey;
+      stroke-width: 1px;
+      stroke: slategrey;
+      z-index: -2;
+    }
+  </style>
+</head>
+<body>
+  <div id="chart"></div>
+  <script src="./js/funnel/sankey.js"></script>
+  <script src="./js/funnel/alien2.js"></script>
+  <script>
+    graph.run()
+  </script>
+</body>
+</html>

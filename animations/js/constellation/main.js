@@ -4,7 +4,7 @@ var constellation = function () {
   //////////////////// Globals ///////////////////
   /////////////////////////////////////////////////////////////////////////// 
   var ctxLinks, ctxNodes
-  var modal = d3.select(".modal-content7")
+  var modal = d3.select(".modal-content4")
   var margin = {
     top: 500,
     right: 10,

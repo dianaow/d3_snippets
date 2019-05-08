@@ -1,6 +1,7 @@
 body {
   background-color: white;
-  color: black
+  color: black;
+  font-family: 'Karla', sans-serif;
 }
 
 .box-wrapper {
@@ -72,6 +73,12 @@ img {
   border-radius: 0.5rem;
   text-align: center;
 }
+
+#modal-fullscreen{
+  width: 99%;
+  height: 99%;
+}
+
 .close-button {
   float: right;
   width: 1.5rem;
@@ -134,10 +141,14 @@ img {
 }
 
 .modal-content7 {
+  background-color:#F0EFEF;
+}
+
+.modal-content4 {
   margin: 0px;
   padding: 0px;
   border: 0px;
-  background-color: #101420;
+  background-color: black;
   font-family: 'Muli', sans-serif;
   color: #a8a394;  display: flex; /* required */
   flex-flow: row nowrap; /* required */
@@ -154,7 +165,7 @@ img {
   margin-left: -1250px;
 }
 
-.modal-content7 svg {
+.modal-content4 svg {
   z-index: 2;
   flex: none; 
   margin-left: -1250px;
@@ -177,4 +188,15 @@ img {
   .box-group {
     width: 100vw;
   }
+}
+
+#section {
+  padding: 10px;
+}
+#panel {
+  color:white;
+  position: fixed;
+  top: 50px;
+  left: 20px;
+  z-index: 1;
 }

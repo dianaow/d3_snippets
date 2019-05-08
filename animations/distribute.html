@@ -2,27 +2,77 @@
 <html>
   <head>
     <meta name="viewport" content="width=device-width">
+    <link href="https://fonts.googleapis.com/css?family=Karla" rel="stylesheet">
     <script src="https://d3js.org/d3.v4.min.js"></script>
     <script src="https://d3js.org/d3-color.v1.min.js"></script>
     <script src="https://d3js.org/d3-interpolate.v1.min.js"></script>
     <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+    <script src="https://d3js.org/d3-array.v2.min.js"></script>
+    <script src="https://unpkg.com/d3-simple-slider"></script>
     <style>
-      .modal-content5 {
-        text-align: center;
+      body {
+        font-family: 'Karla', sans-serif;
+        color: black;
+      }
+      #section {
+        padding: 10px;
+      }
+      #panel {
+        position: fixed;
+        top: 50px;
+        left: 20px;
+        z-index: 1;
       }
     </style>
   </head>
   <body>
     <div id="body">
-      <div id="delaySettings">
-        <p>Delay: <span id='delayLabel'>10</span></p>
-        <input type="range" min="10" max="100" value="10" step="10" 
-          oninput="delay = value; d3.select('#delayLabel').text(scaleFactor); updateGroups()">
+      <div id='panel'>
+        <label>First, select chart type to transition from: </label>
+        <div id="section">
+          <input name="start_type" 
+                 type="button" 
+                 class='run_cluster_sorted'
+                 value="Cluster blob"/>
+          <input name="start_type" 
+                 type="button" 
+                 class="run_cluster_bubbles"
+                 value="Cluster bubbles" />
+          <input name="start_type" 
+                 type="button" 
+                 class='reset_button'
+                 value="Reset to scatter"
+                 checked />
+        </div>
+        <label>Next, select transition type: </label>
+        <div id="section">
+          <input name="transition_type"
+                 type="radio" 
+                 value="transition_by_index"
+                 > Index<br>
+          <input name="transition_type"
+                 type="radio"
+                 value="transition_by_length"
+                 > Length<br>
+          <input name="transition_type"
+                 type="radio" 
+                 value="transition_by_default"
+                 checked > Default<br>
+        </div>
+        <label>Finally, select transition parameters: </label>
+        <div id='slider-step1'></div>
+        <div id='slider-step2'></div>
+        <div id="section">
+          <input name="submit" 
+                 class="submit_button"
+                 type="button" 
+                 value="Morph to dot plot!"/>
+        </div>
       </div>
-      <div class="modal-content5"></div>
+      <div class="modal-content2"></div>
     </div>
 
-    <script src="./distribute_nodes_new.js"></script>
+    <script src="./js/distribute_nodes.js"></script>
     <script>
       distribute.run()
     </script>

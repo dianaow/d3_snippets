@@ -1,4 +1,4 @@
-var distribute = function () {
+var panama = function () {
 
   ///////////////////////////////////////////////////////////////////////////
   ///////////////////////////////// Globals /////////////////////////////////
@@ -8,7 +8,7 @@ var distribute = function () {
   var margin = {top: 20, right: 20, bottom: 20, left: 20}
   var width = canvasDim.width - margin.left - margin.right;
   var height = canvasDim.height - margin.top - margin.bottom;
-  var modal = d3.select(".modal-content5")
+  var modal = d3.select(".modal-content7")
 
   var linkedByIndex = {},
       linkedToID = {},
@@ -32,14 +32,15 @@ var distribute = function () {
   ///////////////////////////////////////////////////////////////////////////
 
   var colorTopNodes = d3.scaleOrdinal()
-    .range(["#EFB605", "#E47D06", "#DB0131", "#AF0158", "#7F378D", "#3465A8", "#0AA174", "#7EB852"])
+    .range(["orangered", "gold", "teal", "mediumblue", "hotpink", "mediumspringgreen"])
 
   var radiusScale = d3.scaleLinear()
   .domain(d3.range(1,5))
   .range(d3.range(3, 15, 3))
 
   var xScale = d3.scaleLinear()
-    .range([0, width])
+    .range([width*(1/4), width*(3/4)])
+    .domain([0, width])
 
   var yScale = d3.scaleLinear()
     .range([0, height*(1/2)])
@@ -206,7 +207,7 @@ var distribute = function () {
     ///////////////////////////////////////////////////////////////////////////
 
     // find networks with the top ranked number of connected nodes
-    var top = 8
+    var top = 6
     var links_nested = d3.nest()
       .key(d=>d.source)
       .rollup(function(leaves) { return leaves.length; })
@@ -219,7 +220,7 @@ var distribute = function () {
     }
     groupIDs = links_filt.map(d=>d.key) // list of ids of the top 9 connected nodes
 
-    //Specify module position for the three largest modules. This is the x-y center of the modules
+    //Specify module position for the 9 largest modules. This is the x-y center of the modules
     //singletons and small modules will be handled as a whole
     var modulePosition = []
     var modsPerRow = 3
@@ -329,14 +330,17 @@ var distribute = function () {
       //Make the x-position equal to the x-position specified in the module positioning object or, if module not labeled, set it to center
       var forceX = d3.forceX(function (d) { 
         var group = modulePosition.find(g=>g.group == d.id)
-        return group ? group.coordinates.x : width/2
+        //return group ? group.coordinates.x : width/2 // hmm...separating the netwoks by grid is uglier then centering them
+        return width/2
       }).strength(0.2)
 
       //Same for forceY--these act as a gravity parameter so the different strength determines how closely
       //the individual nodes are pulled to the center of their module position
       var forceY = d3.forceY(function (d) {
         var group = modulePosition.find(g=>g.group == d.id)
-        return group ? group.coordinates.y : height/2
+        //return group ? group.coordinates.y : height/2
+        return height/2
+
       }).strength(0.2)
 
       // repel disconnected nodes further away from grouped (highly connected) nodes
@@ -387,8 +391,8 @@ var distribute = function () {
           distributedUpdate(nodes)
         }, 2000)
         execute(function() {
-          var distributed = distributedData(nodes)
-          distributedUpdate(distributed)
+          //var distributed = distributedData(nodes)
+          //distributedUpdate(distributed)
         })
       })
     })
@@ -435,6 +439,42 @@ var distribute = function () {
         return "translate(" + d.x + "," + d.y + ")"; })
     }
 
+    ///////////////////// Cluster networks into bubbles //////////////////////
+    // for aesthetic purposes, try clustering the network into bubbles instead
+    // https://observablehq.com/@mbostock/clustered-bubbles-2
+    function forceCluster() {
+      const strength = 0.2;
+      let nodes;
+
+      function force(alpha) {
+        const centroids = d3.rollup(nodes, centroid, d => d.group);
+
+        const l = alpha * strength;
+        for (const d of nodes) {
+          const {x: cx, y: cy} = centroids.get(d.group);
+          d.vx -= (d.x - cx) * l;
+          d.vy -= (d.y - cy) * l;
+        }
+      }
+
+      force.initialize = _ => nodes = _;
+
+      return force;
+    }
+
+    function centroid(nodes) {
+      let x = 0;
+      let y = 0;
+      let z = 0;
+      for (const d of nodes) {
+        let k = d.radius ** 2;
+        x += d.x * k;
+        y += d.y * k;
+        z += k;
+      }
+      return {x: x / z, y: y / z};
+    }
+
     //////////////////////// Fling nodes away /////////////////////////////
     function fling() {
 
@@ -471,22 +511,26 @@ var distribute = function () {
       path = path.enter().append("path").merge(path)
 
       circle = circle.data(nodes, d=>d.id)
-      
+      8
       circle.exit().remove();
       
       circle = circle.enter().append("circle").merge(circle)
 
       var forceX = d3.forceX(function (d) { 
         var group = modulePosition.find(g=>g.group == d.id)
-        return group ? group.coordinates.x : width/2
+        //return group ? group.coordinates.x : width/2
+        return width/2
       }).strength(0.2)
 
       var forceY = d3.forceY(function (d) {
         var group = modulePosition.find(g=>g.group == d.id)
-        return group ? group.coordinates.y : height/2
+        //return group ? group.coordinates.y : height/2
+        return height/2
       }).strength(0.2)
 
       simulation
+        .force('charge', d3.forceManyBody().strength(-50))
+        .force("cluster", forceCluster())
         .force("x", forceX)
         .force("y", forceY)
 
@@ -509,8 +553,8 @@ var distribute = function () {
   function distributedData(nodes) {
 
     var tilesPerRow = 10
-    var tileSize = nodeRadius * 2
-    var barWidth = 100
+    var tileSize = nodeRadius * 4
+    var barWidth = 200
 
     // find count of nodes within each category 
     var counts = nodes.reduce((p, c) => {
@@ -545,11 +589,11 @@ var distribute = function () {
         tiles.push({
           //x: node_IDs[i].x,
           //y: node_IDs[i].y,
-          x: ((i % tilesPerRow) * tileSize) + (counter * barWidth) + tileSize,
+          x: ((i % tilesPerRow) * tileSize) + (counter * barWidth) + tileSize + 250,
           y: -(rowNumber + 1) * tileSize + height, 
           color: colorTopNodes(group),
           class: 'nucleus-' + group.toString(), // follow same class name as set when rendering force layout
-          radius: tileSize/2,
+          radius: tileSize/4,
           id: node_IDs[i].id
         });
       }
