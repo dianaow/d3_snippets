@@ -1,7 +1,7 @@
 var poppingtree = function () {
 
   var root, svg, link, node
-  var canvasDim = { width: 1000, height: 600 }
+  var canvasDim = { width: screen.width < 420 ? 380 : 1000, height: screen.width < 420 ? 600 : 600 }
   var margin = {top: 0, right: 0, bottom: 0, left: 0}
   var width = canvasDim.width - margin.left - margin.right
   var height = canvasDim.height - margin.top - margin.bottom

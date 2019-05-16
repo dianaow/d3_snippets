@@ -5,6 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width">
   <script src="http://d3js.org/d3.v4.min.js"></script>
+  <script src="https://d3js.org/d3-hexbin.v0.2.min.js"></script>
   <script src="https://d3js.org/d3-color.v1.min.js"></script>
   <script src="https://d3js.org/d3-interpolate.v1.min.js"></script>
   <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
@@ -25,6 +26,7 @@
       z-index: -1;
       flex: none; 
       margin-left: -1250px;
+      background-color: #F5F5F2;
     }
     #map rect {
       fill: none;
@@ -35,7 +37,7 @@
 
     #map path {
       fill: lightgrey;
-      stroke-width: 1px;
+      stroke-width: 2px;
       stroke: slategrey;
       z-index: -2;
     }
@@ -44,7 +46,7 @@
 <body>
   <div id="chart"></div>
   <script src="./js/funnel/sankey.js"></script>
-  <script src="./js/funnel/alien2.js"></script>
+  <script src="./js/funnel/alien3.js"></script>
   <script>
     graph.run()
   </script>

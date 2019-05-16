@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <script src="http://d3js.org/d3.v4.min.js"></script>
+  <script src="https://unpkg.com/topojson@3"></script>
+  <script src="https://d3js.org/d3-hexbin.v0.2.min.js"></script>
+  <script src="https://d3js.org/d3-color.v1.min.js"></script>
+  <script src="https://d3js.org/d3-interpolate.v1.min.js"></script>
+  <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+  <link href="https://fonts.googleapis.com/css?family=Karla" rel="stylesheet">
+  <style>
+    #chart {
+      font-family: 'Karla', sans-serif;
+    }
+    #chart svg {
+      z-index: -1;
+      flex: none; 
+      background-color: #F5F5F2;
+    }
+    #map path {
+      fill: lightgrey;
+      stroke-width: 1px;
+      stroke: slategrey;
+      z-index: -2;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="chart"></div>
+  <script>
+      ///////////////////////////////////////////////////////////////////////////
+      ///////////////////////////////// Globals /////////////////////////////////
+      /////////////////////////////////////////////////////////////////////////// 
+
+  		var width = screen.width * 0.9
+  		var height = screen.height * 0.8
+  		var margin = {top: 50, right: 50, bottom: 50, left: 50}
+  		var modal = d3.select("#chart")
+      var hexRadius = 4
+      var countries = ['Singapore', 'Japan', 'Canada']
+
+      var svg = modal.append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+      countriesGroup = svg
+       .append("g")
+       .attr("id", "map")
+
+      g = svg
+       .append("g")
+       .attr("id", "dots")
+
+      dotG = svg
+       .append("g")
+       .attr("id", "dottedChart")
+
+      //var hexbin = d3.hexbin().extent([[0, 0], [width, height]]).radius(hexRadius) 
+
+      ///////////////////////////////////////////////////////////////////////////
+      ///////////////////////////// Create scales ///////////////////////////////
+      ///////////////////////////////////////////////////////////////////////////
+
+      var money_laundering = ['#F06292', '#EC407A', '#E91E63', '#D81B60', '#C2185B', '#AD1457', '#880E4F']
+      var tax_customs_violation = ["#DCE775", "#D4E157", "#CDDC39", "#C0CA33", "#AFB42B", "#9E9D24", "#827717"]
+      var cybercrime = ['#edf8e9','#c7e9c0','#a1d99b','#74c476','#41ab5d','#238b45','#005a32']
+      var organized_crime = ['#eff3ff','#c6dbef','#9ecae1','#6baed6','#4292c6','#2171b5','#084594']
+      var terrorism = ['#f7f7f7','#d9d9d9','#bdbdbd','#969696','#737373','#525252','#252525']
+      var sanctions = ['#f2f0f7','#dadaeb','#bcbddc','#9e9ac8','#807dba','#6a51a3','#4a1486']
+      var trafficking = ['#feedde','#fdd0a2','#fdae6b','#fd8d3c','#f16913','#d94801','#8c2d04']
+      
+      var colors = [{key:'Money Laundering', colors: money_laundering},
+      {key:'Tax & Customs Violation', colors: tax_customs_violation},
+      {key: 'Cybercrime', colors: cybercrime},
+      {key:'Organised Crime', colors: organized_crime},
+      {key:'Terrorism', colors: terrorism}, 
+      {key:'Sanctions', colors: sanctions},
+      {key:'Trafficking in Stolen Goods', colors: trafficking}]
+
+      var category = ['0-0.2', '0.2-0.4', '0.4-0.6', '0.6-0.7', '0.7-0.8', '0.8-0.9', '0.9-1']
+      var colorScale = d3.scaleOrdinal()
+        .domain(category)
+ 
+      getData()
+
+      ///////////////////////////////////////////////////////////////////////////
+      ///////////////////////////// Data Processing /////////////////////////////
+      /////////////////////////////////////////////////////////////////////////// 
+
+      function getData() {
+        d3.csv("./data/crime_scores.csv", function(data) {
+          var res = data.map((d,i) => {
+            return {
+              subgraph: d.subgraph,
+              country: d.country,
+              score: +d.score,
+              crime: d.crime,
+              binned : d.binned
+            }
+          })
+
+          var points = createDots(res, 'map')
+          var pointsBar = createDots(res, 'bar')
+
+          //var hexData = hexbin(points) // draw hexagons around centroid
+
+          drawMap(points)
+          drawDottedPlot(pointsBar)
+
+        })
+      }
+      ///////////////////////////////////////////////////////////////////////////
+      ///////////////////////////// Render dotted plot //////////////////////////
+      /////////////////////////////////////////////////////////////////////////// 
+
+      function drawDottedPlot(data) {
+
+        dots = dotG.selectAll('circle').data(data, d=>d.id)
+        
+        dots.exit().remove()
+
+        var entered_dots = dots
+          .enter()
+          .append('circle')
+            .style('opacity', 1)
+            .attr('id', d => d.id)
+            .attr('cx', d => d.x)
+            .attr('cy', d => d.y)
+            .style('fill', d => d.color)
+            .attr('r', d => d.radius)
+            .attr('stroke', d => d.strokeFill)
+            .attr('stroke-width', '0.5px')
+
+        dots = dots.merge(entered_dots)
+
+        crimeLabels = dotG.selectAll("g")
+           .data(data.map(d=>d.crime).filter(onlyUnique))
+           .enter()
+           .append("g")
+           .attr('transform', (d,i)=> 'translate(' + ((i*150)+50).toString() + "," + 100 + ")")
+           .append("text")
+           .attr('font-size', '12px')
+           .attr("text-anchor", 'middle')
+           .attr('dy', '0.35em')
+           .text(d=>d)
+      
+      }
+
+      ///////////////////////////////////////////////////////////////////////////
+      /////////////////////////////// Render map ////////////////////////////////
+      /////////////////////////////////////////////////////////////////////////// 
+
+      // Define map projection
+      var projection = d3
+         .geoEquirectangular()
+         .center([0, 0]) // set centre to further North
+         .scale([width/5]) // scale to fit group width
+         .translate([width/2,height*(3/4)]) // ensure centred in group
+
+      // Define map path
+      var path = d3.geoPath()
+         .projection(projection)
+
+      function drawMap(data) {
+        // get map data
+        d3.json(
+          "https://raw.githubusercontent.com/andybarefoot/andybarefoot-www/master/maps/mapdata/custom50.json",
+          function(error, json) {
+   
+            // draw a path for each feature/country
+            countriesPaths = countriesGroup
+               .selectAll("path")
+               .data(json.features)
+               .enter()
+               .append("path")
+               .attr("d", path)
+               .attr("id", function(d, i) { return "country" + d.properties.name })
+               .attr("class", "country")
+
+            // store an array of country centroids
+            var centroids = []
+            json.features.map(d=> {
+              centroids.push({'country': d.properties.name, 'x': path.centroid(d)[0], 'y': path.centroid(d)[1]})
+            })
+
+            data.map(d=>{
+              var country = centroids.find(c=>c.country == d.country)
+              if(country){
+                d.x1 = d.x + country.x
+                d.y1 = d.y + country.y
+              }
+            })
+
+            // draw dotted plot
+            circles = g.selectAll('circle').data(data, d=>d.id)
+            
+            circles.exit().remove()
+
+            var entered_circles = circles
+              .enter()
+              .append('circle')
+                .style('opacity', 1)
+                .attr('id', d => d.id)
+                .attr('cx', function(d) {
+                 //console.log(d.id, d.x)
+                 return d.x1 })
+                .attr('cy', d => d.y1)
+                .style('fill', d => d.color)
+                .attr('r', d => d.radius)
+                .attr('stroke', d => d.strokeFill)
+                .attr('stroke-width', '0.5px')
+
+            circles = circles.merge(entered_circles)
+
+            // append country labels only for selected countries
+            var selCountries = data.map(d=>d.country).filter(onlyUnique)
+            var buffer = 10
+            countryLabels = countriesGroup
+               .selectAll("g")
+               .data(json.features.filter(d=>selCountries.indexOf(d.properties.name) != -1))
+               .enter()
+               .append("g")
+               .attr("id", function(d) { return "countryLabel-" + d.properties.name })
+               .attr("transform", function(d) {
+                  return (
+                     "translate(" + path.centroid(d)[0] + "," + path.centroid(d)[1] + 20 + ")" // centroid of countries
+                  );
+               })
+               .append("text")
+               .attr('font-size', '11px')
+               .attr("text-anchor", 'middle')
+               .attr('dy', '0.35em')
+               .text(function(d) { return d.properties.name })
+          }
+        )
+      }
+
+      ///////////////////////////////////////////////////////////////////////////
+      ///////////////////////////// Helper functions ////////////////////////////
+      ///////////////////////////////////////////////////////////////////////////
+      function onlyUnique(value, index, self) { 
+          return self.indexOf(value) === index;
+      }
+
+      function createDots(data, type) {
+
+        // get x-y coordinates of all tiles first without rendering the dotted bar chart
+        var arrays = []
+        if(type=='map') {
+
+          data.sort(function(x, y){
+             return d3.descending(x.score, y.score);
+          })
+
+          var res_nested_country = d3.nest()
+            .key(d=>d.country)
+            .entries(data)
+
+          res_nested_country.map((d,i) => {
+            var tiles = getTilesMap(d.values)
+            arrays.push(tiles)
+          })
+
+        } else if(type=='bar') {
+
+          var res_nested_crime = d3.nest()
+            .key(d=>d.crime)
+            .entries(data)
+
+          res_nested_crime.map((d,i) => {
+            var tiles = getTilesBar(d.key, d.values, i)
+            arrays.push(tiles)
+          })
+
+        }
+        var distributed = [].concat.apply([], arrays)
+
+        return distributed
+
+      }
+
+      function getTilesBar(key, values, counter) {
+        console.log(values)
+        var nodeRadius = 6
+        var tilesPerRow = 10
+        var tileSize = nodeRadius * 1.5
+        var barWidth = 150
+        var tiles = []
+        var leftBuffer = 0
+        var topBuffer = 90
+
+        colorScale.range(colors.find(d=>d.key == key) ? colors.find(d=>d.key == key).colors : 'black')
+
+        for(var i = 0; i < values.length; i++) {
+
+          var rowNumber = Math.floor(i / tilesPerRow)
+          tiles.push({
+            x: ((i % tilesPerRow) * tileSize) + (counter * barWidth) + tileSize + leftBuffer,
+            y: -(rowNumber + 1) * tileSize + topBuffer, 
+            color: colorScale(values[i].binned),
+            crime: key,
+            id: values[i].country + '-' + i, // index each node
+            radius: (tileSize/1.5)/2,
+            strokeFill: values[i].score==1 ? 'red' : 'black'
+          });
+        }
+        return tiles
+      
+      }
+
+      function getTilesMap(values) {
+
+        values.sort(function(x, y){
+           return d3.descending(x.crime, y.crime);
+        })
+        console.log(values)
+
+        var nodeRadius = 6
+        var tilesPerRow = 3
+        var tileSize = nodeRadius * 1.5
+
+        var tiles = []
+        for(var i = 0; i < values.length; i++) {
+
+          colorScale.range(colors.find(d=>d.key == values[i].crime) ? colors.find(d=>d.key == values[i].crime).colors : 'black')
+
+          var rowNumber = Math.floor(i / tilesPerRow)
+          tiles.push({
+            x: ((i % tilesPerRow) * tileSize) + tileSize,
+            y: -(rowNumber + 1) * tileSize, 
+            color: colorScale(values[i].binned),
+            country: values[i].country,
+            id: values[i].country + '-' + i, // index each node
+            radius: (tileSize/1.5)/2,
+            strokeFill: values[i].score==1 ? 'red' : 'black'
+          });
+        }
+        return tiles
+      }
+
+      function createHexagons(value, hexRadius) {
+
+        var MapRows = Math.ceil(Math.sqrt(value))
+        var MapColumns = Math.ceil(value/MapRows)
+
+        var gridWidth = (MapRows + 1/3) * 3/2 * hexRadius
+        var gridHeight = (MapColumns + 1/2) * Math.sqrt(3) * hexRadius
+
+        var points = []
+				for (var i = 0; i < MapRows+1; i++) {
+			    for (var j = 0; j < MapColumns+1; j++) {
+			    	if (i * j < value) {
+			        points.push([hexRadius * j * 1.75, hexRadius * i * 1.5]);
+			      }
+			    }//for j
+				}//for i
+
+				return points
+      }
+
+      function createHexagons1(values, hexRadius) {
+
+        var summed = d3.sum(values, d=>d.values.length)
+        //var hexs = Math.ceil(summed/6.0)
+        //console.log(summed, hexs)
+
+        if(summed<=1) {
+          var MapRows = 0
+          var MapColumns = 0  
+        } else if(summed<=7){
+          var MapRows = 1
+          var MapColumns = 1        
+        } else if(summed<=19){
+          var MapRows = 2
+          var MapColumns = 2
+        } else {
+          var MapRows = 4
+          var MapColumns = 4        
+        }
+
+        var MapRows = 2
+        var MapColumns = 2
+        var points = []
+        for (var i = - MapRows; i <= MapRows; i++) {
+          for (var j = MapColumns; j >= -MapColumns; j--) {
+            if (MapRows == 0 && MapColumns == 0){
+              points.push([hexRadius * i * 1.5, hexRadius * j * 1.75]);
+            }
+            if((i !== - Math.abs(MapRows) && j !== -1) || (i !== Math.abs(MapRows) && j !== 1) || (i !== -1 && j !== - Math.abs(MapColumns)) || (i !== 1 && j !== Math.abs(MapColumns))){ //create a nice hexagonal hexogon. This is buggy!!!!!
+                console.log(i,j)
+                points.push([hexRadius * i * 1.5, hexRadius * j * 1.75]);
+            }
+          }//for j
+        }//for i
+        //console.log(summed, points)
+
+        return points
+      }
+
+  </script>
+</body>
+</html>
+
+

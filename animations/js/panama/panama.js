@@ -1,4 +1,4 @@
-var distribute = function () {
+var panama = function () {
 
   ///////////////////////////////////////////////////////////////////////////
   ///////////////////////////////// Globals /////////////////////////////////
@@ -8,8 +8,7 @@ var distribute = function () {
   var margin = {top: 20, right: 20, bottom: 20, left: 20}
   var width = canvasDim.width - margin.left - margin.right;
   var height = canvasDim.height - margin.top - margin.bottom;
-  var modal = d3.select(".modal-content5")
-  var links_filt = []
+  var modal = d3.select(".modal-content7")
 
   var linkedByIndex = {},
       linkedToID = {},
@@ -33,14 +32,15 @@ var distribute = function () {
   ///////////////////////////////////////////////////////////////////////////
 
   var colorTopNodes = d3.scaleOrdinal()
-    .range(["#EFB605", "#E47D06", "#DB0131", "#AF0158", "#7F378D", "#3465A8", "#0AA174", "#7EB852"])
+    .range(["orangered", "gold", "teal", "mediumblue", "hotpink", "mediumspringgreen"])
 
   var radiusScale = d3.scaleLinear()
   .domain(d3.range(1,5))
   .range(d3.range(3, 15, 3))
 
   var xScale = d3.scaleLinear()
-    .range([0, width])
+    .range([width*(1/4), width*(3/4)])
+    .domain([0, width])
 
   var yScale = d3.scaleLinear()
     .range([0, height*(1/2)])
@@ -94,15 +94,15 @@ var distribute = function () {
   function getData() {
 
     d3.queue()   
-      .defer(d3.csv, 'nodes_filt_entity.csv')  
-      .defer(d3.csv, 'nodes_officer_sea.csv')
-      .defer(d3.csv, 'nodes_edges_sea.csv')
+      .defer(d3.csv, './js/panama/nodes_filt_entity.csv')  
+      .defer(d3.csv, './js/panama/nodes_officer_sea.csv')
+      .defer(d3.csv, './js/panama/nodes_edges_sea.csv')
       .await(initialize);  
 
   }
 
   function initialize(error, entity, officer, edges){
-
+    console.log(entity, officer, edges)
     var parseDate = d3.timeParse("%d-%b-%Y")
 
     entity_new = entity.map((d,i) => {
@@ -207,19 +207,20 @@ var distribute = function () {
     ///////////////////////////////////////////////////////////////////////////
 
     // find networks with the top ranked number of connected nodes
-    var top = 8
+    var top = 6
     var links_nested = d3.nest()
       .key(d=>d.source)
       .rollup(function(leaves) { return leaves.length; })
       .entries(links)
 
     links_nested = links_nested.sort(function(a,b) { return d3.descending(a.value, b.value) })
+    var links_filt = []
     for(var i = 0; i < top; i++) {
       links_filt.push(links_nested[i])
     }
     groupIDs = links_filt.map(d=>d.key) // list of ids of the top 9 connected nodes
 
-    //Specify module position for the three largest modules. This is the x-y center of the modules
+    //Specify module position for the 9 largest modules. This is the x-y center of the modules
     //singletons and small modules will be handled as a whole
     var modulePosition = []
     var modsPerRow = 3
@@ -245,10 +246,11 @@ var distribute = function () {
     colorTopNodes.domain(groupIDs)
       
     // callback to ensure connection search completes before rendering force layout
-    function findAllConnections() {
+    function findAllConnections(callback) {
       groupIDs.map(d=>{
         initiateConnectionSearch(d, nodes)
       })
+      setTimeout(callback(), 3000)
     }
 
     function initiateConnectionSearch(d, nodes) {
@@ -327,15 +329,18 @@ var distribute = function () {
 
       //Make the x-position equal to the x-position specified in the module positioning object or, if module not labeled, set it to center
       var forceX = d3.forceX(function (d) { 
-        var group = modulePosition.find(g=>g.group = d.id)
-        return group ? group.coordinates.x : width/2
+        var group = modulePosition.find(g=>g.group == d.id)
+        //return group ? group.coordinates.x : width/2 // hmm...separating the netwoks by grid is uglier then centering them
+        return width/2
       }).strength(0.2)
 
       //Same for forceY--these act as a gravity parameter so the different strength determines how closely
       //the individual nodes are pulled to the center of their module position
       var forceY = d3.forceY(function (d) {
-        var group = modulePosition.find(g=>g.group = d.id)
-        return group ? group.coordinates.y : height/2
+        var group = modulePosition.find(g=>g.group == d.id)
+        //return group ? group.coordinates.y : height/2
+        return height/2
+
       }).strength(0.2)
 
       // repel disconnected nodes further away from grouped (highly connected) nodes
@@ -374,6 +379,24 @@ var distribute = function () {
 
     }
     
+    findAllConnections(runSimulation) 
+    execute(function() {
+      fling()
+      //createConvexHullLayer(nodes, groupIDs)
+      execute(function() {
+        focus()
+        setTimeout(function() {
+          simulation.stop()
+          circle.exit().remove()
+          distributedUpdate(nodes)
+        }, 2000)
+        execute(function() {
+          //var distributed = distributedData(nodes)
+          //distributedUpdate(distributed)
+        })
+      })
+    })
+
     ///////////////////////////////////////////////////////////////////////////
     //////////////////////////// Graph Network plot ///////////////////////////
     ///////////////////////////////////////////////////////////////////////////
@@ -410,19 +433,58 @@ var distribute = function () {
         .attr('stroke', function(d) {return d.strokeColor})
         .attr('fill', function(d) {return d.color_new ? d.color_new : d.color})
         .attr('class',function(d) {return 'nucleus-' + d.group})
-        .attr('id', function(d) {return groupIDs.indexOf(d.group) + "-" + d.id}) 
+        .attr('id', function(d) {return d.id}) 
 
       circle.attr("transform", function(d) { 
         return "translate(" + d.x + "," + d.y + ")"; })
     }
 
+    ///////////////////// Cluster networks into bubbles //////////////////////
+    // for aesthetic purposes, try clustering the network into bubbles instead
+    // https://observablehq.com/@mbostock/clustered-bubbles-2
+    function forceCluster() {
+      const strength = 0.2;
+      let nodes;
+
+      function force(alpha) {
+        const centroids = d3.rollup(nodes, centroid, d => d.group);
+
+        const l = alpha * strength;
+        for (const d of nodes) {
+          const {x: cx, y: cy} = centroids.get(d.group);
+          d.vx -= (d.x - cx) * l;
+          d.vy -= (d.y - cy) * l;
+        }
+      }
+
+      force.initialize = _ => nodes = _;
+
+      return force;
+    }
+
+    function centroid(nodes) {
+      let x = 0;
+      let y = 0;
+      let z = 0;
+      for (const d of nodes) {
+        let k = d.radius ** 2;
+        x += d.x * k;
+        y += d.y * k;
+        z += k;
+      }
+      return {x: x / z, y: y / z};
+    }
+
     //////////////////////// Fling nodes away /////////////////////////////
     function fling() {
 
-      simulation.stop()
+      var forceX = d3.forceX(function (d) { return width/2})
+          .strength(function (d) { return d.group == 'disconnected' ? 0 : 0.1}) // this gives the flinging motion
 
-      var forceX = d3.forceX(function (d) { return width/2 }).strength(0.1)
-      var forceY = d3.forceY(function (d) { return height/2 }).strength(0.1)
+      var forceY = d3.forceY(function (d) {return height/2})
+          .strength(function (d) { return d.group == 'disconnected' ? 0 : 0.1})
+
+      simulation.stop()
 
       simulation
         .force('charge', d3.forceManyBody(function (d) { return d.group == 'disconnected' ? -2000 : -20}))
@@ -439,8 +501,8 @@ var distribute = function () {
       simulation.stop()
 
       nodes = nodes.filter(d=>d.group != 'disconnected')
-      links = links.filter(d=>d.group != 'disconnected')
-      //console.log(nodes, links)
+      links = []
+      //console.log(nodes, links) x
 
       path = path.data(links, d=>d.id)
   
@@ -449,24 +511,26 @@ var distribute = function () {
       path = path.enter().append("path").merge(path)
 
       circle = circle.data(nodes, d=>d.id)
-      
+      8
       circle.exit().remove();
       
       circle = circle.enter().append("circle").merge(circle)
 
       var forceX = d3.forceX(function (d) { 
-        var group = modulePosition.find(g=>g.group = d.id)
-        console.log(group.coordinates.x)
-        return group ? group.coordinates.x : width/2
-      }).strength(0.1)
+        var group = modulePosition.find(g=>g.group == d.id)
+        //return group ? group.coordinates.x : width/2
+        return width/2
+      }).strength(0.2)
 
       var forceY = d3.forceY(function (d) {
-        var group = modulePosition.find(g=>g.group = d.id)
-        return group ? group.coordinates.y : height/2
-      }).strength(0.1)
+        var group = modulePosition.find(g=>g.group == d.id)
+        //return group ? group.coordinates.y : height/2
+        return height/2
+      }).strength(0.2)
 
       simulation
-        .force("link", d3.forceLink().strength(function(d) {return 0.7}))
+        .force('charge', d3.forceManyBody().strength(-50))
+        .force("cluster", forceCluster())
         .force("x", forceX)
         .force("y", forceY)
 
@@ -479,30 +543,7 @@ var distribute = function () {
       function hideLinks() {
         path.transition().duration(1000).attr('opacity', 0)
       }
-
     }
-
-    ///////////////////////////////////////////////////////////////////////////
-    ///////////////////////////// Run in sequence /////////////////////////////
-    ///////////////////////////////////////////////////////////////////////////
-    findAllConnections() 
-    var distributed = distributedData(nodes)
-    console.log(distributed)
-
-    execute(function() {
-      runSimulation()
-      execute(function() {
-        fling()
-        //createConvexHullLayer(nodes, groupIDs)
-        execute(function() {
-          focus()
-          execute(function() {
-            distributedUpdate(distributed) 
-          })
-        })
-      })
-    })
-
 
   }
   ///////////////////////////////////////////////////////////////////////////
@@ -512,41 +553,53 @@ var distribute = function () {
   function distributedData(nodes) {
 
     var tilesPerRow = 10
-    var tileSize = nodeRadius
-    var barWidth = 220
+    var tileSize = nodeRadius * 4
+    var barWidth = 200
+
+    // find count of nodes within each category 
+    var counts = nodes.reduce((p, c) => {
+      var name = c.group; // key property
+      if (!p.hasOwnProperty(name)) {
+        p[name] = 0;
+      }
+      p[name]++;
+      return p;
+    }, {});
+
+    countsExtended = Object.keys(counts).map((k,i) => {
+      var circles_arr = nodes.filter(d=>d.group==k) // array of node ids part of the group
+      return {counter:i, name: k, count: counts[k], node_IDs: circles_arr}
+    })
 
     // get x-y coordinates of all tiles first without rendering the dotted bar chart
-    //var dataAll = links_filt.map(d=>d.count)
     var arrays = []
-    //dataAll.map((d,i) => {
-      //var tiles = getTiles(d, i)
-      //arrays.push(tiles)
-    //})
-
-    for (var key in links_filt) {
-      var tiles = getTiles(links_filt[key].value, links_filt[key].key, key)
-      arrays.push(tiles)
+    for (var key in countsExtended) {
+      var tiles = getTiles(countsExtended[key].count, countsExtended[key].counter, countsExtended[key].name, countsExtended[key].node_IDs) // pass in groupId and count of nodes within each group
+      arrays.push(tiles)  
     }
 
     var distributed = [].concat.apply([], arrays)
-    console.log(distributed)
+
     return distributed
 
-    function getTiles(num, group, counter) {
+    function getTiles(num, counter, group, node_IDs) {
       var tiles = [];
       for(var i = 0; i < num; i++) {
         var rowNumber = Math.floor(i / tilesPerRow)
         tiles.push({
-          x: ((i % tilesPerRow) * tileSize) + (counter * barWidth) + tileSize,
+          //x: node_IDs[i].x,
+          //y: node_IDs[i].y,
+          x: ((i % tilesPerRow) * tileSize) + (counter * barWidth) + tileSize + 250,
           y: -(rowNumber + 1) * tileSize + height, 
           color: colorTopNodes(group),
-          class: 'nucleus-' + group, 
-          id: counter + '-' + i + num, // index each node (NOTE: this is has to be the same index as force layout's nodes)
-          radius: tileSize
+          class: 'nucleus-' + group.toString(), // follow same class name as set when rendering force layout
+          radius: tileSize/4,
+          id: node_IDs[i].id
         });
       }
       return tiles
     }
+
   }
 
 
@@ -556,11 +609,23 @@ var distribute = function () {
 
   function distributedUpdate(data) {
 
-    circle = circle.selectAll('circle').data(data, d=>d.id)
-    
-    circle.exit().remove();
-      
-    circle = circle.merge(circle)
+    var circles1 = d3.selectAll('circle').data(data, d=>d.id)
+
+    var entered_circles = circles1
+      .enter()
+      .append('circle')
+        .style('opacity', 1)
+        .attr('class',function(d) {return 'nucleus-' + d.group})
+        .attr('id', d => d.id)
+        .attr('transform', 'translate(0,0)')
+        .attr('cx', d => d.x)
+        .attr('cy', d => d.y)
+        .style('fill', d => d.color)
+        .attr('r', d => d.radius)
+        .attr('stroke-width', function(d) {return d.strokeWidth})
+        .attr('stroke', function(d) {return d.strokeColor})
+
+    circles1 = circles1.merge(entered_circles)
 
     var t = d3.transition()
       .duration(2100)
@@ -568,15 +633,16 @@ var distribute = function () {
       
     // transition each node one by one within each group at the same time
     groupIDs.map((d,i)=> {
-      console.log(circle.filter("circle[class*='" + i.toString() + "']"))
-      circle.filter("circle[class*='" + i.toString() + "']")
+      circles1.filter("circle[class*='" + d.toString() + "']")
         .transition(t)
         .delay(function(d,i){ return 10*i }) // transition each node one by one based on index
-        //.delay(function(d,i){ return d.length }) // transition each node one by one based on length of trajectory
+        //.delay(function(d,i){ return d.length*10 }) // transition each node one by one based on length of trajectory
+        .attr('transform', 'translate(0,0)')
         .attr('cx', d => d.x)
         .attr('cy', d => d.y)
     })
 
+  
   }
 
   ///////////////////////////////////////////////////////////////////////////

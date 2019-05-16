@@ -21,7 +21,7 @@
             </div>
  
             <div class="trigger" id="trigger2">
-              <img src="./images/overload.png"></img>
+              <img src="./images/blobs.png"></img>
             </div>
             <div class="modal">
               <div id='panel'>
@@ -29,15 +29,27 @@
                 <div id="section">
                   <input name="start_type" 
                          type="button" 
-                         class='run_cluster_sorted'
+                         class='btn run_cluster_sorted'
                          value="Cluster blob"/>
                   <input name="start_type" 
                          type="button" 
-                         class="run_cluster_bubbles"
+                         class="btn run_cluster_bubbles"
                          value="Cluster bubbles" />
                   <input name="start_type" 
                          type="button" 
-                         class='reset_button'
+                         class="btn run_align_X"
+                         value="Align X" /><br>
+                  <input name="start_type" 
+                   type="button" 
+                   class="btn run_add"
+                   value="Add nodes" />
+                  <input name="start_type" 
+                         type="button" 
+                         class="btn run_move"
+                         value="Move nodes" /><br>
+                  <input name="start_type" 
+                         type="button" 
+                         class='btn reset_button'
                          value="Reset to scatter"
                          checked />
                 </div>
@@ -61,7 +73,7 @@
                 <div id='slider-step2'></div>
                 <div id="section">
                   <input name="submit" 
-                         class="submit_button"
+                         class="btn submit_button"
                          type="button" 
                          value="Morph to dot plot!"/>
                 </div>
@@ -108,9 +120,9 @@
             <div class="modal">
               <div class="modal-content6">
                 <div id="clickerWrapper">
+                  <span class="close-button">×</span>
                   <div id="clicker">Morph!</div>
                 </div>
-                <span class="close-button">×</span>
               </div>
             </div>
 
@@ -119,14 +131,27 @@
         <div class='group'>
 
             <div class="trigger" id="trigger7">
-              <img src="./images/circlepack.png"></img>
+              <img src="./images/panama_network.png"></img>
             </div>
             <div class="modal">
               <div class="modal-content7" id="modal-fullscreen">
                 <span class="close-button">×</span>
               </div>
             </div>
- 
+
+            <div class="trigger" id="trigger8">
+              <img src="./images/coe_multipleline.png"></img>
+            </div>
+            <div class="modal">
+              <div class="modal-content-coe">
+                <div class='header'>
+                  <h1>COE Prices from 2010-2018</h1>
+                  <p>There are 2 COE Open Bidding exercises each month (Bidding Exercise 1 starts on the first Monday while Bidding Exercise 2 starts on the third Monday of the month)</p>
+                </div>
+                <span class="close-button">×</span>
+              </div>
+            </div>
+
         </div>
 
       </div>
@@ -145,8 +170,9 @@
     <script src="./js/beeswarm.js"></script>
     <script src="./js/constellation/main.js"></script>
     <script src="./js/merge_svg.js"></script>
-    <script src="./js/morph1.js"></script>
-    <script src="./js/panama.js"></script>
+    <script src="./js/morph.js"></script>
+    <script src="./js/panama/panama.js"></script>
+    <script src="./js/coe.js"></script>
 
     <script>
 
@@ -169,7 +195,7 @@
               poppingtree.clear()
             } );
           } else if (trigger === "trigger2") {
-            distribute.run()
+            setTimeout(distribute.run(), 1000)
             closeButton.addEventListener("click", function() { 
               modal.classList.remove("show-modal")
               distribute.clear() 
@@ -203,6 +229,12 @@
             closeButton.addEventListener("click", function() { 
               modal.classList.remove("show-modal")
               panama.clear() 
+            } );
+          } else if (trigger === "trigger8") {
+            coe.run()
+            closeButton.addEventListener("click", function() { 
+              modal.classList.remove("show-modal")
+              coe.clear() 
             } );
           }
         })

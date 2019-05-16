@@ -29,12 +29,6 @@ var graph = function () {
       .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-      var misc = modal.append("svg")
-        .attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom)
-      .append("g")
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
       countriesGroup = svg
        .append("g")
        .attr("id", "map")
@@ -56,18 +50,21 @@ var graph = function () {
       ///////////////////////////////////////////////////////////////////////////
 
       var associationScoreRange = [0, 0.25, 0.5, 0.75]
-
-      var nodes = [
+      var filteredCountries = ["Mexico", "China", "Japan", "Singapore", "Russia", 'Italy', "Canada"]
+      var crimeList = ["Unlawful Money Lending", "Cybercrime", "Organised Crime",  "Terrorism", 'Money Laundering', "Sanctions1", "Sanctions2"]
+      var nodes = [ 
       "Spaceship", "Unlawful Money Lending", "Cybercrime", "Organised Crime",  "Terrorism", 'Money Laundering',  
-      "Sanctions", "Sanctions 1", "Sanctions 2",
+      "Sanctions", "Sanctions1", "Sanctions2",
       "Mexico", "China", "Japan", "Singapore", "Russia", 'Italy', "Canada"]
+
+      //var colors = [['black'], d3.schemeYlGnBu[9], Array(5).fill("slategrey")]
+      var crimeColors = ['#FDE725FF', '#73D055FF', '#29AF7FFF', '#238A8DFF', '#33638DFF', '#404788FF', '#482677FF', '#440154FF']
+      var colors = [['black'], crimeColors, Array(7).fill("slategrey")]
+      colors = [].concat.apply([], colors)
 
       var colorScale = d3.scaleOrdinal()
         .domain(nodes)
-        .range(["black","#E47D06", "#DB0131", "#AF0158", "#7F378D", "#3465A8",
-        "#0AA174","#6cc6ab", "#ceece3",
-        "slategrey", "slategrey", "slategrey", "slategrey", "slategrey", "slategrey", "slategrey"])
-        //"#D3D3D3", "#D3D3D3", "#D3D3D3", "#D3D3D3", "#D3D3D3", "#D3D3D3", "#D3D3D3"])
+        .range(colors)
 
       graph = {"nodes" : [], "links" : []};
 
@@ -81,9 +78,9 @@ var graph = function () {
         {"source":"Spaceship","target":"Cybercrime","value":10},
         {"source":"Spaceship","target":"Organised Crime","value":10},
         {"source":"Spaceship","target":"Terrorism","value":10},
-        {"source":"Spaceship","target":"Sanctions","value":10},
-        {"source":"Sanctions","target":"Sanctions 1","value":8},
-        {"source":"Sanctions","target":"Sanctions 2","value":2},
+        {"source":"Spaceship","target":"Sanctions","value":24},
+        {"source":"Sanctions","target":"Sanctions1","value":16},
+        {"source":"Sanctions","target":"Sanctions2","value":8},
         {"source":"Money Laundering","target":"China","value":3},   
         {"source":"Money Laundering","target":"Russia","value":3},
         {"source":"Money Laundering","target":"Mexico","value":4},   
@@ -91,9 +88,9 @@ var graph = function () {
         {"source":"Organised Crime","target":"Japan","value":10},  
         {"source":"Cybercrime","target":"Singapore","value":10},   
         {"source":"Terrorism","target":"Mexico","value":10},
-        {"source":"Sanctions 1","target":"Russia","value":4},  
-        {"source":"Sanctions 1","target":"Italy","value":4},  
-        {"source":"Sanctions 2","target":"China","value":2}                     
+        {"source":"Sanctions1","target":"Russia","value":15},  
+        {"source":"Sanctions1","target":"Italy","value":1},  
+        {"source":"Sanctions2","target":"China","value":8}                     
       ]
 
       var nodeMap = {};
@@ -106,20 +103,18 @@ var graph = function () {
         };
       });
 
-      //associationScoreRange.map(function (a) {
-        //graph.links.push({ "source": nodes.indexOf(a),
-                           //"target": nodes.indexOf(c),
-                           //"value": 5 });
-      //})
+      console.log(graph.nodes, graph.links)
 
       ///////////////////////////////////////////////////////////////////////////
       /////////////////////////// Initialize Sankey /////////////////////////////
       ///////////////////////////////////////////////////////////////////////////
 
+      var sankeyWidth = 350
+      var sankeyHeight = 650
       var sankey = d3.sankey()
             .nodeWidth(10)
             .nodePadding(10)
-            .size([350, 650]);
+            .size([sankeyWidth, sankeyHeight]);
 
       var curve = sankey.link()
 
@@ -139,8 +134,7 @@ var graph = function () {
       //////////////////////////////// Render map ///////////////////////////////
       ///////////////////////////////////////////////////////////////////////////
       var sel_centroids = []
-      var filteredCountries = ["Mexico", "China", "Japan", "Singapore", "Russia", 'Italy', "Canada"]
-
+      
       // Define map projection
       var projection = d3
          .geoEquirectangular()
@@ -183,7 +177,6 @@ var graph = function () {
               centroids.push([d.properties.name, path.centroid(d)[0], path.centroid(d)[1]])
             })
             sel_centroids = centroids.filter(function(d){ return filteredCountries.indexOf(d[0]) != -1 })
-            console.log(sel_centroids)
 
             countryLabels = countriesGroup
                .selectAll("g")
@@ -250,12 +243,12 @@ var graph = function () {
 
             var stops1 = [   
               {offset: '0%', color: startColor, opacity: 1 },                           
-              {offset: '50%', color: startColor, opacity: 0.8 },      
-              {offset: '75%', color: stopColor, opacity: 0.6 },  
+              {offset: '50%', color: startColor, opacity: 0.75 },      
+              {offset: '75%', color: stopColor, opacity: 0.5 },  
             ]
 
             var stops2 = [   
-              {offset: '0%', color: startColor, opacity:  0.6 },                           
+              {offset: '0%', color: startColor, opacity:  0.5 },                           
               {offset: '50%', color: startColor, opacity: 0.4 },      
               {offset: '75%', color: stopColor, opacity: 0.2 }    
             ]
@@ -283,17 +276,6 @@ var graph = function () {
         ///////////////////////////////////////////////////////////////////////////
 
         function manualLayout() {
-          console.log(sel_centroids)
-          //http://stackoverflow.com/questions/10337640/how-to-access-the-dom-element-that-correlates-to-a-d3-svg-object
-          //displacements in order of foo nodes (foo[0][j])
-          sel_centroids1 = [["China", 634.194630559586, 635.0270986503383], 
-          ["Japan", 843.1827606083929, 628.7319117178528],
-          ["Singapore", 634.1835276619687, 850.0700164287862],
-          ["Russia", 590.624592166605, 479.7527504395012],
-          ["Mexico", -626.2801271358472, 712.0830341822129],
-          ["Italy", 73.73151618184028, 596.9405003263257],
-          ["Canada", -600.5279945467455, 483.5307006702942]
-          ]
 
           for (j=0; j < sel_centroids.length; j++) {
             //pickNode = foo.nodes()[j]; // do not select node based on index
@@ -308,13 +290,13 @@ var graph = function () {
          
           }
 
-          categories =[["Sanctions", 20, 0], ["Sanctions", 20, 0], ["Sanctions", 20, 0]]
+          categories =[["Sanctions", 10, 0], ["Sanctions1", 100, -80], ["Sanctions2", 60, -100]]
 
           for (j=0; j < categories.length; j++) {
             //pickNode = foo.nodes()[j]; // do not select node based on index
-            pickCircle = d3.select('.circle-' + categories[j][0])
             pickNode = d3.select('.node-' + categories[j][0]) // select the node based on class name
             d = graph.nodes.find(function(d) {  return d.name == categories[j][0] }); // get the properties of that node
+
             pickNode.attr("transform", 
                   "translate(" + (
                          d.x = d.x + categories[j][1]
@@ -342,9 +324,9 @@ var graph = function () {
              manualLayout();
             });
 
-
         // add the circles for the nodes
-        node.filter(function(d) { return d.name == 'Spaceship'})
+        node
+          .filter(function(d) { return d.name == 'Spaceship'})
           .append("circle")
             .attr("class", function(d) { return "circle-" + d.name })
             .attr("cy",  sankey.nodeWidth()/2-200)
@@ -354,23 +336,95 @@ var graph = function () {
             .style("fill-opacity", 2)
             .style("shape-rendering", "crispEdges")
 
-        node.append("rect")
+        // add rectangles (stacked bar chart to be overlayed) 
+        var widthsStorage = []
+        node
+          .append("rect")
+            .attr('class', function(d) { return "rect-" + d.name })
             .attr("height", sankey.nodeWidth())
-            .attr("width", function(d) { return d.dy })
+            .attr("width", function(d) { 
+              widthsStorage.push({"name": d.name, "width": d.dy })
+              return d.dy })
             .style("fill", function(d) { return colorScale(d.name) })
             .style("stroke", "none")
-            .style("fill-opacity", function(d) { return filteredCountries.indexOf(d.name) != -1 ? 0.2 : 0.6 })
+            .style("fill-opacity", function(d) { return filteredCountries.indexOf(d.name) != -1 ? 0.2 : 0.5 })
           .append("title")
-            .text(function(d) { return d.name });
+            .text(function(d) { return d.name })
 
-        node.append("rect")
-            .attr("height", sankey.nodeWidth())
-            .attr("width", function(d) { return d.dy })
-            .style("fill", function(d) { return colorScale(d.name) })
-            .style("stroke", "none")
-            .style("fill-opacity", function(d) { return filteredCountries.indexOf(d.name) != -1 ? 0.2 : 0.6 })
-          .append("title")
-            .text(function(d) { return d.name });
+        ///////////////////////////////////////////////////////////////////////////
+        //////////////////// Create stacked horizontal bar chart  /////////////////
+        ///////////////////////////////////////////////////////////////////////////
+        stack() 
+
+        function stack() {
+          // prepare data for stacked bar chart
+          var nested = d3.nest()
+            .key(d => d.target.name) // need to nest data with country set as key (currently a mix of crime and country labels)
+            .entries(graph.links)
+
+          nested = nested.filter(d=>filteredCountries.indexOf(d.key) != -1) // only select country labels
+
+          // Ensure that all countries have the same sort arrangement of crimes
+          //console.log(nested.map(d => console.log(d.values)))
+          //nested= nested.map(d => d.values.sort(sortOn("name")))
+
+          //var crimeList = ["Unlawful Money Lending", "Cybercrime", "Organised Crime",  "Terrorism", 'Money Laundering', "Sanctions1", "Sanctions2"]
+          var dataNew = []
+          nested.map((D,I) => {
+            console.log(D)
+            var oneCountryCrime = Array.from(Array(crimeList.length), () => 0)
+            D.values.map((d,i) => {
+              oneCountryCrime[crimeList.indexOf(d.source.name)] = d.value
+            })
+            dataNew.push(oneCountryCrime)
+          })
+
+          // Fix the order arrangement of crime (most granular crime)
+          var order = d3.range(nested.length).sort((i, j) => crimeList[j] - crimeList[i])
+
+          // Constructs a stack layout based on data 
+          // d3's permute ensures each individual array is sorted in the same order. Important to ensure sort arrangement is aligned for all parameters before stack layout)
+          var stackedData = Object.assign(d3.stack().keys(d3.range(crimeList.length))(d3.permute(dataNew, order)), {
+            keys: crimeList,
+            ids: crimeList.map(R => filteredCountries.map(P => `${R}_${P}`)),
+            country: filteredCountries
+          })
+
+          var xScale = d3.scaleLinear()
+            //.range([0, sankeyWidth])
+
+          stackedData.forEach((d,i) => {
+            stackedData.country.forEach((D,I) => {
+              if(stackedData[i][I]){
+                customWidth = widthsStorage.find(b=>b.name == D).width
+                xScale
+                  .range([0, customWidth])
+                  .domain([0, d3.max(stackedData[i][I].data, b=>b)])
+                stackedData[i][I].x = xScale(d[I][0])
+                stackedData[i][I].x1 = xScale(d[I][1])
+                stackedData[i][I].color = colorScale(stackedData.keys[i]) 
+                stackedData[i][I].width = ( d[I][1] ? xScale(d[I][1]) : xScale(0) ) - ( d[I][0] ? xScale(d[I][0]) : xScale(0) )
+                stackedData[i][I].height = sankey.nodeWidth()
+              }
+            })
+          })
+          console.log(stackedData)
+        
+          // create stacked horizontal stacked bar chart (only for countries)
+          var countryNodes = node.filter(function(d) { return filteredCountries.indexOf(d.name) != -1})
+          var bars = countryNodes.selectAll("g.bar") 
+            .data(stackedData)
+            .enter().append("g")
+            .attr('class', 'bar')
+            .selectAll("rect")
+            .data(d=>d)
+            .enter().append("rect")
+                .attr("fill", d=>d.color)
+                .attr("x", d => d.x)
+                .attr("width", d=>d.width)
+                .attr("height", d => d.height)   
+          
+        }
 
         ///////////////////////////////////////////////////////////////////////////
         ////////////////////// Marker moving along path ///////////////////////////
@@ -378,8 +432,8 @@ var graph = function () {
         trickling()
 
         function trickling() {
-          var FREQ = 200
-          var SPEED = 8000
+          var FREQ = 150
+          var SPEED = 7500
 
           var freqCounter = 1;
           var linkExtent = d3.extent(graph.links, function (d) {return d.value});
@@ -398,9 +452,9 @@ var graph = function () {
           var t = d3.timer(tick, SPEED);
           var particles = [];
 
-          function tick(elapsed, time) {
+          function tick(elapsed) {
 
-            particles = particles.filter(function (d) {return d.time > (elapsed - SPEED)});
+            particles = particles.filter(function (d,i) {return d.time > (elapsed - SPEED)});
             if (freqCounter > FREQ) {
               freqCounter = 1;
             }
@@ -417,22 +471,24 @@ var graph = function () {
 
             particleEdgeCanvasPath(elapsed);
             freqCounter++;
+            if (elapsed > 20000) t.stop();
 
           }
           
           function particleEdgeCanvasPath(elapsed) {
 
+            d3.timer()
             context.clearRect(-margin.left, -margin.top, canvasDim.width, canvasDim.height);
 
             context.fillStyle = "grey";
             context.lineWidth = "1px";
-
             for (var x in particles) {
+                //console.log(filteredCountries.indexOf(particles[x].link.target.name) != -1 ? particles[x].link.particleColor : particles[x].link.particleColorTime(currentTime))
                 var currentTime = elapsed - particles[x].time;
                 var currentPercent = currentTime / SPEED * particles[x].path.getTotalLength();
                 var currentPos = particles[x].path.getPointAtLength(currentPercent)
                 context.beginPath();
-                context.fillStyle = filteredCountries.indexOf(particles[x].link.target.name) != -1 ? particles[x].link.particleColor : particles[x].link.particleColorTime(currentTime)
+                context.fillStyle = filteredCountries.indexOf(particles[x].link.target.name) != -1 ? particles[x].link.particleColor : "black"
                 context.arc(currentPos.x+ particles[x].offsetX, currentPos.y + particles[x].offsetY, particles[x].link.particleSize, 0, 2*Math.PI);
                 context.fill();
             }
@@ -472,5 +528,18 @@ var graph = function () {
       let ratio = devicePixelRatio / backingStoreRatio
       return ratio
   }
+
+  function sortOn(property) {
+    return function(a, b){
+      if(a[property] < b[property]){
+          return -1;
+      }else if(a[property] > b[property]){
+          return 1;
+      }else{
+          return 0;   
+      }
+    }
+  }
+
 
 }()
