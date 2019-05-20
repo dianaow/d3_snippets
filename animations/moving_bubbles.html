@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <script src="http://d3js.org/d3.v4.min.js"></script>
+  <script src="https://d3js.org/d3-array.v2.min.js"></script>
+  <link href="https://fonts.googleapis.com/css?family=Karla" rel="stylesheet">
+  <style>
+    h1, text {
+      font-family: 'Karla', sans-serif;
+    }
+    #map path {
+      fill: none;
+      stroke-width: 0px;
+    }
+    #panel {
+      margin-left: 50px;
+    }
+    .btn {
+      color: black;
+      background: transparent; 
+      border: 2px solid black; 
+      border-radius: 6px; 
+      padding: 8px 16px;
+      text-align: center;
+      display: inline-block;
+      font-size: 0.8em;
+      margin: 4px 2px;
+      -webkit-transition-duration: 0.4s; /* Safari */
+      transition-duration: 0.4s;
+      cursor: pointer;
+      text-decoration: none;
+      text-transform: uppercase;
+    }
+    .btn:hover {
+        background-color: black;
+        color: white;
+    }
+    .btn:focus {
+        background-color: black;
+        color: white;
+    }
+  </style>
+</head>
+<body>
+  <div id='panel'>
+    <h1>IRIS</h1>
+    <div id="section">
+      <input name="type" 
+             type="button" 
+             class="btn changeFocitoCrime"
+             value="Group by crime"/>
+      <input name="type" 
+             type="button" 
+             class='btn changeFocitoIndustry'
+             value="Group by industry"/>
+      <input name="type" 
+             type="button" 
+             class='btn changeFocitoSubgraph'
+             value="Group by subgraphs"/>
+      <input name="type" 
+             type="button" 
+             class='btn changeFocitoCountry'
+             value="Group by country"/>
+      <input name="type" 
+             type="button" 
+             class='btn changeFocitoScore'
+             value="Group by association scores"/>
+    </div>
+  </div>
+  <svg id="canvas"></svg>
+  <script src="moving_bubbles.js"></script>
+</body>
+</html>

@@ -24,7 +24,9 @@
               <img src="./images/blobs.png"></img>
             </div>
             <div class="modal">
-              <div id='panel'>
+              <div class="modal-content2" id="modal-fullscreen">
+              <span class="close-button">×</span>
+              <div id='panel-1'>
                 <label>First, select chart type to transition from: </label>
                 <div id="section">
                   <input name="start_type" 
@@ -35,18 +37,6 @@
                          type="button" 
                          class="btn run_cluster_bubbles"
                          value="Cluster bubbles" />
-                  <input name="start_type" 
-                         type="button" 
-                         class="btn run_align_X"
-                         value="Align X" /><br>
-                  <input name="start_type" 
-                   type="button" 
-                   class="btn run_add"
-                   value="Add nodes" />
-                  <input name="start_type" 
-                         type="button" 
-                         class="btn run_move"
-                         value="Move nodes" /><br>
                   <input name="start_type" 
                          type="button" 
                          class='btn reset_button'
@@ -77,9 +67,13 @@
                          type="button" 
                          value="Morph to dot plot!"/>
                 </div>
-              </div>
-              <div class="modal-content2" id="modal-fullscreen">
-                  <span class="close-button">×</span>
+            </div>
+            <div id='panel-2'>
+              <input name="start_type" 
+               type="button" 
+               class="btn run_add"
+               value="Add nodes" />
+            </div>
               </div>
             </div>
 
@@ -167,6 +161,7 @@
     <script src="https://d3js.org/d3-array.v2.min.js"></script>
     <script src="https://unpkg.com/d3-simple-slider"></script>
     <script src="./js/distribute_nodes.js"></script>
+    <script src="./js/distribute_nodes1.js"></script>
     <script src="./js/beeswarm.js"></script>
     <script src="./js/constellation/main.js"></script>
     <script src="./js/merge_svg.js"></script>
@@ -195,10 +190,12 @@
               poppingtree.clear()
             } );
           } else if (trigger === "trigger2") {
-            setTimeout(distribute.run(), 1000)
+            distribute.run()
+            flying.run()
             closeButton.addEventListener("click", function() { 
               modal.classList.remove("show-modal")
               distribute.clear() 
+              flying.clear()
             } );
           } else if (trigger === "trigger3") {
             beeswarm.run()

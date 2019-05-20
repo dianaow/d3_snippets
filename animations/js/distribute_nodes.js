@@ -10,6 +10,11 @@ var distribute = function () {
   var height = canvasDim.height - margin.top - margin.bottom;
   var simulation = d3.forceSimulation()
   var modal = d3.select(".modal-content2")
+  var modalDiv = modal.append('div')
+    .attr('id', "div-content2")
+    .attr('width', width)
+    .attr('height', height)
+    .attr('float', 'left')
 
   ///////////////////////////////////////////////////////////////////////////
   ///////////////////////////// Create scales ///////////////////////////////
@@ -20,10 +25,6 @@ var distribute = function () {
   var colorScale = d3.scaleOrdinal()
     .domain(category)
     .range(color)
-
-  var xScaleCluster = d3.scaleBand()
-    .domain(category)
-    .range([width*(1/6), width*(5/6)])
 
   ///////////////////////////////////////////////////////////////////////////
   ///////////////////////////// Create sliders //////////////////////////////
@@ -58,14 +59,14 @@ var distribute = function () {
   var gStep1 = d3.select('div#slider-step1')
     .append('svg')
     .attr('width', 500)
-    .attr('height', 65)
+    .attr('height', 90)
     .append('g')
     .attr('transform', 'translate(20, 20)')
 
   var gStep2 = d3.select('div#slider-step2')
     .append('svg')
     .attr('width', 500)
-    .attr('height', 65)
+    .attr('height', 90)
     .append('g')
     .attr('transform', 'translate(20, 20)')
 
@@ -83,7 +84,7 @@ var distribute = function () {
     run : function () {
 
       //////////////////// Set up and initiate containers ///////////////////////
-      var svg = modal.append("svg")
+      var svg = modalDiv.append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
 
@@ -113,9 +114,6 @@ var distribute = function () {
 
         d3.select('.run_cluster_sorted').on("click", function () { run_cluster_sorted() });
         d3.select('.run_cluster_bubbles').on("click", function () { run_cluster_bubbles() });
-        d3.select('.run_align_X').on("click", function () { run_align_X() });
-        d3.select('.run_move').on("click", function () { run_move_node() });
-        d3.select('.run_add').on("click", function () { run_add_node() });
         d3.select('.reset_button').on("click", function () { reset() });
         d3.select('.submit_button').on("click", function () { to_distributed() });
         //console.log(TRANSITION_TYPE, DURATION, DELAY)
@@ -145,34 +143,6 @@ var distribute = function () {
         cluster_bubbles(scattered) // modify x-y coordinates
         distributed.forEach((d,i) => {
           d.length = getPathLength(scattered, d)
-        })
-
-      } 
-
-      function run_align_X() {
-
-        cluster_align(scattered) // modify x-y coordinates
-        distributed.forEach((d,i) => {
-          d.length = getPathLength(scattered, d) 
-        })
-
-      } 
-
-      function run_move_node() {
-
-        move_node(scattered) // modify x-y coordinates
-        distributed.forEach((d,i) => {
-          d.length = getPathLength(scattered, d) 
-        })
-
-      } 
-
-      function run_add_node() {
-
-        add_node(scattered) // modify x-y coordinates
-        //distributed = distributedData(nodes) 
-        distributed.forEach((d,i) => {
-          d.length = getPathLength(scattered, d) 
         })
 
       } 
@@ -224,30 +194,6 @@ var distribute = function () {
     return nodes
   }
 
-  function createNodes() {
-
-    var beyondBorder = [width+50+Math.random(), -50+Math.random(), height+50+Math.random()]
-    var newNodes = []
-    d3.range(0, 100).map(d=> {
-      var new_band = getRandomArbitrary(1,6).toString()
-      newNodes.push({
-        band: new_band,
-        color: color[new_band],
-        x: width + 50,
-        y: -50,
-        radius: 5,
-        class: 'new'
-      })
-    })
-
-    nodes.push(newNodes)
-    nodes = [].concat.apply([], nodes)
-    nodes.forEach((d,i)=>{
-      d.id = i
-    })
-
-  }
-
   ///////////////////////////////////////////////////////////////////////////
   //////////////////////////////// Scatter plot /////////////////////////////
   ///////////////////////////////////////////////////////////////////////////
@@ -297,15 +243,15 @@ var distribute = function () {
       
     simulation.force("cluster").strength(0)
 
-    simulation.on('tick', ticked)
+    simulation.on('tick', ticked);
     simulation.alpha(0.02).restart()
 
-  }
+    function ticked() {
+      circles
+        .attr('cx', (d) => d.x)
+        .attr('cy', (d) => d.y)
+    }
 
-  function ticked() {
-    circles
-      .attr('cx', (d) => d.x)
-      .attr('cy', (d) => d.y)
   }
 
   ///////////////////////////////////////////////////////////////////////////
@@ -327,6 +273,10 @@ var distribute = function () {
 
   // 2) Nodes are  clustered in the middle, and sorted horizontally
   function cluster_sorted(nodes) {
+
+    var xScaleCluster = d3.scaleBand()
+      .range([width*(1/4), width*(3/4)])
+      .domain(category)
 
     simulation.stop();
 
@@ -366,75 +316,59 @@ var distribute = function () {
 
   }
 
-  //4) Nodes are aligned along x-axis
-  function cluster_align(nodes) {
+  function forceCluster() {
+    var strength = 0.8;
+    let nodes;
 
-    simulation.stop()
+    function force(alpha) {
+      const centroids = d3.rollup(nodes, centroid, d => d.band);
 
-    nodes.forEach(d=>{
-      d.x = xScaleCluster(d.band)
-    })
-
-    var responsiveCharge = screen.width < 420 ? -5 : -15 // modify the force charge based on screen size
-    simulation.nodes(nodes)
-      .force('charge', d3.forceManyBody().strength(responsiveCharge))
-      .force("x", d3.forceX(function (d) { return d.x }))
-      .force('y', d3.forceY(height/2-100).strength(0.2))
-
-    simulation.force("cluster").strength(0)
-    simulation.alpha(0.5).restart()
-
-  }
-
-  // 5) Move nodes individually
-  function move_node(nodes) {
-
-    select_random()
-
-    // initialize new force
-    var simulation1 = d3.forceSimulation(nodes)
-        .force("collide", d3.forceCollide(function(d,i) { return d.radius + 3}))
-        .force("x", d3.forceX(d=>d.x).strength(0.2))
-        .force('y', d3.forceY(height/2-100).strength(0.2))
-        .alphaDecay(0.1).alpha(0.09)
-
-    // Adjust position of circles 
-    simulation1.on("tick", () => {   
-      circles
-         .attr("cx", d => d.x)
-         .attr("cy", d => d.y)
-         .attr("fill", d => d.color)
-      });
-
-    function select_random() {
-
-      var arr = []
-      while(arr.length < 20){
-          var r = Math.floor(Math.random()*100) + 1;
-          if(arr.indexOf(r) === -1) arr.push(r);
+      const l = alpha * strength;
+      for (const d of nodes) {
+        const {x: cx, y: cy} = centroids.get(d.band);
+        d.vx -= (d.x - cx) * l;
+        d.vy -= (d.y - cy) * l;
       }
-
-      arr.map(d=>{
-        var current = parseInt(nodes[d].band)
-        nodes[d].band = (current + getRandomArbitrary(-current+1, 6-current)).toString() // ensure nodes only move about the category contraints
-        nodes[d].color = color[nodes[d].band]
-        nodes[d].x = xScaleCluster(nodes[d].band)
-      }) 
-
     }
 
+    force.initialize = _ => nodes = _;
+    force.strength = function(_) {
+      return arguments.length ? (strength = +_, force) : strength;
+    };
+    return force;
   }
 
-  // 6) Append a mass of new nodes
-  function add_node(nodes) {
-
-    simulation.stop()
-
-    simulation.force("r", d3.forceRadial(function(d) { return d.class == 'new' ? 100 : 0}))
-    simulation.nodes(nodes).on('tick', ticked)
-    simulation.alpha(0.1).restart()
-
+  function centroid(nodes) {
+    let x = 0;
+    let y = 0;
+    let z = 0;
+    for (const d of nodes) {
+      let k = d.radius ** 2;
+      x += d.x * k;
+      y += d.y * k;
+      z += k;
+    }
+    return {x: x / z, y: y / z};
   }
+
+  // Drag functions used for interactivity
+  function dragstarted(d) {
+    if (!d3.event.active) simulation.alphaTarget(0.3).restart();
+    d.fx = d.x;
+    d.fy = d.y;
+  }
+
+  function dragged(d) {
+    d.fx = d3.event.x;
+    d.fy = d3.event.y;
+  }
+
+  function dragended(d) {
+    if (!d3.event.active) simulation.alphaTarget(0);
+    d.fx = null;
+    d.fy = null;
+  }
+
   ///////////////////////////////////////////////////////////////////////////
   ///////////////////////////// Distribution plot ///////////////////////////
   ///////////////////////////////////////////////////////////////////////////
@@ -558,10 +492,6 @@ var distribute = function () {
   ///////////////////////////////////////////////////////////////////////////
   ///////////////////////////// Helper functions ////////////////////////////
   ///////////////////////////////////////////////////////////////////////////
-  function getRandomArbitrary(min, max) {
-    return Math.round(Math.random() * (max - min) + min)
-  }
-
   function randn_bm(min, max, skew) {
       var u = 0, v = 0;
       while(u === 0) u = Math.random(); //Converting [0,1) to (0,1)
@@ -574,59 +504,6 @@ var distribute = function () {
       num *= max - min; // Stretch to fill range
       num += min; // offset to min
       return num;
-  }
-
-  function forceCluster() {
-    var strength = 0.8;
-    let nodes;
-
-    function force(alpha) {
-      const centroids = d3.rollup(nodes, centroid, d => d.band);
-
-      const l = alpha * strength;
-      for (const d of nodes) {
-        const {x: cx, y: cy} = centroids.get(d.band);
-        d.vx -= (d.x - cx) * l;
-        d.vy -= (d.y - cy) * l;
-      }
-    }
-
-    force.initialize = _ => nodes = _;
-    force.strength = function(_) {
-      return arguments.length ? (strength = +_, force) : strength;
-    };
-    return force;
-  }
-
-  function centroid(nodes) {
-    let x = 0;
-    let y = 0;
-    let z = 0;
-    for (const d of nodes) {
-      let k = d.radius ** 2;
-      x += d.x * k;
-      y += d.y * k;
-      z += k;
-    }
-    return {x: x / z, y: y / z};
-  }
-
-  // Drag functions used for interactivity
-  function dragstarted(d) {
-    if (!d3.event.active) simulation.alphaTarget(0.3).restart();
-    d.fx = d.x;
-    d.fy = d.y;
-  }
-
-  function dragged(d) {
-    d.fx = d3.event.x;
-    d.fy = d3.event.y;
-  }
-
-  function dragended(d) {
-    if (!d3.event.active) simulation.alphaTarget(0);
-    d.fx = null;
-    d.fy = null;
   }
 
 }()

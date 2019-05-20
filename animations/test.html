@@ -94,7 +94,7 @@
       /////////////////////////////////////////////////////////////////////////// 
 
       function getData() {
-        d3.csv("./data/crime_scores.csv", function(data) {
+        d3.csv("./data/scores.csv", function(data) {
           var res = data.map((d,i) => {
             return {
               subgraph: d.subgraph,
