@@ -1,0 +1,415 @@
+binned0,binned1,binned2,crime0,crime1,crime2
+1,1,1,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.4-0.59,0.4-0.59,0.4-0.59,Sanctions,Sanctions,Sanctions
+0.4-0.59,0.4-0.59,0.4-0.59,Sanctions,Sanctions,Sanctions
+0.7-0.79,0.7-0.79,0.7-0.79,Sanctions,Sanctions,Sanctions
+0.7-0.79,0.7-0.79,0.7-0.79,Sanctions,Sanctions,Sanctions
+0.4-0.59,0.4-0.59,0.4-0.59,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.4-0.59,0.4-0.59,0.4-0.59,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+1,1,1,Cybercrime,Cybercrime,Cybercrime
+0.7-0.79,0.7-0.79,0.7-0.79,Sanctions,Sanctions,Sanctions
+0.4-0.59,0.4-0.59,0.4-0.59,Sanctions,Sanctions,Sanctions
+0.4-0.59,0.4-0.59,0.4-0.59,Sanctions,Sanctions,Sanctions
+0.4-0.59,0.4-0.59,0.4-0.59,Sanctions,Sanctions,Sanctions
+0.4-0.59,0.4-0.59,0.4-0.59,Sanctions,Sanctions,Sanctions
+0.7-0.79,0.7-0.79,0.7-0.79,Sanctions,Sanctions,Sanctions
+0.4-0.59,0.4-0.59,0.4-0.59,Sanctions,Sanctions,Sanctions
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.4-0.59,0.4-0.59,0.4-0.59,Organised Crime,Organised Crime,Organised Crime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.7-0.79,0.7-0.79,0.7-0.79,Tax & Customs Violation,Tax & Customs Violation,Tax & Customs Violation
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Money Laundering,Money Laundering,Money Laundering
+0.9-0.99,0.9-0.99,0.9-0.99,Sanctions,Trafficking in Stolen Goods,Sanctions
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Money Laundering,Cybercrime,Money Laundering
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.7-0.79,0.7-0.79,0.7-0.79,Tax & Customs Violation,Tax & Customs Violation,Tax & Customs Violation
+0.9-0.99,0.9-0.99,0.9-0.99,Money Laundering,Cybercrime,Money Laundering
+0.9-0.99,0.9-0.99,0.9-0.99,Money Laundering,Cybercrime,Money Laundering
+0.9-0.99,0.9-0.99,0.9-0.99,Money Laundering,Cybercrime,Money Laundering
+0.4-0.59,0.4-0.59,0.4-0.59,Cybercrime,Money Laundering,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Money Laundering,Cybercrime,Money Laundering
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.4-0.59,0.4-0.59,0.4-0.59,Tax & Customs Violation,Tax & Customs Violation,Tax & Customs Violation
+0.9-0.99,0.9-0.99,0.9-0.99,Money Laundering,Money Laundering,Money Laundering
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+1,1,1,Sanctions,Sanctions,Sanctions
+1,1,1,Sanctions,Sanctions,Sanctions
+0.9-0.99,0.9-0.99,0.9-0.99,Sanctions,Trafficking in Stolen Goods,Sanctions
+1,1,1,Sanctions,Trafficking in Stolen Goods,Sanctions
+1,1,1,Sanctions,Sanctions,Sanctions
+0.7-0.79,0.7-0.79,0.7-0.79,Sanctions,Sanctions,Sanctions
+0.9-0.99,0.9-0.99,0.9-0.99,Sanctions,Sanctions,Sanctions
+0.9-0.99,0.9-0.99,0.9-0.99,Sanctions,Sanctions,Sanctions
+0.9-0.99,0.9-0.99,0.9-0.99,Sanctions,Sanctions,Sanctions
+0.7-0.79,0.7-0.79,0.7-0.79,Tax & Customs Violation,Tax & Customs Violation,Tax & Customs Violation
+0.7-0.79,0.7-0.79,0.7-0.79,Tax & Customs Violation,Tax & Customs Violation,Tax & Customs Violation
+0.7-0.79,0.7-0.79,0.7-0.79,Tax & Customs Violation,Tax & Customs Violation,Tax & Customs Violation
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.7-0.79,0.7-0.79,0.7-0.79,Tax & Customs Violation,Tax & Customs Violation,Tax & Customs Violation
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.7-0.79,0.7-0.79,0.7-0.79,Cybercrime,Cybercrime,Cybercrime
+1,1,1,Tax & Customs Violation,Tax & Customs Violation,Tax & Customs Violation
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+1,1,1,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.4-0.59,0.4-0.59,0.4-0.59,Organised Crime,Organised Crime,Organised Crime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.7-0.79,0.7-0.79,0.7-0.79,Tax & Customs Violation,Tax & Customs Violation,Tax & Customs Violation
+1,1,1,Organised Crime,Organised Crime,Organised Crime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Money Laundering,Money Laundering,Money Laundering
+0.7-0.79,0.7-0.79,0.7-0.79,Sanctions,Sanctions,Sanctions
+0.9-0.99,0.9-0.99,0.9-0.99,Sanctions,Trafficking in Stolen Goods,Sanctions
+0.9-0.99,0.9-0.99,0.9-0.99,Sanctions,Trafficking in Stolen Goods,Sanctions
+0.9-0.99,0.9-0.99,0.9-0.99,Sanctions,Trafficking in Stolen Goods,Sanctions
+0.9-0.99,0.9-0.99,0.9-0.99,Sanctions,Trafficking in Stolen Goods,Sanctions
+0.7-0.79,0.7-0.79,0.7-0.79,Sanctions,Sanctions,Sanctions
+1,1,1,Money Laundering,Organised Crime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Money Laundering,Cybercrime,Organised Crime
+0.9-0.99,0.9-0.99,0.9-0.99,Sanctions,Trafficking in Stolen Goods,Sanctions
+0.7-0.79,0.7-0.79,0.7-0.79,Tax & Customs Violation,Tax & Customs Violation,Tax & Customs Violation
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+1,1,1,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Sanctions,Trafficking in Stolen Goods,Sanctions
+0.9-0.99,0.9-0.99,0.9-0.99,Money Laundering,Cybercrime,Organised Crime
+0.8-0.99,0.8-0.99,0.8-0.99,Money Laundering,Money Laundering,Money Laundering
+1,1,1,Money Laundering,Money Laundering,Money Laundering
+0.8-0.99,0.8-0.99,0.8-0.99,Money Laundering,Money Laundering,Money Laundering
+0.9-0.99,0.9-0.99,0.9-0.99,Money Laundering,Money Laundering,Money Laundering
+0.9-0.99,0.9-0.99,0.9-0.99,Organised Crime,Money Laundering,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Money Laundering,Money Laundering,Money Laundering
+0.7-0.79,0.7-0.79,0.7-0.79,Tax & Customs Violation,Tax & Customs Violation,Tax & Customs Violation
+0.9-0.99,0.9-0.99,0.9-0.99,Money Laundering,Money Laundering,Money Laundering
+0.9-0.99,0.9-0.99,0.9-0.99,Money Laundering,Money Laundering,Money Laundering
+0.8-0.99,0.8-0.99,0.8-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Organised Crime,Money Laundering,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Money Laundering,Organised Crime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Tax & Customs Violation,Tax & Customs Violation,Tax & Customs Violation
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Organised Crime,Cybercrime,Money Laundering
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.7-0.79,0.7-0.79,0.7-0.79,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.6-0.69,0.6-0.69,0.6-0.69,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Sanctions,Sanctions,Sanctions
+1,1,1,Sanctions,Sanctions,Sanctions
+0.7-0.79,0.7-0.79,0.7-0.79,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Sanctions,Trafficking in Stolen Goods,Sanctions
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.8-0.99,0.8-0.99,0.8-0.99,Money Laundering,Money Laundering,Money Laundering
+0.9-0.99,0.9-0.99,0.9-0.99,Sanctions,Sanctions,Sanctions
+1,1,1,Sanctions,Sanctions,Sanctions
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+1,1,1,Sanctions,Sanctions,Sanctions
+0.9-0.99,0.9-0.99,0.9-0.99,Sanctions,Trafficking in Stolen Goods,Sanctions
+1,1,1,Sanctions,Sanctions,Sanctions
+1,1,1,Sanctions,Sanctions,Sanctions
+0.7-0.79,0.7-0.79,0.7-0.79,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.6-0.69,0.6-0.69,0.6-0.69,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Sanctions,Sanctions,Sanctions
+0.4-0.59,0.4-0.59,0.4-0.59,Organised Crime,Organised Crime,Organised Crime
+0.9-0.99,0.9-0.99,0.9-0.99,Sanctions,Trafficking in Stolen Goods,Sanctions
+0.7-0.79,0.7-0.79,0.7-0.79,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.4-0.59,0.4-0.59,0.4-0.59,Terrorism,Organised Crime,Terrorism
+1,1,1,Sanctions,Sanctions,Sanctions
+1,1,1,Sanctions,Sanctions,Sanctions
+0.6-0.69,0.6-0.69,0.6-0.69,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.8-0.99,0.8-0.99,0.8-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Sanctions,Sanctions,Sanctions
+0.4-0.59,0.4-0.59,0.4-0.59,Sanctions,Sanctions,Sanctions
+0.9-0.99,0.9-0.99,0.9-0.99,Organised Crime,Cybercrime,Money Laundering
+0.9-0.99,0.9-0.99,0.9-0.99,Sanctions,Trafficking in Stolen Goods,Sanctions
+0.7-0.79,0.7-0.79,0.7-0.79,Sanctions,Sanctions,Sanctions
+0.8-0.99,0.8-0.99,0.8-0.99,Money Laundering,Money Laundering,Money Laundering
+0.6-0.69,0.6-0.69,0.6-0.69,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Sanctions,Sanctions,Sanctions
+0.7-0.79,0.7-0.79,0.7-0.79,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.8-0.99,0.8-0.99,0.8-0.99,Cybercrime,Cybercrime,Cybercrime
+0.6-0.69,0.6-0.69,0.6-0.69,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Money Laundering,Money Laundering,Money Laundering
+0.6-0.69,0.6-0.69,0.6-0.69,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Money Laundering,Cybercrime
+0.7-0.79,0.7-0.79,0.7-0.79,Sanctions,Sanctions,Sanctions
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.7-0.79,0.7-0.79,0.7-0.79,Sanctions,Sanctions,Sanctions
+1,1,1,Sanctions,Sanctions,Sanctions
+0.7-0.79,0.7-0.79,0.7-0.79,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Sanctions,Sanctions,Sanctions
+1,1,1,Sanctions,Sanctions,Sanctions
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Money Laundering,Money Laundering,Money Laundering
+0.9-0.99,0.9-0.99,0.9-0.99,Sanctions,Sanctions,Sanctions
+0.7-0.79,0.7-0.79,0.7-0.79,Sanctions,Sanctions,Sanctions
+0.7-0.79,0.7-0.79,0.7-0.79,Cybercrime,Cybercrime,Cybercrime
+0.8-0.99,0.8-0.99,0.8-0.99,Money Laundering,Money Laundering,Money Laundering
+0.7-0.79,0.7-0.79,0.7-0.79,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Organised Crime,Organised Crime,Organised Crime
+0.9-0.99,0.9-0.99,0.9-0.99,Sanctions,Trafficking in Stolen Goods,Sanctions
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Money Laundering,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Sanctions,Sanctions,Sanctions
+0.4-0.59,0.4-0.59,0.4-0.59,Sanctions,Sanctions,Sanctions
+0.7-0.79,0.7-0.79,0.7-0.79,Tax & Customs Violation,Tax & Customs Violation,Tax & Customs Violation
+0.9-0.99,0.9-0.99,0.9-0.99,Sanctions,Sanctions,Sanctions
+0.7-0.79,0.7-0.79,0.7-0.79,Tax & Customs Violation,Tax & Customs Violation,Tax & Customs Violation
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Sanctions,Sanctions,Sanctions
+0.9-0.99,0.9-0.99,0.9-0.99,Sanctions,Trafficking in Stolen Goods,Sanctions
+0.7-0.79,0.7-0.79,0.7-0.79,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Sanctions,Sanctions,Sanctions
+0.4-0.59,0.4-0.59,0.4-0.59,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Sanctions,Sanctions,Sanctions
+1,1,1,Cybercrime,Cybercrime,Cybercrime
+0.7-0.79,0.7-0.79,0.7-0.79,Tax & Customs Violation,Tax & Customs Violation,Tax & Customs Violation
+1,1,1,Cybercrime,Money Laundering,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Organised Crime,Organised Crime,Organised Crime
+0.2-0.39,0.2-0.39,0.2-0.39,Sanctions,Sanctions,Sanctions
+0.4-0.59,0.4-0.59,0.4-0.59,Sanctions,Sanctions,Sanctions
+0.4-0.59,0.4-0.59,0.4-0.59,Sanctions,Sanctions,Sanctions
+0.9-0.99,0.9-0.99,0.9-0.99,Sanctions,Trafficking in Stolen Goods,Sanctions
+0.9-0.99,0.9-0.99,0.9-0.99,Tax & Customs Violation,Tax & Customs Violation,Tax & Customs Violation
+0.9-0.99,0.9-0.99,0.9-0.99,Sanctions,Trafficking in Stolen Goods,Sanctions
+0.9-0.99,0.9-0.99,0.9-0.99,Sanctions,Trafficking in Stolen Goods,Sanctions
+0.9-0.99,0.9-0.99,0.9-0.99,Sanctions,Trafficking in Stolen Goods,Sanctions
+0.9-0.99,0.9-0.99,0.9-0.99,Sanctions,Sanctions,Sanctions
+0.9-0.99,0.9-0.99,0.9-0.99,Sanctions,Sanctions,Sanctions
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.7-0.79,0.7-0.79,0.7-0.79,Sanctions,Sanctions,Sanctions
+0.9-0.99,0.9-0.99,0.9-0.99,Sanctions,Sanctions,Sanctions
+0.4-0.59,0.4-0.59,0.4-0.59,Cybercrime,Cybercrime,Cybercrime
+0.7-0.79,0.7-0.79,0.7-0.79,Cybercrime,Cybercrime,Cybercrime
+0.7-0.79,0.7-0.79,0.7-0.79,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Money Laundering,Cybercrime
+0.7-0.79,0.7-0.79,0.7-0.79,Sanctions,Sanctions,Sanctions
+1,1,1,Sanctions,Sanctions,Sanctions
+1,1,1,Cybercrime,Cybercrime,Cybercrime
+1,1,1,Sanctions,Sanctions,Sanctions
+0.8-0.99,0.8-0.99,0.8-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.7-0.79,0.7-0.79,0.7-0.79,Tax & Customs Violation,Tax & Customs Violation,Tax & Customs Violation
+1,1,1,Tax & Customs Violation,Tax & Customs Violation,Tax & Customs Violation
+0.9-0.99,0.9-0.99,0.9-0.99,Sanctions,Trafficking in Stolen Goods,Sanctions
+0.4-0.59,0.4-0.59,0.4-0.59,Sanctions,Sanctions,Sanctions
+0.4-0.59,0.4-0.59,0.4-0.59,Sanctions,Sanctions,Sanctions
+0.7-0.79,0.7-0.79,0.7-0.79,Sanctions,Sanctions,Sanctions
+0.7-0.79,0.7-0.79,0.7-0.79,Sanctions,Sanctions,Sanctions
+0.4-0.59,0.4-0.59,0.4-0.59,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Organised Crime,Money Laundering
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Sanctions,Sanctions,Sanctions
+1,1,1,Terrorism,Organised Crime,Terrorism
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.4-0.59,0.4-0.59,0.4-0.59,Tax & Customs Violation,Tax & Customs Violation,Tax & Customs Violation
+0.7-0.79,0.7-0.79,0.7-0.79,Tax & Customs Violation,Tax & Customs Violation,Tax & Customs Violation
+0.9-0.99,0.9-0.99,0.9-0.99,Sanctions,Sanctions,Sanctions
+0.9-0.99,0.9-0.99,0.9-0.99,Sanctions,Sanctions,Sanctions
+0.8-0.99,0.8-0.99,0.8-0.99,Money Laundering,Money Laundering,Money Laundering
+0.4-0.59,0.4-0.59,0.4-0.59,Sanctions,Sanctions,Sanctions
+0.4-0.59,0.4-0.59,0.4-0.59,Sanctions,Sanctions,Sanctions
+1,1,1,Sanctions,Sanctions,Sanctions
+1,1,1,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Tax & Customs Violation,Tax & Customs Violation,Tax & Customs Violation
+0.4-0.59,0.4-0.59,0.4-0.59,Tax & Customs Violation,Tax & Customs Violation,Tax & Customs Violation
+0.6-0.69,0.6-0.69,0.6-0.69,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Money Laundering,Money Laundering,Money Laundering
+0.9-0.99,0.9-0.99,0.9-0.99,Money Laundering,Cybercrime,Money Laundering
+0.9-0.99,0.9-0.99,0.9-0.99,Organised Crime,Cybercrime,Money Laundering
+0.4-0.59,0.4-0.59,0.4-0.59,Sanctions,Sanctions,Sanctions
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Money Laundering,Money Laundering,Money Laundering
+0.4-0.59,0.4-0.59,0.4-0.59,Sanctions,Sanctions,Sanctions
+0.8-0.99,0.8-0.99,0.8-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+1,1,1,Sanctions,Sanctions,Sanctions
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+1,1,1,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+1,1,1,Sanctions,Sanctions,Sanctions
+1,1,1,Sanctions,Sanctions,Sanctions
+1,1,1,Sanctions,Sanctions,Sanctions
+1,1,1,Sanctions,Sanctions,Sanctions
+1,1,1,Sanctions,Sanctions,Sanctions
+1,1,1,Sanctions,Sanctions,Sanctions
+0.9-0.99,0.9-0.99,0.9-0.99,Sanctions,Sanctions,Sanctions
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+1,1,1,Sanctions,Sanctions,Sanctions
+1,1,1,Cybercrime,Cybercrime,Cybercrime
+1,1,1,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+1,1,1,Sanctions,Sanctions,Sanctions
+1,1,1,Sanctions,Sanctions,Sanctions
+1,1,1,Sanctions,Sanctions,Sanctions
+1,1,1,Cybercrime,Cybercrime,Cybercrime
+1,1,1,Sanctions,Sanctions,Sanctions
+1,1,1,Sanctions,Sanctions,Sanctions
+1,1,1,Sanctions,Sanctions,Sanctions
+1,1,1,Sanctions,Sanctions,Sanctions
+1,1,1,Sanctions,Sanctions,Sanctions
+1,1,1,Sanctions,Sanctions,Sanctions
+1,1,1,Sanctions,Sanctions,Sanctions
+1,1,1,Sanctions,Sanctions,Sanctions
+1,1,1,Sanctions,Sanctions,Sanctions
+1,1,1,Sanctions,Sanctions,Sanctions
+1,1,1,Sanctions,Sanctions,Sanctions
+1,1,1,Sanctions,Sanctions,Sanctions
+1,1,1,Sanctions,Sanctions,Sanctions
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+1,1,1,Sanctions,Sanctions,Sanctions
+1,1,1,Sanctions,Sanctions,Sanctions
+1,1,1,Sanctions,Sanctions,Sanctions
+1,1,1,Sanctions,Sanctions,Sanctions
+1,1,1,Sanctions,Sanctions,Sanctions
+1,1,1,Sanctions,Sanctions,Sanctions
+1,1,1,Sanctions,Sanctions,Sanctions
+1,1,1,Sanctions,Sanctions,Sanctions
+1,1,1,Sanctions,Sanctions,Sanctions
+0.9-0.99,0.9-0.99,0.9-0.99,Sanctions,Sanctions,Sanctions
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+1,1,1,Sanctions,Sanctions,Sanctions
+1,1,1,Sanctions,Sanctions,Sanctions
+1,1,1,Sanctions,Sanctions,Sanctions
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+1,1,1,Sanctions,Sanctions,Sanctions
+1,1,1,Sanctions,Sanctions,Sanctions
+1,1,1,Sanctions,Sanctions,Sanctions
+0.9-0.99,0.9-0.99,0.9-0.99,Sanctions,Sanctions,Sanctions
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+1,1,1,Sanctions,Sanctions,Sanctions
+0.9-0.99,0.9-0.99,0.9-0.99,Sanctions,Sanctions,Sanctions
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+1,1,1,Cybercrime,Cybercrime,Cybercrime
+1,1,1,Sanctions,Sanctions,Sanctions
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+1,1,1,Sanctions,Sanctions,Sanctions
+1,1,1,Sanctions,Sanctions,Sanctions
+0.9-0.99,0.9-0.99,0.9-0.99,Sanctions,Sanctions,Sanctions
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+1,1,1,Sanctions,Sanctions,Sanctions
+1,1,1,Sanctions,Sanctions,Sanctions
+1,1,1,Sanctions,Sanctions,Sanctions
+1,1,1,Sanctions,Sanctions,Sanctions
+0.9-0.99,0.9-0.99,0.9-0.99,Sanctions,Sanctions,Sanctions
+1,1,1,Sanctions,Sanctions,Sanctions
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Sanctions,Sanctions,Sanctions
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+1,1,1,Sanctions,Sanctions,Sanctions
+1,1,1,Sanctions,Sanctions,Sanctions
+1,1,1,Sanctions,Sanctions,Sanctions
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+1,1,1,Sanctions,Sanctions,Sanctions
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+1,1,1,Sanctions,Sanctions,Sanctions
+1,1,1,Sanctions,Sanctions,Sanctions
+1,1,1,Sanctions,Sanctions,Sanctions
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+1,1,1,Sanctions,Sanctions,Sanctions
+1,1,1,Sanctions,Sanctions,Sanctions
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+1,1,1,Sanctions,Sanctions,Sanctions
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Sanctions,Sanctions,Sanctions
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+1,1,1,Sanctions,Sanctions,Sanctions
+1,1,1,Sanctions,Sanctions,Sanctions
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+1,1,1,Sanctions,Sanctions,Sanctions
+0.9-0.99,0.9-0.99,0.9-0.99,Sanctions,Sanctions,Sanctions
+1,1,1,Sanctions,Sanctions,Sanctions
+1,1,1,Sanctions,Sanctions,Sanctions
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+1,1,1,Sanctions,Sanctions,Sanctions
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+1,1,1,Sanctions,Sanctions,Sanctions
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+1,1,1,Sanctions,Sanctions,Sanctions
+1,1,1,Sanctions,Sanctions,Sanctions
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+0.9-0.99,0.9-0.99,0.9-0.99,Cybercrime,Cybercrime,Cybercrime
+1,1,1,Sanctions,Sanctions,Sanctions

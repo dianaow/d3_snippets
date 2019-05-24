@@ -376,6 +376,7 @@ init()
 
 ////////////////////////////////// Simulate nodes //////////////////////////////
 function simulate(nodes, foci) {
+  console.log(nodes.map(d=>d.focus))
 
   nodes.forEach(d=>{
     d.x1 = d.class=='new' ? d.x : foci[d.focus].x

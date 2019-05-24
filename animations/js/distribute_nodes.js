@@ -91,6 +91,18 @@ var distribute = function () {
       g = svg.append("g")
           .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
 
+      if(screen.width > 420){
+        svg.append('rect')
+          .attr("width", width*0.8)
+          .attr("height", height*0.95)  
+          .attr('fill', 'none')
+          .style('stroke-width', '2px')
+          .style('rx', '6px') 
+          .style('stroke', 'black')
+          .attr('x', width/4)
+          .attr('y', 10)
+      }
+      
       ///////////////// Run animation sequence based on chosen parameters ///////////////////
       initAllData()
       getParameters()
@@ -375,7 +387,7 @@ var distribute = function () {
 
   function distributedData(nodes) {
 
-    var nodeRadius = screen.width < 420 ? 4 : 10
+    var nodeRadius = screen.width < 420 ? 4 : 8
     var tilesPerRow = 8
     var tileSize = nodeRadius * 1.5
     var barWidth = screen.width < 420 ? 50 : (screen.width <= 1024 ? 150 : 200)

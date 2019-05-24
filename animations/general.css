@@ -137,7 +137,7 @@ img {
   cursor: pointer;
 }
 .modal-content2 {
-  background-color: #101420;
+  background-color: white;
 }
 
 .modal-content7 {
@@ -176,9 +176,9 @@ img {
 }
 
 .btn {
-  color: white;
+  color: black;
   background: transparent; 
-  border: 2px solid white; 
+  border: 2px solid black; 
   border-radius: 6px; 
   padding: 8px 16px;
   text-align: center;
@@ -194,7 +194,7 @@ img {
 
 .btn:hover {
     background-color: #E47D06;
-    color: white;
+    color: black;
 }
 
 /* if mobile device max width 420px */
@@ -227,7 +227,7 @@ img {
 #panel-1 {
   text-align: left;
   float:left;
-  color:white;
+  color:black;
   position: absolute;
   width: 300px;
   top: 50px;

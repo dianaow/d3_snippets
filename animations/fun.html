@@ -11,9 +11,11 @@
       <div class='box-group'>
 
         <div class='group'>
+
             <div class="trigger" id="trigger1">
               <img src="./images/poppingtree.png"></img>
             </div>
+
             <div class="modal">
               <div class="modal-content1">
                 <span class="close-button">×</span>
@@ -23,63 +25,84 @@
             <div class="trigger" id="trigger2">
               <img src="./images/blobs.png"></img>
             </div>
+
             <div class="modal">
               <div class="modal-content2" id="modal-fullscreen">
-              <span class="close-button">×</span>
-              <div id='panel-1'>
-                <label>First, select chart type to transition from: </label>
-                <div id="section">
-                  <input name="start_type" 
-                         type="button" 
-                         class='btn run_cluster_sorted'
-                         value="Cluster blob"/>
-                  <input name="start_type" 
-                         type="button" 
-                         class="btn run_cluster_bubbles"
-                         value="Cluster bubbles" />
-                  <input name="start_type" 
-                         type="button" 
-                         class='btn reset_button'
-                         value="Reset to scatter"
-                         checked />
+                <span class="close-button">×</span>
+
+                <div id='panel-1'>
+                  <label>First, select chart type to transition from: </label>
+                  <div id="section">
+                    <input name="start_type" 
+                           type="button" 
+                           class='btn run_cluster_sorted'
+                           value="Cluster blob"/>
+                    <input name="start_type" 
+                           type="button" 
+                           class="btn run_cluster_bubbles"
+                           value="Cluster bubbles" />
+                    <input name="start_type" 
+                           type="button" 
+                           class='btn reset_button'
+                           value="Reset to scatter"
+                           checked />
+                  </div>
+                  <label>Next, select transition type: </label>
+                  <div id="section">
+                    <input name="transition_type"
+                           type="radio" 
+                           value="transition_by_index"
+                           > Index<br>
+                    <input name="transition_type"
+                           type="radio"
+                           value="transition_by_length"
+                           > Length<br>
+                    <input name="transition_type"
+                           type="radio" 
+                           value="transition_by_default"
+                           checked > Default<br>
+                  </div>
+                  <label>Finally, select transition parameters: </label>
+                  <div id='slider-step1'></div>
+                  <div id='slider-step2'></div>
+                  <div id="section">
+                    <input name="submit" 
+                           class="btn submit_button"
+                           type="button" 
+                           value="Morph to dot plot!"/>
+                  </div>
                 </div>
-                <label>Next, select transition type: </label>
-                <div id="section">
-                  <input name="transition_type"
-                         type="radio" 
-                         value="transition_by_index"
-                         > Index<br>
-                  <input name="transition_type"
-                         type="radio"
-                         value="transition_by_length"
-                         > Length<br>
-                  <input name="transition_type"
-                         type="radio" 
-                         value="transition_by_default"
-                         checked > Default<br>
-                </div>
-                <label>Finally, select transition parameters: </label>
-                <div id='slider-step1'></div>
-                <div id='slider-step2'></div>
-                <div id="section">
-                  <input name="submit" 
-                         class="btn submit_button"
+
+                <div id='panel-2'>
+                  <input name="start_type" 
+                        type="button" 
+                        class="btn run_add"
+                        value="Add" />
+                  <input name="start_type" 
+                        type="button" 
+                        class="btn run_move"
+                        value="Move" />
+                  <input name="type" 
                          type="button" 
-                         value="Morph to dot plot!"/>
+                         class='btn changeFocitoIndustry'
+                         value="Regroup"/>
+                  <input name="type" 
+                         type="button" 
+                         class='btn run_change_foci'
+                         value="Change Foci"/>
+                  <input name="type" 
+                         type="button" 
+                         class="btn changeFocitoCrime"
+                         value="Reset"/>
                 </div>
-            </div>
-            <div id='panel-2'>
-              <input name="start_type" 
-               type="button" 
-               class="btn run_add"
-               value="Add nodes" />
-            </div>
+
               </div>
             </div>
 
             <div class="trigger" id="trigger3">
               <img src="./images/beeswarm.png"></img>
             </div>
+
             <div class="modal">
               <div class="modal-content3">
                   <span class="close-button">×</span>
@@ -161,7 +184,7 @@
     <script src="https://d3js.org/d3-array.v2.min.js"></script>
     <script src="https://unpkg.com/d3-simple-slider"></script>
     <script src="./js/distribute_nodes.js"></script>
-    <script src="./js/distribute_nodes1.js"></script>
+    <script src="./js/moving_bubbles.js"></script>
     <script src="./js/beeswarm.js"></script>
     <script src="./js/constellation/main.js"></script>
     <script src="./js/merge_svg.js"></script>
@@ -191,11 +214,13 @@
             } );
           } else if (trigger === "trigger2") {
             distribute.run()
-            flying.run()
+            //flying.run()
+            moving_bubbles.run()
             closeButton.addEventListener("click", function() { 
               modal.classList.remove("show-modal")
               distribute.clear() 
-              flying.clear()
+              //flying.clear()
+              moving_bubbles.clear()
             } );
           } else if (trigger === "trigger3") {
             beeswarm.run()
